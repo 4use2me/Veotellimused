@@ -1,0 +1,15 @@
+{
+  "development": {
+    "username": "sqluser",
+    "password": "Jallekool1",
+    "database": "Veotellimused",
+    "host": "WINDOWS-1DCGN01",
+    "dialect": "mssql",
+    "dialectOptions": {
+      "options": {
+        "encrypt": false,
+        "trustServerCertificate": true
+      }
+    }
+  }
+}
