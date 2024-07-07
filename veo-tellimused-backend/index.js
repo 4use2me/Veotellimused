@@ -137,5 +137,42 @@ app.put('/api/tellimused/:id', async (req, res) => {
     }
 });
 
+// index.js
+app.get('/api/tellimused', async (req, res) => {
+    try {
+        const request = new sql.Request();
+        const result = await request.query('SELECT * FROM Tellimused');
+        res.status(200).json(result.recordset);
+    } catch (error) {
+        console.error('Error fetching orders:', error);
+        res.status(500).send('Server error');
+    }
+});
+
+app.get('/api/tellimused/:id', async (req, res) => {
+    const { id } = req.params;
+    const numericId = parseInt(id, 10);
+    if (isNaN(numericId)) {
+        res.status(400).send('Invalid ID');
+        return;
+    }
+
+    try {
+        const request = new sql.Request();
+        const result = await request
+            .input('Id', sql.Int, numericId)
+            .query('SELECT * FROM Tellimused WHERE Id = @Id');
+
+        if (result.recordset.length === 0) {
+            res.status(404).send('Order not found');
+        } else {
+            res.status(200).json(result.recordset[0]);
+        }
+    } catch (error) {
+        console.error('Error fetching order:', error);
+        res.status(500).send('Server error');
+    }
+});
+
 const port = 5000;
 app.listen(port, () => console.log(`Server running on port ${port}`));

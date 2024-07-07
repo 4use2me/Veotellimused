@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Sidebar.css';
 
-const Sidebar = ({ onNewOrder }) => {
+const Sidebar = ({ onNewOrder, onSelectOrderList }) => {
     const [menuOpen, setMenuOpen] = useState(false);
 
     const toggleMenu = () => {
@@ -17,7 +17,7 @@ const Sidebar = ({ onNewOrder }) => {
             {menuOpen && (
                 <ul className="menu-items">
                     <li onClick={onNewOrder}>Uus tellimus</li>
-                    <li>Tellimuste nimekiri</li>
+                    <li onClick={onSelectOrderList}>Tellimuste nimekiri</li>
                     {/* Lisa siia teised alammenüü elemendid */}
                 </ul>
             )}
