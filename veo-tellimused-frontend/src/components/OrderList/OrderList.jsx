@@ -21,13 +21,24 @@ const OrderList = ({ onSelectOrder }) => {
     return (
         <div className="order-list">
             <h2>Tellimuste nimekiri</h2>
-            <ul>
-                {orders.map(order => (
-                    <li key={order.id} onClick={() => onSelectOrder(order.id)}>
-                        {order.klient}
-                    </li>
-                ))}
-            </ul>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tellimuse number</th>
+                        <th>Klient</th>
+                        <th>Loomise kuupäev</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {orders.map(order => (
+                        <tr key={order.id} onClick={() => onSelectOrder(order.id)}>
+                            <td>{order.id}</td>
+                            <td>{order.Klient}</td>
+                            <td>{new Date(order.createdAt).toLocaleDateString()}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
         </div>
     );
 };

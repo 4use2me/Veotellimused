@@ -41,8 +41,10 @@ function App() {
 
     return (
         <div className="App">
-            <div className="content">
+            <div className="sidebar">
                 <Sidebar onNewOrder={handleNewOrder} onSelectOrderList={handleSelectOrderList} />
+            </div>
+            <div className="content">
                 {activeView === 'form' && (
                     <OrderForm
                         key={orderFormKey}

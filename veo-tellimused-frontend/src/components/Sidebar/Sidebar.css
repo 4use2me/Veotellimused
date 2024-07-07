@@ -1,21 +1,21 @@
 .sidebar {
-    position: fixed; /* Fikseerime sidebar'i ekraanile */
-    width: 200px;
-    height: 100vh; /* Kogu lehe kõrguses */
+    width: 200px; /* Fixed width for the sidebar */
+    height: 100vh; /* Full height of the viewport */
     background-color: #282c34;
     padding: 20px;
     box-shadow: 2px 0 5px rgba(0,0,0,0.1);
     color: white;
-    overflow-y: auto; /* Lisab kerimisriba, kui sisu on kõrgem kui külgriba */
+    overflow-y: auto; /* Adds a scrollbar if the content overflows */
+    position: fixed; /* Fixed positioning */
 }
 
 .sidebar h2 {
-    text-align: left; /* Joondab teksti vasakule */
+    text-align: left;
 }
 
 .sidebar .toggle-menu-button {
     width: 100%;
-    text-align: left; /* Joondab teksti vasakule */
+    text-align: left;
     background: none;
     border: none;
     padding: 10px 0;

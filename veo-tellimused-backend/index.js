@@ -61,10 +61,10 @@ app.post('/api/tellimused', async (req, res) => {
             .query(
                 `INSERT INTO Tellimused (Klient, PealelaadimiseEttevõte, PealelaadimiseAadress, Laadung, PealelaadimiseKuupäev, 
                     MahalaadimiseEttevõte, MahalaadimiseAadress, MahalaadimiseKuupäev, Eritingimus, Müügihind, 
-                    VälineTellimusnumber) 
+                    VälineTellimusnumber, createdAt) 
                 VALUES (@Klient, @PealelaadimiseEttevõte, @PealelaadimiseAadress, @Laadung, @PealelaadimiseKuupäev, 
                     @MahalaadimiseEttevõte, @MahalaadimiseAadress, @MahalaadimiseKuupäev, @Eritingimus, @Müügihind, 
-                    @VälineTellimusnumber);
+                    @VälineTellimusnumber, GETDATE());
                  SELECT SCOPE_IDENTITY() AS id;`
             );
 
@@ -137,11 +137,10 @@ app.put('/api/tellimused/:id', async (req, res) => {
     }
 });
 
-// index.js
 app.get('/api/tellimused', async (req, res) => {
     try {
         const request = new sql.Request();
-        const result = await request.query('SELECT * FROM Tellimused');
+        const result = await request.query('SELECT id, Klient, createdAt FROM Tellimused');
         res.status(200).json(result.recordset);
     } catch (error) {
         console.error('Error fetching orders:', error);

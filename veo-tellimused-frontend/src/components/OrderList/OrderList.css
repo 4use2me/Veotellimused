@@ -1,12 +1,38 @@
-.order-list {
-    padding: 15px;
-    
-    margin: 0 auto; /* Keskendab vormi */
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+.App {
+    display: flex;
 }
 
-.order-list h2 {
-    text-align: center;
-    margin-bottom: 20px;
+.sidebar {
+    width: 200px; /* or whatever width you want for the sidebar */
+}
+
+.content {
+    flex: 1;
+    padding: 20px;
+    overflow-x: auto; /* ensures that the content doesn't overflow the container */
+}
+
+.order-form, .order-list {
+    width: 100%;
+}
+
+.order-list table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.order-list th, .order-list td {
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-align: left;
+}
+
+.order-list th {
+    background-color: #f0f0f0;
+}
+
+.order-list tr:hover {
+    background-color: #f0f0f0;
+    cursor: pointer;
 }
