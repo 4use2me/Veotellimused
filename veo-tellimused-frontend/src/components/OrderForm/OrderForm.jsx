@@ -1,34 +1,51 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './OrderForm.css';
 
-const OrderForm = ({ onClose }) => {
-    const [orderId, setOrderId] = useState(null);
-    const [klient, setKlient] = useState('');
-    const [pealelaadimiseEttevõte, setPealelaadimiseEttevõte] = useState('');
-    const [pealelaadimiseAadress, setPealelaadimiseAadress] = useState('');
-    const [laadung, setLaadung] = useState('');
-    const [pealelaadimiseKuupäev, setPealelaadimiseKuupäev] = useState('');
-    const [mahalaadimiseEttevõte, setMahalaadimiseEttevõte] = useState('');
-    const [mahalaadimiseAadress, setMahalaadimiseAadress] = useState('');
-    const [mahalaadimiseKuupäev, setMahalaadimiseKuupäev] = useState('');
-    const [eritingimus, setEritingimus] = useState('');
-    const [müügihind, setMüügihind] = useState('');
-    const [välineTellimusnumber, setVälineTellimusnumber] = useState('');
+const OrderForm = ({ onClose, initialData, onOrderDataChange }) => {
+    const [orderId, setOrderId] = useState(initialData ? initialData.orderId : null);
+    const [klient, setKlient] = useState(initialData ? initialData.klient : '');
+    const [pealelaadimiseEttevõte, setPealelaadimiseEttevõte] = useState(initialData ? initialData.pealelaadimiseEttevõte : '');
+    const [pealelaadimiseAadress, setPealelaadimiseAadress] = useState(initialData ? initialData.pealelaadimiseAadress : '');
+    const [laadung, setLaadung] = useState(initialData ? initialData.laadung : '');
+    const [pealelaadimiseKuupäev, setPealelaadimiseKuupäev] = useState(initialData ? initialData.pealelaadimiseKuupäev : '');
+    const [mahalaadimiseEttevõte, setMahalaadimiseEttevõte] = useState(initialData ? initialData.mahalaadimiseEttevõte : '');
+    const [mahalaadimiseAadress, setMahalaadimiseAadress] = useState(initialData ? initialData.mahalaadimiseAadress : '');
+    const [mahalaadimiseKuupäev, setMahalaadimiseKuupäev] = useState(initialData ? initialData.mahalaadimiseKuupäev : '');
+    const [eritingimus, setEritingimus] = useState(initialData ? initialData.eritingimus : '');
+    const [müügihind, setMüügihind] = useState(initialData ? initialData.müügihind : '');
+    const [välineTellimusnumber, setVälineTellimusnumber] = useState(initialData ? initialData.välineTellimusnumber : '');
 
-    const clearFormFields = () => {
-        setKlient('');
-        setPealelaadimiseEttevõte('');
-        setPealelaadimiseAadress('');
-        setLaadung('');
-        setPealelaadimiseKuupäev('');
-        setMahalaadimiseEttevõte('');
-        setMahalaadimiseAadress('');
-        setMahalaadimiseKuupäev('');
-        setEritingimus('');
-        setMüügihind('');
-        setVälineTellimusnumber('');
-    };
+    useEffect(() => {
+        onOrderDataChange({
+            orderId,
+            klient,
+            pealelaadimiseEttevõte,
+            pealelaadimiseAadress,
+            laadung,
+            pealelaadimiseKuupäev,
+            mahalaadimiseEttevõte,
+            mahalaadimiseAadress,
+            mahalaadimiseKuupäev,
+            eritingimus,
+            müügihind,
+            välineTellimusnumber
+        });
+    }, [
+        orderId,
+        klient,
+        pealelaadimiseEttevõte,
+        pealelaadimiseAadress,
+        laadung,
+        pealelaadimiseKuupäev,
+        mahalaadimiseEttevõte,
+        mahalaadimiseAadress,
+        mahalaadimiseKuupäev,
+        eritingimus,
+        müügihind,
+        välineTellimusnumber,
+        onOrderDataChange
+    ]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -48,18 +65,13 @@ const OrderForm = ({ onClose }) => {
 
         try {
             if (orderId) {
-                // Uuenda olemasolevat tellimust
                 await axios.put(`http://localhost:5000/api/tellimused/${orderId}`, orderData);
                 alert('Order updated successfully');
             } else {
                 const response = await axios.post('http://localhost:5000/api/tellimused', orderData);
-                setOrderId(response.data.id); // Salvesta uus orderId
+                setOrderId(response.data.id);
                 alert('Order added successfully');
             }
-            
-            clearFormFields(); // Tühjenda sisestusväljad pärast salvestamist
-            onClose(); // Sule vorm pärast edukat lisamist
-
         } catch (error) {
             console.error('Error adding order:', error);
             alert('Failed to add order');
