@@ -120,7 +120,7 @@ const OrderForm = ({ onClose, initialData, onOrderDataChange }) => {
                 </div>
                 <div>
                     <label>Müügihind</label>
-                    <input type="number" value={müügihind} onChange={(e) => setMüügihind(e.target.value)} step="0.01" required />
+                    <input type="text" value={müügihind} onChange={(e) => setMüügihind(e.target.value)} pattern="\d+(\.\d{1,2})?" required />
                 </div>
                 <div>
                     <label>Väline tellimusnumber</label>
