@@ -1,0 +1,36 @@
+.sidebar {
+    position: fixed; /* Fikseerime sidebar'i ekraanile */
+    width: 200px;
+    height: 100vh; /* Kogu lehe kõrguses */
+    background-color: #282c34;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    color: white;
+    overflow-y: auto; /* Lisab kerimisriba, kui sisu on kõrgem kui külgriba */
+}
+
+.sidebar h2 {
+    text-align: left; /* Joondab teksti vasakule */
+}
+
+.sidebar .toggle-menu-button {
+    width: 100%;
+    text-align: left; /* Joondab teksti vasakule */
+    background: none;
+    border: none;
+    padding: 10px 0;
+    font-size: 16px;
+    cursor: pointer;
+    color: white;
+}
+
+.sidebar .menu-items {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar .menu-items li {
+    padding: 10px 0;
+    cursor: pointer;
+}
