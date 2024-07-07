@@ -1,19 +1,6 @@
-.App {
-    display: flex;
-}
-
-.sidebar {
-    width: 200px; /* or whatever width you want for the sidebar */
-}
-
-.content {
-    flex: 1;
-    padding: 20px;
-    overflow-x: auto; /* ensures that the content doesn't overflow the container */
-}
-
-.order-form, .order-list {
+.order-list {
     width: 100%;
+    margin-top: 20px;
 }
 
 .order-list table {
@@ -22,7 +9,8 @@
     margin-top: 20px;
 }
 
-.order-list th, .order-list td {
+.order-list th,
+.order-list td {
     padding: 10px;
     border: 1px solid #ccc;
     text-align: left;

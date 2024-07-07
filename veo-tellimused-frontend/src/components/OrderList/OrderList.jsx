@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './OrderList.css';
+import './OrderList.css'; // assuming you have some basic styling
 
 const OrderList = ({ onSelectOrder }) => {
     const [orders, setOrders] = useState([]);

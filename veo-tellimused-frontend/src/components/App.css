@@ -1,42 +1,11 @@
 .App {
   display: flex;
-  height: 100vh; /* Ensures the app takes full height of the viewport */
-}
-
-.sidebar {
-  width: 200px; /* Define the width of the sidebar */
-  background-color: #f0f0f0; /* Optional: add background color to sidebar */
-  padding: 20px; /* Optional: padding for the sidebar content */
+  height: 100vh; /* Kogu lehe kõrguses */
+  overflow: hidden; /* Väldib horisontaalset kerimist */
 }
 
 .content {
   flex-grow: 1;
   padding: 20px;
-  margin-left: 200px; /* Adds a left margin equal to the width of the sidebar */
-  overflow-x: auto; /* Ensures content doesn't overflow the container */
-}
-
-.order-form, .order-list {
-  width: 100%;
-}
-
-.order-list table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
-
-.order-list th, .order-list td {
-  padding: 10px;
-  border: 1px solid #ccc;
-  text-align: left;
-}
-
-.order-list th {
-  background-color: #f0f0f0;
-}
-
-.order-list tr:hover {
-  background-color: #f0f0f0;
-  cursor: pointer;
+  overflow-y: auto; /* Väldib vertikaalset kerimist */
 }
