@@ -3,49 +3,43 @@ import axios from 'axios';
 import './OrderForm.css';
 
 const OrderForm = ({ onClose, initialData, onOrderDataChange }) => {
-    const [orderId, setOrderId] = useState(initialData ? initialData.orderId : null);
-    const [klient, setKlient] = useState(initialData ? initialData.klient : '');
-    const [pealelaadimiseEttevõte, setPealelaadimiseEttevõte] = useState(initialData ? initialData.pealelaadimiseEttevõte : '');
-    const [pealelaadimiseAadress, setPealelaadimiseAadress] = useState(initialData ? initialData.pealelaadimiseAadress : '');
-    const [laadung, setLaadung] = useState(initialData ? initialData.laadung : '');
-    const [pealelaadimiseKuupäev, setPealelaadimiseKuupäev] = useState(initialData ? initialData.pealelaadimiseKuupäev : '');
-    const [mahalaadimiseEttevõte, setMahalaadimiseEttevõte] = useState(initialData ? initialData.mahalaadimiseEttevõte : '');
-    const [mahalaadimiseAadress, setMahalaadimiseAadress] = useState(initialData ? initialData.mahalaadimiseAadress : '');
-    const [mahalaadimiseKuupäev, setMahalaadimiseKuupäev] = useState(initialData ? initialData.mahalaadimiseKuupäev : '');
-    const [eritingimus, setEritingimus] = useState(initialData ? initialData.eritingimus : '');
-    const [müügihind, setMüügihind] = useState(initialData ? initialData.müügihind : '');
-    const [välineTellimusnumber, setVälineTellimusnumber] = useState(initialData ? initialData.välineTellimusnumber : '');
+    const [orderId, setOrderId] = useState(initialData ? initialData.id : null);
+    const [klient, setKlient] = useState(initialData ? initialData.Klient : '');
+    const [pealelaadimiseEttevõte, setPealelaadimiseEttevõte] = useState(initialData ? initialData.PealelaadimiseEttevõte : '');
+    const [pealelaadimiseAadress, setPealelaadimiseAadress] = useState(initialData ? initialData.PealelaadimiseAadress : '');
+    const [laadung, setLaadung] = useState(initialData ? initialData.Laadung : '');
+    const [pealelaadimiseKuupäev, setPealelaadimiseKuupäev] = useState('');
+    const [mahalaadimiseEttevõte, setMahalaadimiseEttevõte] = useState(initialData ? initialData.MahalaadimiseEttevõte : '');
+    const [mahalaadimiseAadress, setMahalaadimiseAadress] = useState(initialData ? initialData.MahalaadimiseAadress : '');
+    const [mahalaadimiseKuupäev, setMahalaadimiseKuupäev] = useState('');
+    const [eritingimus, setEritingimus] = useState(initialData ? initialData.Eritingimus : '');
+    const [müügihind, setMüügihind] = useState(initialData ? initialData.Müügihind : '');
+    const [välineTellimusnumber, setVälineTellimusnumber] = useState(initialData ? initialData.VälineTellimusnumber : '');
 
     useEffect(() => {
-        onOrderDataChange({
-            orderId,
-            klient,
-            pealelaadimiseEttevõte,
-            pealelaadimiseAadress,
-            laadung,
-            pealelaadimiseKuupäev,
-            mahalaadimiseEttevõte,
-            mahalaadimiseAadress,
-            mahalaadimiseKuupäev,
-            eritingimus,
-            müügihind,
-            välineTellimusnumber
-        });
-    }, [
-        orderId,
-        klient,
-        pealelaadimiseEttevõte,
-        pealelaadimiseAadress,
-        laadung,
-        pealelaadimiseKuupäev,
-        mahalaadimiseEttevõte,
-        mahalaadimiseAadress,
-        mahalaadimiseKuupäev,
-        eritingimus,
-        müügihind,
-        välineTellimusnumber,
-        onOrderDataChange
-    ]);
+        if (initialData) {
+            setOrderId(initialData.id);
+            setKlient(initialData.Klient);
+            setPealelaadimiseEttevõte(initialData.PealelaadimiseEttevõte);
+            setPealelaadimiseAadress(initialData.PealelaadimiseAadress);
+            setLaadung(initialData.Laadung);
+            // Töötle pealelaadimise kuupäeva ISO formaadist
+            if (initialData.PealelaadimiseKuupäev) {
+                const datePart = initialData.PealelaadimiseKuupäev.split("T")[0];
+                setPealelaadimiseKuupäev(datePart);
+            }
+            setMahalaadimiseEttevõte(initialData.MahalaadimiseEttevõte);
+            setMahalaadimiseAadress(initialData.MahalaadimiseAadress);
+            // Töötle mahalaadimise kuupäeva ISO formaadist
+            if (initialData.MahalaadimiseKuupäev) {
+                const datePart = initialData.MahalaadimiseKuupäev.split("T")[0];
+                setMahalaadimiseKuupäev(datePart);
+            }
+            setEritingimus(initialData.Eritingimus);
+            setMüügihind(initialData.Müügihind);
+            setVälineTellimusnumber(initialData.VälineTellimusnumber);
+        }
+    }, [initialData]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -73,8 +67,8 @@ const OrderForm = ({ onClose, initialData, onOrderDataChange }) => {
                 alert('Order added successfully');
             }
         } catch (error) {
-            console.error('Error adding order:', error);
-            alert('Failed to add order');
+            console.error('Error adding/updating order:', error);
+            alert('Failed to add/update order');
         }
     };
 
