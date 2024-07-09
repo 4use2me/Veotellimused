@@ -1,21 +1,23 @@
 .order-form {
-    max-width: 400px; /* Määrab maksimaalse laiuse */
+    max-width: 800px; /* Määrab maksimaalse laiuse, et mahutada kaks veergu */
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     width: 100%;
-    padding-right: 20px;
+    padding: 20px;
     margin-top: 20px;
 }
 
 .order-form form {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: space-between;
 }
 
 .order-form form > div {
     display: flex;
     margin-bottom: 15px;
     align-items: center;
+    width: 48%; /* Määrab iga elemendi laiuse pooleks */
 }
 
 .order-form label {

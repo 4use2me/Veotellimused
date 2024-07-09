@@ -62,7 +62,8 @@ app.post('/api/tellimused', async (req, res) => {
         MahalaadimiseKuupäev,
         Eritingimus,
         Müügihind,
-        VälineTellimusnumber
+        VälineTellimusnumber,
+        Vedaja
     } = req.body;
 
     try {
@@ -81,13 +82,14 @@ app.post('/api/tellimused', async (req, res) => {
             .input('Eritingimus', sql.NVarChar, Eritingimus)
             .input('Müügihind', sql.Decimal(10, 2), Müügihind)
             .input('VälineTellimusnumber', sql.NVarChar, VälineTellimusnumber)
+            .input('Vedaja', sql.NVarChar, Vedaja)
             .query(
                 `INSERT INTO Tellimused (TellimuseNumber, Klient, PealelaadimiseEttevõte, PealelaadimiseAadress, Laadung, PealelaadimiseKuupäev, 
                     MahalaadimiseEttevõte, MahalaadimiseAadress, MahalaadimiseKuupäev, Eritingimus, Müügihind, 
-                    VälineTellimusnumber, createdAt) 
+                    VälineTellimusnumber, Vedaja, createdAt) 
                 VALUES (@TellimuseNumber, @Klient, @PealelaadimiseEttevõte, @PealelaadimiseAadress, @Laadung, @PealelaadimiseKuupäev, 
                     @MahalaadimiseEttevõte, @MahalaadimiseAadress, @MahalaadimiseKuupäev, @Eritingimus, @Müügihind, 
-                    @VälineTellimusnumber, GETDATE());
+                    @VälineTellimusnumber, @Vedaja, GETDATE());
                  SELECT SCOPE_IDENTITY() AS id;`
             );
 
@@ -112,7 +114,8 @@ app.put('/api/tellimused/:id', async (req, res) => {
         MahalaadimiseKuupäev,
         Eritingimus,
         Müügihind,
-        VälineTellimusnumber
+        VälineTellimusnumber,
+        Vedaja
     } = req.body;
 
     // Kontrollime, kas ID on number
@@ -136,6 +139,7 @@ app.put('/api/tellimused/:id', async (req, res) => {
             .input('Eritingimus', sql.NVarChar, Eritingimus)
             .input('Müügihind', sql.Decimal(10, 2), Müügihind)
             .input('VälineTellimusnumber', sql.NVarChar, VälineTellimusnumber)
+            .input('Vedaja', sql.NVarChar, Vedaja)
             .input('Id', sql.Int, numericId) // Kasuta numericId
             .query(
                 `UPDATE Tellimused SET 
@@ -149,7 +153,8 @@ app.put('/api/tellimused/:id', async (req, res) => {
                     MahalaadimiseKuupäev = @MahalaadimiseKuupäev,
                     Eritingimus = @Eritingimus,
                     Müügihind = @Müügihind,
-                    VälineTellimusnumber = @VälineTellimusnumber
+                    VälineTellimusnumber = @VälineTellimusnumber,
+                    Vedaja = @Vedaja
                 WHERE Id = @Id`
             );
 
@@ -163,7 +168,7 @@ app.put('/api/tellimused/:id', async (req, res) => {
 app.get('/api/tellimused', async (req, res) => {
     try {
         const request = new sql.Request();
-        const result = await request.query('SELECT id, TellimuseNumber, Klient FROM Tellimused');
+        const result = await request.query('SELECT id, TellimuseNumber, Klient, Vedaja FROM Tellimused');
         res.status(200).json(result.recordset);
     } catch (error) {
         console.error('Error fetching orders:', error);

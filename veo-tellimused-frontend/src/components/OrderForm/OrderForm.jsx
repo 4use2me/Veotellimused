@@ -15,6 +15,7 @@ const OrderForm = ({ onClose, initialData, onOrderDataChange }) => {
     const [eritingimus, setEritingimus] = useState(initialData ? initialData.Eritingimus : '');
     const [müügihind, setMüügihind] = useState(initialData ? initialData.Müügihind : '');
     const [välineTellimusnumber, setVälineTellimusnumber] = useState(initialData ? initialData.VälineTellimusnumber : '');
+    const [vedaja, setVedaja] = useState(initialData ? initialData.Vedaja : '');
 
     useEffect(() => {
         if (initialData) {
@@ -23,14 +24,12 @@ const OrderForm = ({ onClose, initialData, onOrderDataChange }) => {
             setPealelaadimiseEttevõte(initialData.PealelaadimiseEttevõte);
             setPealelaadimiseAadress(initialData.PealelaadimiseAadress);
             setLaadung(initialData.Laadung);
-            // Töötle pealelaadimise kuupäeva ISO formaadist
             if (initialData.PealelaadimiseKuupäev) {
                 const datePart = initialData.PealelaadimiseKuupäev.split("T")[0];
                 setPealelaadimiseKuupäev(datePart);
             }
             setMahalaadimiseEttevõte(initialData.MahalaadimiseEttevõte);
             setMahalaadimiseAadress(initialData.MahalaadimiseAadress);
-            // Töötle mahalaadimise kuupäeva ISO formaadist
             if (initialData.MahalaadimiseKuupäev) {
                 const datePart = initialData.MahalaadimiseKuupäev.split("T")[0];
                 setMahalaadimiseKuupäev(datePart);
@@ -38,6 +37,7 @@ const OrderForm = ({ onClose, initialData, onOrderDataChange }) => {
             setEritingimus(initialData.Eritingimus);
             setMüügihind(initialData.Müügihind);
             setVälineTellimusnumber(initialData.VälineTellimusnumber);
+            setVedaja(initialData.Vedaja);
         }
     }, [initialData]);
 
@@ -54,7 +54,8 @@ const OrderForm = ({ onClose, initialData, onOrderDataChange }) => {
             MahalaadimiseKuupäev: mahalaadimiseKuupäev,
             Eritingimus: eritingimus,
             Müügihind: parseFloat(müügihind),
-            VälineTellimusnumber: välineTellimusnumber
+            VälineTellimusnumber: välineTellimusnumber,
+            Vedaja: vedaja
         };
 
         try {
@@ -119,6 +120,10 @@ const OrderForm = ({ onClose, initialData, onOrderDataChange }) => {
                 <div>
                     <label>Väline tellimusnumber</label>
                     <input type="text" value={välineTellimusnumber} onChange={(e) => setVälineTellimusnumber(e.target.value)} />
+                </div>
+                <div>
+                    <label>Vedaja</label>
+                    <input type="text" value={vedaja} onChange={(e) => setVedaja(e.target.value)} required />
                 </div>
                 <button type="submit">Salvesta</button>
             </form>

@@ -26,6 +26,7 @@ const OrderList = ({ onSelectOrder }) => {
                     <tr>
                         <th>Tellimuse number</th>
                         <th>Klient</th>
+                        <th>Vedaja</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -33,6 +34,7 @@ const OrderList = ({ onSelectOrder }) => {
                         <tr key={order.id} onClick={() => onSelectOrder(order.id)}>
                             <td>{order.TellimuseNumber}</td>
                             <td>{order.Klient}</td>
+                            <td>{order.Vedaja}</td>
                         </tr>
                     ))}
                 </tbody>
