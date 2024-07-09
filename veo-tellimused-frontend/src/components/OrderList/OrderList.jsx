@@ -26,15 +26,13 @@ const OrderList = ({ onSelectOrder }) => {
                     <tr>
                         <th>Tellimuse number</th>
                         <th>Klient</th>
-                        <th>Loomise kuupäev</th>
                     </tr>
                 </thead>
                 <tbody>
                     {orders.map(order => (
                         <tr key={order.id} onClick={() => onSelectOrder(order.id)}>
-                            <td>{order.id}</td>
+                            <td>{order.TellimuseNumber}</td>
                             <td>{order.Klient}</td>
-                            <td>{new Date(order.createdAt).toLocaleDateString()}</td>
                         </tr>
                     ))}
                 </tbody>

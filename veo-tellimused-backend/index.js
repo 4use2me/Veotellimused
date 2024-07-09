@@ -28,6 +28,22 @@ sql.connect(dbConfig, err => {
     }
 });
 
+const generateOrderNumber = async () => {
+    try {
+        const today = new Date();
+        const formattedDate = today.toISOString().slice(2, 10).replace(/-/g, '');
+        const request = new sql.Request();
+        const result = await request.query(`
+            SELECT COUNT(*) AS count FROM Tellimused WHERE CONVERT(date, createdAt) = '${formattedDate}'
+        `);
+        const count = result.recordset[0].count + 1;
+        return `${formattedDate}${count.toString().padStart(2, '0')}`;
+    } catch (error) {
+        console.error('Error generating order number:', error);
+        throw error;
+    }
+};
+
 // API lõpp-punktid
 app.post('/api/tellimused', async (req, res) => {
     const {
@@ -45,8 +61,10 @@ app.post('/api/tellimused', async (req, res) => {
     } = req.body;
 
     try {
+        const tellimuseNumber = await generateOrderNumber();
         const request = new sql.Request();
         const result = await request
+            .input('TellimuseNumber', sql.NVarChar, tellimuseNumber)
             .input('Klient', sql.NVarChar, Klient)
             .input('PealelaadimiseEttevõte', sql.NVarChar, PealelaadimiseEttevõte)
             .input('PealelaadimiseAadress', sql.NVarChar, PealelaadimiseAadress)
@@ -59,17 +77,17 @@ app.post('/api/tellimused', async (req, res) => {
             .input('Müügihind', sql.Decimal(10, 2), Müügihind)
             .input('VälineTellimusnumber', sql.NVarChar, VälineTellimusnumber)
             .query(
-                `INSERT INTO Tellimused (Klient, PealelaadimiseEttevõte, PealelaadimiseAadress, Laadung, PealelaadimiseKuupäev, 
+                `INSERT INTO Tellimused (TellimuseNumber, Klient, PealelaadimiseEttevõte, PealelaadimiseAadress, Laadung, PealelaadimiseKuupäev, 
                     MahalaadimiseEttevõte, MahalaadimiseAadress, MahalaadimiseKuupäev, Eritingimus, Müügihind, 
                     VälineTellimusnumber, createdAt) 
-                VALUES (@Klient, @PealelaadimiseEttevõte, @PealelaadimiseAadress, @Laadung, @PealelaadimiseKuupäev, 
+                VALUES (@TellimuseNumber, @Klient, @PealelaadimiseEttevõte, @PealelaadimiseAadress, @Laadung, @PealelaadimiseKuupäev, 
                     @MahalaadimiseEttevõte, @MahalaadimiseAadress, @MahalaadimiseKuupäev, @Eritingimus, @Müügihind, 
                     @VälineTellimusnumber, GETDATE());
                  SELECT SCOPE_IDENTITY() AS id;`
             );
 
         const orderId = result.recordset[0].id;
-        res.status(201).json({ id: orderId });
+        res.status(201).json({ id: orderId, tellimuseNumber });
     } catch (error) {
         console.error('Error adding order:', error);
         res.status(500).send('Server error');
@@ -140,7 +158,7 @@ app.put('/api/tellimused/:id', async (req, res) => {
 app.get('/api/tellimused', async (req, res) => {
     try {
         const request = new sql.Request();
-        const result = await request.query('SELECT id, Klient, createdAt FROM Tellimused');
+        const result = await request.query('SELECT id, TellimuseNumber, Klient FROM Tellimused');
         res.status(200).json(result.recordset);
     } catch (error) {
         console.error('Error fetching orders:', error);
