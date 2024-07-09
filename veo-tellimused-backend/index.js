@@ -31,7 +31,11 @@ sql.connect(dbConfig, err => {
 const generateOrderNumber = async () => {
     try {
         const today = new Date();
-        const formattedDate = today.toISOString().slice(2, 10).replace(/-/g, '');
+        const year = today.getFullYear().toString().slice(-2); // Võtab aasta kahetäheliseks
+        const month = (today.getMonth() + 1).toString().padStart(2, '0'); // Kuu arv kahetäheliseks
+        const day = today.getDate().toString().padStart(2, '0'); // Päeva number kahetäheliseks
+        const formattedDate = `${year}${month}${day}`;
+
         const request = new sql.Request();
         const result = await request.query(`
             SELECT COUNT(*) AS count FROM Tellimused WHERE CONVERT(date, createdAt) = '${formattedDate}'
@@ -43,6 +47,7 @@ const generateOrderNumber = async () => {
         throw error;
     }
 };
+
 
 // API lõpp-punktid
 app.post('/api/tellimused', async (req, res) => {
