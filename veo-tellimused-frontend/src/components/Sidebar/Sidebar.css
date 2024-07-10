@@ -45,3 +45,7 @@
     right: 30px;
     transform: translateY(-50%);
 }
+
+.sidebar .toggle-menu-button.open {
+    color: #00bfff; /* Muuda avatud menüükirje värvi */
+}
