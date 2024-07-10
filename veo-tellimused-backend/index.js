@@ -63,7 +63,10 @@ app.post('/api/tellimused', async (req, res) => {
         Eritingimus,
         Müügihind,
         VälineTellimusnumber,
-        Vedaja
+        Vedaja,
+        AutoNumbrimärk,
+        Kontakt,
+        Hind
     } = req.body;
 
     try {
@@ -83,13 +86,16 @@ app.post('/api/tellimused', async (req, res) => {
             .input('Müügihind', sql.Decimal(10, 2), Müügihind)
             .input('VälineTellimusnumber', sql.NVarChar, VälineTellimusnumber)
             .input('Vedaja', sql.NVarChar, Vedaja)
+            .input('AutoNumbrimärk', sql.NVarChar, AutoNumbrimärk)
+            .input('Kontakt', sql.NVarChar, Kontakt)
+            .input('Hind', sql.Decimal(10, 2), Hind)
             .query(
                 `INSERT INTO Tellimused (TellimuseNumber, Klient, PealelaadimiseEttevõte, PealelaadimiseAadress, Laadung, PealelaadimiseKuupäev, 
                     MahalaadimiseEttevõte, MahalaadimiseAadress, MahalaadimiseKuupäev, Eritingimus, Müügihind, 
-                    VälineTellimusnumber, Vedaja, createdAt) 
+                    VälineTellimusnumber, Vedaja, AutoNumbrimärk, Kontakt, Hind, createdAt) 
                 VALUES (@TellimuseNumber, @Klient, @PealelaadimiseEttevõte, @PealelaadimiseAadress, @Laadung, @PealelaadimiseKuupäev, 
                     @MahalaadimiseEttevõte, @MahalaadimiseAadress, @MahalaadimiseKuupäev, @Eritingimus, @Müügihind, 
-                    @VälineTellimusnumber, @Vedaja, GETDATE());
+                    @VälineTellimusnumber, @Vedaja, @AutoNumbrimärk, @Kontakt, @Hind, GETDATE());
                  SELECT SCOPE_IDENTITY() AS id;`
             );
 
@@ -115,7 +121,10 @@ app.put('/api/tellimused/:id', async (req, res) => {
         Eritingimus,
         Müügihind,
         VälineTellimusnumber,
-        Vedaja
+        Vedaja,
+        AutoNumbrimärk,
+        Kontakt,
+        Hind
     } = req.body;
 
     // Kontrollime, kas ID on number
@@ -140,6 +149,9 @@ app.put('/api/tellimused/:id', async (req, res) => {
             .input('Müügihind', sql.Decimal(10, 2), Müügihind)
             .input('VälineTellimusnumber', sql.NVarChar, VälineTellimusnumber)
             .input('Vedaja', sql.NVarChar, Vedaja)
+            .input('AutoNumbrimärk', sql.NVarChar, AutoNumbrimärk)
+            .input('Kontakt', sql.NVarChar, Kontakt)
+            .input('Hind', sql.Decimal(10, 2), Hind)
             .input('Id', sql.Int, numericId) // Kasuta numericId
             .query(
                 `UPDATE Tellimused SET 
@@ -154,7 +166,10 @@ app.put('/api/tellimused/:id', async (req, res) => {
                     Eritingimus = @Eritingimus,
                     Müügihind = @Müügihind,
                     VälineTellimusnumber = @VälineTellimusnumber,
-                    Vedaja = @Vedaja
+                    Vedaja = @Vedaja,
+                    AutoNumbrimärk = @AutoNumbrimärk,
+                    Kontakt = @Kontakt,
+                    Hind = @Hind
                 WHERE Id = @Id`
             );
 

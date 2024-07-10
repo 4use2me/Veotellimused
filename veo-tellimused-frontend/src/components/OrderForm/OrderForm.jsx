@@ -16,6 +16,9 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
     const [müügihind, setMüügihind] = useState(initialData ? initialData.Müügihind : '');
     const [välineTellimusnumber, setVälineTellimusnumber] = useState(initialData ? initialData.VälineTellimusnumber : '');
     const [vedaja, setVedaja] = useState(initialData ? initialData.Vedaja : '');
+    const [autoNumbrimärk, setAutoNumbrimärk] = useState(initialData ? initialData.AutoNumbrimärk : '');
+    const [kontakt, setKontakt] = useState(initialData ? initialData.Kontakt : '');
+    const [hind, setHind] = useState(initialData ? initialData.Hind : '');
     const [tellimuseNumber, setTellimuseNumber] = useState(initialData ? initialData.TellimuseNumber : '');
 
     useEffect(() => {
@@ -39,6 +42,9 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
             setMüügihind(initialData.Müügihind);
             setVälineTellimusnumber(initialData.VälineTellimusnumber);
             setVedaja(initialData.Vedaja);
+            setAutoNumbrimärk(initialData.AutoNumbrimärk);
+            setKontakt(initialData.Kontakt);
+            setHind(initialData.Hind);
             setTellimuseNumber(initialData.TellimuseNumber);
         }
     }, [initialData]);
@@ -58,6 +64,9 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
             Müügihind: parseFloat(müügihind),
             VälineTellimusnumber: välineTellimusnumber,
             Vedaja: vedaja,
+            AutoNumbrimärk: autoNumbrimärk,
+            Kontakt: kontakt,
+            Hind: hind,
             TellimuseNumber: tellimuseNumber
         };
 
@@ -83,54 +92,67 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
             <h2>{tellimuseNumber ? `Veotellimus: ${tellimuseNumber}` : 'Sisesta tellimus'}</h2>
             <form onSubmit={handleSubmit}>
                 <div>
-                    <label>Klient</label>
+                    <label>Klient *</label>
                     <input type="text" value={klient} onChange={(e) => setKlient(e.target.value)} required />
                 </div>
                 <div>
-                    <label>Pealelaadimise ettevõte</label>
+                    <label>Vedaja *</label>
+                    <input type="text" value={vedaja} onChange={(e) => setVedaja(e.target.value)} required />
+                </div>
+                <div>
+                    <label>Pealelaadimise ettevõte, kontakt</label>
                     <input type="text" value={pealelaadimiseEttevõte} onChange={(e) => setPealelaadimiseEttevõte(e.target.value)} required />
+                </div>
+                <div>
+                    <label>Auto numbrimärk *</label>
+                    <input type="text" value={autoNumbrimärk} onChange={(e) => setAutoNumbrimärk(e.target.value)} required />
                 </div>
                 <div>
                     <label>Pealelaadimise aadress</label>
                     <input type="text" value={pealelaadimiseAadress} onChange={(e) => setPealelaadimiseAadress(e.target.value)} required />
                 </div>
                 <div>
+                    <label>Kontakt</label>
+                    <input type="text" value={kontakt} onChange={(e) => setKontakt(e.target.value)} />
+                </div>
+                <div>
                     <label>Laadung</label>
                     <input type="text" value={laadung} onChange={(e) => setLaadung(e.target.value)} required />
+                </div>
+                <div>
+                    <label>Hind *</label>
+                    <input type="text" value={hind} onChange={(e) => setHind(e.target.value)} pattern="\d+(\.\d{1,2})?" required />
                 </div>
                 <div>
                     <label>Pealelaadimise kuupäev</label>
                     <input type="date" value={pealelaadimiseKuupäev} onChange={(e) => setPealelaadimiseKuupäev(e.target.value)} required />
                 </div>
                 <div>
-                    <label>Mahalaadimise ettevõte</label>
+                    <label>Müügihind *</label>
+                    <input type="text" value={müügihind} onChange={(e) => setMüügihind(e.target.value)} pattern="\d+(\.\d{1,2})?" required />
+                </div>
+                <div>
+                    <label>Mahalaadimise ettevõte, kontakt</label>
                     <input type="text" value={mahalaadimiseEttevõte} onChange={(e) => setMahalaadimiseEttevõte(e.target.value)} required />
-                </div>
-                <div>
-                    <label>Mahalaadimise aadress</label>
-                    <input type="text" value={mahalaadimiseAadress} onChange={(e) => setMahalaadimiseAadress(e.target.value)} required />
-                </div>
-                <div>
-                    <label>Mahalaadimise kuupäev</label>
-                    <input type="date" value={mahalaadimiseKuupäev} onChange={(e) => setMahalaadimiseKuupäev(e.target.value)} required />
                 </div>
                 <div>
                     <label>Eritingimus</label>
                     <input type="text" value={eritingimus} onChange={(e) => setEritingimus(e.target.value)} />
                 </div>
                 <div>
-                    <label>Müügihind</label>
-                    <input type="text" value={müügihind} onChange={(e) => setMüügihind(e.target.value)} pattern="\d+(\.\d{1,2})?" required />
+                    <label>Mahalaadimise aadress</label>
+                    <input type="text" value={mahalaadimiseAadress} onChange={(e) => setMahalaadimiseAadress(e.target.value)} required />
                 </div>
                 <div>
-                    <label>Väline tellimusnumber</label>
+                    <label>Väline tellimusnumber *</label>
                     <input type="text" value={välineTellimusnumber} onChange={(e) => setVälineTellimusnumber(e.target.value)} />
                 </div>
                 <div>
-                    <label>Vedaja</label>
-                    <input type="text" value={vedaja} onChange={(e) => setVedaja(e.target.value)} required />
+                    <label>Mahalaadimise kuupäev</label>
+                    <input type="date" value={mahalaadimiseKuupäev} onChange={(e) => setMahalaadimiseKuupäev(e.target.value)} required />
                 </div>
                 <button type="submit">Salvesta</button>
+                <button type="generate">Genereeri tellimus</button>
             </form>
         </div>
     );

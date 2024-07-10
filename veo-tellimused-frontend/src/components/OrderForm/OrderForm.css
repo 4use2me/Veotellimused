@@ -42,3 +42,16 @@
 .order-form button[type="submit"]:hover {
     background-color: #45a049;
 }
+
+.order-form button[type="generate"] {
+    background-color: #342fbe;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.order-form button[type="generate"]:hover {
+    background-color: #342fbe;
+}
