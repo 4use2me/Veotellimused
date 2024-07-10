@@ -39,6 +39,12 @@ function App() {
         setOrderData(data);
     };
 
+    const handleOrderAdded = (newOrder) => {
+        setOrderData(newOrder);
+        setOrderFormKey(prevKey => prevKey + 1);
+        setActiveView('form');
+    };
+
     return (
         <div className="App">
             <div className="sidebar">
@@ -51,6 +57,7 @@ function App() {
                         onClose={handleCloseOrderForm}
                         initialData={orderData}
                         onOrderDataChange={handleOrderDataChange}
+                        onOrderAdded={handleOrderAdded}
                     />
                 )}
                 {activeView === 'list' && <OrderList onSelectOrder={handleSelectOrder} />}

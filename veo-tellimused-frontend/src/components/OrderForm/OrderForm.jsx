@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './OrderForm.css';
 
-const OrderForm = ({ onClose, initialData, onOrderDataChange }) => {
+const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
     const [orderId, setOrderId] = useState(initialData ? initialData.id : null);
     const [klient, setKlient] = useState(initialData ? initialData.Klient : '');
     const [pealelaadimiseEttevõte, setPealelaadimiseEttevõte] = useState(initialData ? initialData.PealelaadimiseEttevõte : '');
@@ -16,6 +16,7 @@ const OrderForm = ({ onClose, initialData, onOrderDataChange }) => {
     const [müügihind, setMüügihind] = useState(initialData ? initialData.Müügihind : '');
     const [välineTellimusnumber, setVälineTellimusnumber] = useState(initialData ? initialData.VälineTellimusnumber : '');
     const [vedaja, setVedaja] = useState(initialData ? initialData.Vedaja : '');
+    const [tellimuseNumber, setTellimuseNumber] = useState(initialData ? initialData.TellimuseNumber : '');
 
     useEffect(() => {
         if (initialData) {
@@ -38,6 +39,7 @@ const OrderForm = ({ onClose, initialData, onOrderDataChange }) => {
             setMüügihind(initialData.Müügihind);
             setVälineTellimusnumber(initialData.VälineTellimusnumber);
             setVedaja(initialData.Vedaja);
+            setTellimuseNumber(initialData.TellimuseNumber);
         }
     }, [initialData]);
 
@@ -55,27 +57,30 @@ const OrderForm = ({ onClose, initialData, onOrderDataChange }) => {
             Eritingimus: eritingimus,
             Müügihind: parseFloat(müügihind),
             VälineTellimusnumber: välineTellimusnumber,
-            Vedaja: vedaja
+            Vedaja: vedaja,
+            TellimuseNumber: tellimuseNumber
         };
 
         try {
             if (orderId) {
                 await axios.put(`http://localhost:5000/api/tellimused/${orderId}`, orderData);
-                alert('Order updated successfully');
+                alert('Tellimus edukalt uuendatud');
+                onOrderDataChange({ ...orderData, id: orderId });
             } else {
                 const response = await axios.post('http://localhost:5000/api/tellimused', orderData);
                 setOrderId(response.data.id);
-                alert('Order added successfully');
+                alert('Tellimus edukalt lisatud');
+                onOrderAdded(response.data);
             }
         } catch (error) {
-            console.error('Error adding/updating order:', error);
-            alert('Failed to add/update order');
+            console.error('Viga tellimuse lisamisel / uuendamisel:', error);
+            alert('Tellimuse lisamine / uuendamine ebaõnnestus');
         }
     };
 
     return (
         <div className="order-form">
-            <h2>Sisesta tellimus</h2>
+            <h2>{tellimuseNumber ? `Veotellimus: ${tellimuseNumber}` : 'Sisesta tellimus'}</h2>
             <form onSubmit={handleSubmit}>
                 <div>
                     <label>Klient</label>
