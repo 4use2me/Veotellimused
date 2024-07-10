@@ -2,80 +2,61 @@ import React, { useState } from 'react';
 import './Sidebar.css';
 
 const Sidebar = ({ onNewOrder, onSelectOrderList, onNewClient, onSelectClientList, onNewVendor, onSelectVendorList, onSettings, onSelectQueries }) => {
-    const [clientsMenuOpen, setClientsMenuOpen] = useState(false);
-    const [vendorsMenuOpen, setVendorsMenuOpen] = useState(false);
-    const [ordersMenuOpen, setOrdersMenuOpen] = useState(false);
-    const [companysMenuOpen, setCompanysMenuOpen] = useState(false);
+    const [openMenu, setOpenMenu] = useState(null);
 
-    const toggleCompanysMenu = () => {
-        setCompanysMenuOpen(!companysMenuOpen);
-        setClientsMenuOpen(false);
-        setVendorsMenuOpen(false);
-        setOrdersMenuOpen(false);
-    };
-
-    const toggleClientsMenu = () => {
-        setClientsMenuOpen(!clientsMenuOpen);
-        setVendorsMenuOpen(false);
-        setOrdersMenuOpen(false);
-        setCompanysMenuOpen(false);
-    };
-
-    const toggleVendorsMenu = () => {
-        setVendorsMenuOpen(!vendorsMenuOpen);
-        setClientsMenuOpen(false);
-        setOrdersMenuOpen(false);
-        setCompanysMenuOpen(false);
-    };
-
-    const toggleOrdersMenu = () => {
-        setOrdersMenuOpen(!ordersMenuOpen);
-        setClientsMenuOpen(false);
-        setVendorsMenuOpen(false);
-        setCompanysMenuOpen(false);
+    const toggleMenu = (menu) => {
+        setOpenMenu(openMenu === menu ? null : menu);
     };
 
     return (
         <aside className="sidebar">
             <h2>Navigatsioon</h2>
-            <button className="toggle-menu-button" onClick={toggleCompanysMenu}>
-                {companysMenuOpen ? 'Ettevõte' : 'Ettevõte'}
+            <button
+                className={`toggle-menu-button ${openMenu === 'company' ? 'open' : ''}`}
+                onClick={() => toggleMenu('company')}
+            >
+                Ettevõte {openMenu === 'company'}
             </button>
-            {companysMenuOpen && (
+            {openMenu === 'company' && (
                 <ul className="menu-items">
                     <li onClick={onSettings}>Seaded</li>
                     <li onClick={onSelectQueries}>Päringud</li>
-                    {/* Lisa siia teised alammenüü elemendid */}
                 </ul>
             )}
-            <button className="toggle-menu-button" onClick={toggleClientsMenu}>
-                {clientsMenuOpen ? 'Kliendid' : 'Kliendid'}
+            <button
+                className={`toggle-menu-button ${openMenu === 'clients' ? 'open' : ''}`}
+                onClick={() => toggleMenu('clients')}
+            >
+                Kliendid {openMenu === 'clients'}
             </button>
-            {clientsMenuOpen && (
+            {openMenu === 'clients' && (
                 <ul className="menu-items">
                     <li onClick={onNewClient}>Uus klient</li>
                     <li onClick={onSelectClientList}>Klientide nimekiri</li>
-                    {/* Lisa siia teised alammenüü elemendid */}
                 </ul>
             )}
-            <button className="toggle-menu-button" onClick={toggleVendorsMenu}>
-                {vendorsMenuOpen ? 'Vedajad' : 'Vedajad'}
+            <button
+                className={`toggle-menu-button ${openMenu === 'vendors' ? 'open' : ''}`}
+                onClick={() => toggleMenu('vendors')}
+            >
+                Vedajad {openMenu === 'vendors'}
             </button>
-            {vendorsMenuOpen && (
+            {openMenu === 'vendors' && (
                 <ul className="menu-items">
                     <li onClick={onNewVendor}>Uus vedaja</li>
                     <li onClick={onSelectVendorList}>Vedajate nimekiri</li>
-                    {/* Lisa siia teised alammenüü elemendid */}
                 </ul>
             )}
-            <button className="toggle-menu-button" onClick={toggleOrdersMenu}>
-                {ordersMenuOpen ? 'Tellimused' : 'Tellimused'}
+            <button
+                className={`toggle-menu-button ${openMenu === 'orders' ? 'open' : ''}`}
+                onClick={() => toggleMenu('orders')}
+            >
+                Tellimused {openMenu === 'orders'}
             </button>
-            {ordersMenuOpen && (
+            {openMenu === 'orders' && (
                 <ul className="menu-items">
                     <li onClick={onNewOrder}>Uus tellimus</li>
                     <li onClick={onSelectOrderList}>Tellimuste nimekiri</li>
-                    {/* Lisa siia teised alammenüü elemendid */}
                 </ul>
             )}
         </aside>

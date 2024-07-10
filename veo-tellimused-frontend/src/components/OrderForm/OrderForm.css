@@ -44,7 +44,7 @@
 }
 
 .order-form button[type="generate"] {
-    background-color: #342fbe;
+    background-color: #302ad3;
     color: white;
     padding: 10px;
     border: none;
@@ -53,5 +53,5 @@
 }
 
 .order-form button[type="generate"]:hover {
-    background-color: #342fbe;
+    background-color: #302ad3;
 }
