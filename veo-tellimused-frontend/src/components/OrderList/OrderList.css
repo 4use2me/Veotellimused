@@ -24,3 +24,10 @@
     background-color: #f0f0f0;
     cursor: pointer;
 }
+
+.order-list input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+}
