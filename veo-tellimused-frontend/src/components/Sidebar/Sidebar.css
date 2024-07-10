@@ -1,28 +1,29 @@
 .sidebar {
-    width: 200px; /* Fikseeritud laius sidebarile */
-    height: 100vh; /* Kogu lehe kõrguses */
+    width: 200px;
+    height: 100vh;
     background-color: #282c34;
     padding: 20px;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
     color: white;
-    overflow-y: auto; /* Lisab kerimisriba, kui sisu on kõrgem kui külgriba */
-    position: relative; /* Fikseeritud positsioon */
-    z-index: 1; /* Tagab, et sidebar on alati peal */
+    overflow-y: auto;
+    position: relative;
+    z-index: 1;
 }
 
 .sidebar h2 {
-    text-align: left; /* Joondab teksti vasakule */
+    text-align: left;
 }
 
 .sidebar .toggle-menu-button {
     width: 100%;
-    text-align: left; /* Joondab teksti vasakule */
+    text-align: left;
     background: none;
     border: none;
     padding: 10px 0;
     font-size: 16px;
     cursor: pointer;
     color: white;
+    position: relative;
 }
 
 .sidebar .menu-items {
@@ -34,4 +35,13 @@
 .sidebar .menu-items li {
     padding: 10px 0;
     cursor: pointer;
+}
+
+/* Style the arrows */
+.toggle-menu-button::after {
+    content: '▼';
+    position: absolute;
+    top: 50%;
+    right: 30px;
+    transform: translateY(-50%);
 }
