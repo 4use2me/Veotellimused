@@ -107,6 +107,43 @@ app.post('/api/tellimused', async (req, res) => {
     }
 });
 
+app.post('/api/kliendid', async (req, res) => {
+    const {
+        Ettevõte,
+        Aadress,
+        EPost,
+        Telefon,
+        Äriregistrikood,
+        KäibemaksukohustuslaseNumber,
+        Maksetähtaeg
+    } = req.body;
+
+    try {
+        const request = new sql.Request();
+        const result = await request
+            .input('Ettevõte', sql.NVarChar, Ettevõte)
+            .input('Aadress', sql.NVarChar, Aadress)
+            .input('EPost', sql.NVarChar, EPost)
+            .input('Telefon', sql.NVarChar, Telefon)
+            .input('Äriregistrikood', sql.NVarChar, Äriregistrikood)
+            .input('KäibemaksukohustuslaseNumber', sql.NVarChar, KäibemaksukohustuslaseNumber)
+            .input('Maksetähtaeg', sql.Int, Maksetähtaeg)
+            .query(
+                `INSERT INTO Kliendid (Ettevõte, Aadress, EPost, Telefon, Äriregistrikood, 
+                    KäibemaksukohustuslaseNumber, Maksetähtaeg, createdAt) 
+                VALUES (@Ettevõte, @Aadress, @EPost, @Telefon, @Äriregistrikood, @KäibemaksukohustuslaseNumber, 
+                    @Maksetähtaeg, GETDATE());
+                 SELECT SCOPE_IDENTITY() AS id;`
+            );
+
+        const clientId = result.recordset[0].id;
+        res.status(201).json({ id: clientId });
+    } catch (error) {
+        console.error('Error adding client:', error);
+        res.status(500).send('Server error');
+    }
+});
+
 app.put('/api/tellimused/:id', async (req, res) => {
     const { id } = req.params;
     const {
@@ -180,6 +217,55 @@ app.put('/api/tellimused/:id', async (req, res) => {
     }
 });
 
+app.put('/api/kliendid/:id', async (req, res) => {
+    const { id } = req.params;
+    const {
+        Ettevõte,
+        Aadress,
+        EPost,
+        Telefon,
+        Äriregistrikood,
+        KäibemaksukohustuslaseNumber,
+        Maksetähtaeg
+    } = req.body;
+
+    // Kontrollime, kas ID on number
+    const numericId = parseInt(id, 10);
+    if (isNaN(numericId)) {
+        res.status(400).send('Invalid ID');
+        return;
+    }
+
+    try {
+        const request = new sql.Request();
+        await request
+            .input('Ettevõte', sql.NVarChar, Ettevõte)
+            .input('Aadress', sql.NVarChar, Aadress)
+            .input('EPost', sql.NVarChar, EPost)
+            .input('Telefon', sql.NVarChar, Telefon)
+            .input('Äriregistrikood', sql.NVarChar, Äriregistrikood)
+            .input('KäibemaksukohustuslaseNumber', sql.NVarChar, KäibemaksukohustuslaseNumber)
+            .input('Maksetähtaeg', sql.Int, Maksetähtaeg)
+            .input('Id', sql.Int, numericId) // Kasuta numericId
+            .query(
+                `UPDATE Kliendid SET 
+                    Ettevõte = @Ettevõte,
+                    Aadress = @Aadress,
+                    EPost = @EPost,
+                    Telefon = @Telefon,
+                    Äriregistrikood = @Äriregistrikood,
+                    KäibemaksukohustuslaseNumber = @KäibemaksukohustuslaseNumber,
+                    Maksetähtaeg = @Maksetähtaeg
+                WHERE Id = @Id`
+            );
+
+        res.status(200).send('Client updated successfully');
+    } catch (error) {
+        console.error('Error updating client:', error);
+        res.status(500).send('Server error');
+    }
+});
+
 app.get('/api/tellimused', async (req, res) => {
     try {
         const request = new sql.Request();
@@ -187,6 +273,17 @@ app.get('/api/tellimused', async (req, res) => {
         res.status(200).json(result.recordset);
     } catch (error) {
         console.error('Error fetching orders:', error);
+        res.status(500).send('Server error');
+    }
+});
+
+app.get('/api/kliendid', async (req, res) => {
+    try {
+        const request = new sql.Request();
+        const result = await request.query('SELECT id, Ettevõte, EPost, Telefon, Äriregistrikood  FROM Kliendid');
+        res.status(200).json(result.recordset);
+    } catch (error) {
+        console.error('Error fetching clients:', error);
         res.status(500).send('Server error');
     }
 });
@@ -212,6 +309,31 @@ app.get('/api/tellimused/:id', async (req, res) => {
         }
     } catch (error) {
         console.error('Error fetching order:', error);
+        res.status(500).send('Server error');
+    }
+});
+
+app.get('/api/kliendid/:id', async (req, res) => {
+    const { id } = req.params;
+    const numericId = parseInt(id, 10);
+    if (isNaN(numericId)) {
+        res.status(400).send('Invalid ID');
+        return;
+    }
+
+    try {
+        const request = new sql.Request();
+        const result = await request
+            .input('Id', sql.Int, numericId)
+            .query('SELECT * FROM Kliendid WHERE Id = @Id');
+
+        if (result.recordset.length === 0) {
+            res.status(404).send('Client not found');
+        } else {
+            res.status(200).json(result.recordset[0]);
+        }
+    } catch (error) {
+        console.error('Error fetching client:', error);
         res.status(500).send('Server error');
     }
 });

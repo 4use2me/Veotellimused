@@ -43,7 +43,7 @@ const ClientList = ({ onSelectClient }) => {
             <h2>Klientide nimekiri</h2>
             <input
                 type="text"
-                placeholder="Otsi ettevõtte, äriregistrikoodi järgi"
+                placeholder="Otsi ettevõtte või äriregistrikoodi järgi"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
             />
