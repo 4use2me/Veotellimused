@@ -1,0 +1,33 @@
+.client-list {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.client-list table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.client-list th,
+.client-list td {
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-align: left;
+}
+
+.client-list th {
+    background-color: #f0f0f0;
+}
+
+.client-list tr:hover {
+    background-color: #f0f0f0;
+    cursor: pointer;
+}
+
+.client-list input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+}

@@ -1,0 +1,42 @@
+.client-form {
+    max-width: 400px; /* Määrab maksimaalse laiuse */
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    width: 100%;
+    padding-right: 20px;
+    margin-top: 20px;
+}
+
+.client-form form {
+    display: flex;
+    flex-direction: column;
+}
+
+.client-form form > div {
+    display: flex;
+    margin-bottom: 15px;
+    align-items: center;
+}
+
+.client-form label {
+    flex: 1;
+    margin-right: 10px;
+    text-align: right; /* Joondab sildid paremale */
+}
+
+.client-form input, .client-form button {
+    flex: 2;
+}
+
+.client-form button[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.client-form button[type="submit"]:hover {
+    background-color: #45a049;
+}
