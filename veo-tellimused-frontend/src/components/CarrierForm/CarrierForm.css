@@ -1,5 +1,5 @@
-.client-form {
-    max-width: 600px; /* Määrab maksimaalse laiuse */
+.carrier-form {
+    max-width: 600px; 
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     width: 100%;
@@ -7,29 +7,29 @@
     margin-top: 20px;
 }
 
-.client-form form {
+.carrier-form form {
     display: flex;
     flex-direction: column;
 }
 
-.client-form form > div {
+.carrier-form form > div {
     display: flex;
     margin-bottom: 15px;
     align-items: center;
 }
 
-.client-form label {
+.carrier-form label {
     flex: 1;
     margin-right: 10px;
     margin-left: 0px;
-    text-align: right; /* Joondab sildid paremale */
+    text-align: right; 
 }
 
-.client-form input, .client-form button {
+.carrier-form input, .carrier-form button {
     flex: 2;
 }
 
-.client-form button[type="submit"] {
+.carrier-form button[type="submit"] {
     background-color: #4CAF50;
     color: white;
     padding: 10px;
@@ -39,6 +39,6 @@
     margin-left: 20px;
 }
 
-.client-form button[type="submit"]:hover {
+.carrier-form button[type="submit"]:hover {
     background-color: #45a049;
 }

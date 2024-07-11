@@ -12,8 +12,8 @@ const ClientList = ({ onSelectClient }) => {
                 const response = await axios.get('http://localhost:5000/api/kliendid');
                 setClients(response.data);
             } catch (error) {
-                console.error('Error fetching clientss:', error);
-                setClients([]); // Set clientss to empty array on error to prevent null/undefined
+                console.error('Error fetching clients:', error);
+                setClients([]); // Set clients to empty array on error to prevent null/undefined
             }
         };
 
@@ -51,7 +51,7 @@ const ClientList = ({ onSelectClient }) => {
                 <thead>
                     <tr>
                         <th>Ettevõte</th>
-                        <th>EPost</th>
+                        <th>E-post</th>
                         <th>Telefon</th>
                         <th>Äriregistrikood</th>
                     </tr>
@@ -68,7 +68,7 @@ const ClientList = ({ onSelectClient }) => {
                         ))
                     ) : (
                         <tr>
-                            <td colSpan="3">No matching clients found.</td>
+                            <td colSpan="3">Sobivaid kliente ei leitud.</td>
                         </tr>
                     )}
                 </tbody>

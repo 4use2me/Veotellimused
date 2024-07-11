@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Sidebar.css';
 
-const Sidebar = ({ onNewOrder, onSelectOrderList, onNewClient, onSelectClientList, onNewVendor, onSelectVendorList, onSettings, onSelectQueries }) => {
+const Sidebar = ({ onNewOrder, onSelectOrderList, onNewClient, onSelectClientList, onNewCarrier, onSelectCarrierList, onSettings, onSelectQueries }) => {
     const [openMenu, setOpenMenu] = useState(null);
 
     const toggleMenu = (menu) => {
@@ -36,15 +36,15 @@ const Sidebar = ({ onNewOrder, onSelectOrderList, onNewClient, onSelectClientLis
                 </ul>
             )}
             <button
-                className={`toggle-menu-button ${openMenu === 'vendors' ? 'open' : ''}`}
-                onClick={() => toggleMenu('vendors')}
+                className={`toggle-menu-button ${openMenu === 'carriers' ? 'open' : ''}`}
+                onClick={() => toggleMenu('carriers')}
             >
-                Vedajad {openMenu === 'vendors'}
+                Vedajad {openMenu === 'carriers'}
             </button>
-            {openMenu === 'vendors' && (
+            {openMenu === 'carriers' && (
                 <ul className="menu-items">
-                    <li onClick={onNewVendor}>Uus vedaja</li>
-                    <li onClick={onSelectVendorList}>Vedajate nimekiri</li>
+                    <li onClick={onNewCarrier}>Uus vedaja</li>
+                    <li onClick={onSelectCarrierList}>Vedajate nimekiri</li>
                 </ul>
             )}
             <button
