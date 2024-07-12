@@ -180,6 +180,40 @@ app.post('/api/carriers', async (req, res) => {
     }
 });
 
+app.post('/api/users', async (req, res) => {
+    const {
+        Forename,
+        Surname,
+        EMail,
+        Phone,
+        Password,
+        PasswordAgain
+    } = req.body;
+
+    try {
+        const request = new sql.Request();
+        const result = await request
+            .input('Forename', sql.NVarChar, Forename)
+            .input('Surname', sql.NVarChar, Surname)
+            .input('EMail', sql.NVarChar, EMail)
+            .input('Phone', sql.NVarChar, Phone)
+            .input('Password', sql.NVarChar, Password)
+            .input('PasswordAgain', sql.Int, PasswordAgain)
+            .query(
+                `INSERT INTO Users (Forename, Surname, EMail, Phone, Password, PasswordAgain, 
+                    createdAt) 
+                VALUES (@Forename, @Surname, @EMail, @Phone, @Password, @PasswordAgain, GETDATE());
+                 SELECT SCOPE_IDENTITY() AS id;`
+            );
+
+        const carrierId = result.recordset[0].id;
+        res.status(201).json({ id: carrierId });
+    } catch (error) {
+        console.error('Error adding user:', error);
+        res.status(500).send('Server error');
+    }
+});
+
 app.put('/api/tellimused/:id', async (req, res) => {
     const { id } = req.params;
     const {
@@ -351,6 +385,113 @@ app.put('/api/carriers/:id', async (req, res) => {
     }
 });
 
+app.put('/api/data/:id', async (req, res) => {
+    const { id } = req.params;
+    const {
+        Name,
+        RegistryCode,
+        VatNumber,
+        Address,
+        Phone,
+        EMail,
+        AccountantEMail,
+        HomePage,
+        Bank,
+        Swift,
+        Iban
+    } = req.body;
+
+    // We check if ID is a number
+    const numericId = parseInt(id, 10);
+    if (isNaN(numericId)) {
+        res.status(400).send('Invalid ID');
+        return;
+    }
+
+    try {
+        const request = new sql.Request();
+        await request
+            .input('Name', sql.NVarChar, Name)
+            .input('RegistryCode', sql.NVarChar, RegistryCode)
+            .input('VatNumber', sql.NVarChar, VatNumber)
+            .input('Address', sql.NVarChar, Address)
+            .input('Phone', sql.NVarChar, Phone)
+            .input('EMail', sql.NVarChar, EMail)
+            .input('AccountantEMail', sql.NVarChar, AccountantEMail)
+            .input('HomePage', sql.NVarChar, HomePage)
+            .input('Bank', sql.NVarChar, Bank)
+            .input('Swift', sql.NVarChar, Swift)
+            .input('Iban', sql.NVarChar, Iban)
+            .input('Id', sql.Int, numericId) 
+            .query(
+                `UPDATE Data SET 
+                    Name = @Name,
+                    RegistryCode = @RegistryCode,
+                    VatNumber = @VatNumber,
+                    Address = @Address,
+                    Phone = @Phone,
+                    EMail = @EMail,
+                    AccountantEMail = @AccountantEMail,
+                    HomePage = @HomePage,
+                    Bank = @Bank,
+                    Swift = @Swift,
+                    Iban = @Iban
+                WHERE Id = @Id`
+            );
+
+        res.status(200).send('Data updated successfully');
+    } catch (error) {
+        console.error('Error updating data:', error);
+        res.status(500).send('Server error');
+    }
+});
+
+app.put('/api/users/:id', async (req, res) => {
+    const { id } = req.params;
+    const {
+        Forename,
+        Surname,
+        EMail,
+        Phone,
+        Password,
+        PasswordAgain
+    } = req.body;
+
+    // We check if ID is a number
+    const numericId = parseInt(id, 10);
+    if (isNaN(numericId)) {
+        res.status(400).send('Invalid ID');
+        return;
+    }
+
+    try {
+        const request = new sql.Request();
+        await request
+            .input('Forename', sql.NVarChar, Forename)
+            .input('Surname', sql.NVarChar, Surname)
+            .input('EMail', sql.NVarChar, EMail)
+            .input('Phone', sql.NVarChar, Phone)
+            .input('Password', sql.NVarChar, Password)
+            .input('PasswordAgain', sql.Int, PasswordAgain)
+            .input('Id', sql.Int, numericId) 
+            .query(
+                `UPDATE Users SET 
+                    Forename = @Forename,
+                    Surname = @Surname,
+                    EMail = @EMail,
+                    Phone = @Phone,
+                    Password = @Password,
+                    PasswordAgain = @PasswordAgain
+                WHERE Id = @Id`
+            );
+
+        res.status(200).send('User updated successfully');
+    } catch (error) {
+        console.error('Error updating user:', error);
+        res.status(500).send('Server error');
+    }
+});
+
 app.get('/api/tellimused', async (req, res) => {
     try {
         const request = new sql.Request();
@@ -380,6 +521,28 @@ app.get('/api/carriers', async (req, res) => {
         res.status(200).json(result.recordset);
     } catch (error) {
         console.error('Error fetching carriers:', error);
+        res.status(500).send('Server error');
+    }
+});
+
+app.get('/api/data', async (req, res) => {
+    try {
+        const request = new sql.Request();
+        const result = await request.query('SELECT * FROM Data');
+        res.status(200).json(result.recordset);
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        res.status(500).send('Server error');
+    }
+});
+
+app.get('/api/users', async (req, res) => {
+    try {
+        const request = new sql.Request();
+        const result = await request.query('SELECT id, Forename, Surname, EMail, Phone FROM Users');
+        res.status(200).json(result.recordset);
+    } catch (error) {
+        console.error('Error fetching users:', error);
         res.status(500).send('Server error');
     }
 });

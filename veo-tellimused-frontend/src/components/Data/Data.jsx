@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './Data.css';
 
-const DataForm = ({ initialData, onDataDataChange, onDataAdded }) => {
+const Data = ({ initialData, onDataDataChange }) => {
     const [dataId, setDataId] = useState(initialData ? initialData.id : null);
     const [name, setName] = useState(initialData ? initialData.Name : '');
     const [registryCode, setRegistryCode] = useState(initialData ? initialData.RegistryCode : '');
@@ -53,16 +53,14 @@ const DataForm = ({ initialData, onDataDataChange, onDataAdded }) => {
             if (dataId) {
                 await axios.put(`http://localhost:5000/api/data/${dataId}`, dataData);
                 alert('Andmed edukalt uuendatud');
+                // Uuenda vormiväljad pärast andmete salvestamist
                 onDataDataChange({ ...dataData, id: dataId });
             } else {
-                const response = await axios.post('http://localhost:5000/api/data', dataData);
-                setDataId(response.data.id);
-                alert('Andmed edukalt lisatud');
-                onDataAdded(response.data);
+                alert('Andmete lisamine ei ole lubatud');
             }
         } catch (error) {
-            console.error('Error adding / updating the data:', error);
-            alert('Andmete lisamine / uuendamine ebaõnnestus');
+            console.error('Error updating the data:', error);
+            alert('Andmete uuendamine ebaõnnestus');
         }
     };
 
@@ -120,4 +118,4 @@ const DataForm = ({ initialData, onDataDataChange, onDataAdded }) => {
     );
 };
 
-export default DataForm;
+export default Data;

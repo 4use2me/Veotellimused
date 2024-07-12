@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import OrderForm from './OrderForm/OrderForm';
 import OrderList from './OrderList/OrderList';
@@ -7,18 +7,36 @@ import ClientForm from './ClientForm/ClientForm';
 import ClientList from './ClientList/ClientList';
 import CarrierForm from './CarrierForm/CarrierForm';
 import CarrierList from './CarrierList/CarrierList';
+import Data from './Data/Data';
+import UserList from './UserList/UserList';
+import UserForm from './UserForm/UserForm';
 import axios from 'axios';
 
 function App() {
     const [activeOrderView, setActiveOrderView] = useState(''); // '' | 'form' | 'list'
     const [activeClientView, setActiveClientView] = useState('');
     const [activeCarrierView, setActiveCarrierView] = useState('');
+    const [activeSettingView, setActiveSettingView] = useState('');
     const [orderFormKey, setOrderFormKey] = useState(0);
     const [clientFormKey, setClientFormKey] = useState(0);
     const [carrierFormKey, setCarrierFormKey] = useState(0);
     const [orderData, setOrderData] = useState(null);
     const [clientData, setClientData] = useState(null);
     const [carrierData, setCarrierData] = useState(null);
+    const [dataData, setDataData] = useState(null);
+    const [userData, setUserData] = useState(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get('http://localhost:5000/api/data');
+                setDataData(response.data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+        fetchData();
+    }, []);
 
     const handleNewOrder = () => {
         setOrderData(null);
@@ -26,6 +44,7 @@ function App() {
         setActiveOrderView('form');
         setActiveClientView(''); // Closes the active order view
         setActiveCarrierView('');
+        setActiveSettingView('');
     };
 
     const handleNewClient = () => {
@@ -34,6 +53,7 @@ function App() {
         setActiveClientView('form');
         setActiveOrderView(''); 
         setActiveCarrierView('');
+        setActiveSettingView('');
     };
 
     const handleNewCarrier = () => {
@@ -42,24 +62,42 @@ function App() {
         setActiveCarrierView('form');
         setActiveOrderView(''); 
         setActiveClientView('');
+        setActiveSettingView('');
+    };
+
+    const handleData = () => {
+        setActiveSettingView('form');
+        setActiveOrderView(''); 
+        setActiveClientView('');
+        setActiveCarrierView('');
     };
 
     const handleSelectOrderList = () => {
         setActiveOrderView('list');
         setActiveClientView('');
         setActiveCarrierView('');
+        setActiveSettingView('');
     };
 
     const handleSelectClientList = () => {
         setActiveClientView('list');
         setActiveOrderView('');
         setActiveCarrierView('');
+        setActiveSettingView('');
     };
 
     const handleSelectCarrierList = () => {
         setActiveCarrierView('list');
         setActiveOrderView('');
         setActiveClientView('');
+        setActiveSettingView('');
+    };
+
+    const handleSelectUserList = () => {
+        setActiveSettingView('list');
+        setActiveOrderView('');
+        setActiveClientView('');
+        setActiveCarrierView('');
     };
 
     const handleSelectOrder = async (orderId) => {
@@ -70,6 +108,7 @@ function App() {
             setActiveOrderView('form');
             setActiveClientView('');
             setActiveCarrierView('');
+            setActiveSettingView('');
         } catch (error) {
             console.error('Error fetching order:', error);
         }
@@ -83,6 +122,7 @@ function App() {
             setActiveClientView('form');
             setActiveOrderView('');
             setActiveCarrierView('');
+            setActiveSettingView('');
         } catch (error) {
             console.error('Error fetching client:', error);
         }
@@ -96,8 +136,22 @@ function App() {
             setActiveCarrierView('form');
             setActiveOrderView('');
             setActiveClientView('');
+            setActiveSettingView('');
         } catch (error) {
-            console.error('Error fetching client:', error);
+            console.error('Error fetching carrier:', error);
+        }
+    };
+
+    const handleSelectUser = async (userId) => {
+        try {
+            const response = await axios.get(`http://localhost:5000/api/users/${userId}`);
+            setUserData(response.data);
+            setActiveCarrierView('');
+            setActiveOrderView('');
+            setActiveClientView('');
+            setActiveSettingView('');
+        } catch (error) {
+            console.error('Error fetching user:', error);
         }
     };
 
@@ -125,6 +179,10 @@ function App() {
         setCarrierData(data);
     };
 
+    const handleDataDataChange = (data) => {
+        setDataData([data]);
+    };
+
     const handleOrderAdded = (newOrder) => {
         setOrderData(newOrder);
         setOrderFormKey(prevKey => prevKey + 1);
@@ -148,7 +206,8 @@ function App() {
             <div className="sidebar">
                 <Sidebar onNewOrder={handleNewOrder} onSelectOrderList={handleSelectOrderList} 
                     onNewClient={handleNewClient} onSelectClientList={handleSelectClientList}
-                    onNewCarrier={handleNewCarrier} onSelectCarrierList={handleSelectCarrierList} />
+                    onNewCarrier={handleNewCarrier} onSelectCarrierList={handleSelectCarrierList}
+                    onData={handleData} onSelectUserList={handleSelectUserList} />
             </div>
             <div className="content">
                 {activeOrderView === 'form' && (
@@ -183,6 +242,14 @@ function App() {
                     />
                 )}
                 {activeCarrierView === 'list' && <CarrierList onSelectCarrier={handleSelectCarrier} />}
+
+                {activeSettingView === 'form' && (
+                    <Data
+                        initialData={dataData && dataData.length > 0 ? dataData[0] : null}
+                        onDataDataChange={handleDataDataChange}
+                    />
+                )}
+                {activeSettingView === 'list' && <UserList onSelectUser={handleSelectUser} />}
             </div>
         </div>
     );

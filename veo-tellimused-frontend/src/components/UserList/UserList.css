@@ -1,0 +1,33 @@
+.user-list {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.user-list table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.user-list th,
+.user-list td {
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-align: left;
+}
+
+.user-list th {
+    background-color: #f0f0f0;
+}
+
+.user-list tr:hover {
+    background-color: #f0f0f0;
+    cursor: pointer;
+}
+
+.user-list input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+}
