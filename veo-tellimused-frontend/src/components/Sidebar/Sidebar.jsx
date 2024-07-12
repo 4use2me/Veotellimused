@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Sidebar.css';
 
-const Sidebar = ({ onNewOrder, onSelectOrderList, onNewClient, onSelectClientList, onNewCarrier, onSelectCarrierList, onSettings, onSelectQueries }) => {
+const Sidebar = ({ onNewOrder, onSelectOrderList, onNewClient, onSelectClientList, onNewCarrier, onSelectCarrierList, onData, onUsers }) => {
     const [openMenu, setOpenMenu] = useState(null);
 
     const toggleMenu = (menu) => {
@@ -12,15 +12,15 @@ const Sidebar = ({ onNewOrder, onSelectOrderList, onNewClient, onSelectClientLis
         <aside className="sidebar">
             <h2>Navigatsioon</h2>
             <button
-                className={`toggle-menu-button ${openMenu === 'company' ? 'open' : ''}`}
-                onClick={() => toggleMenu('company')}
+                className={`toggle-menu-button ${openMenu === 'settings' ? 'open' : ''}`}
+                onClick={() => toggleMenu('settings')}
             >
-                Ettevõte {openMenu === 'company'}
+                Seaded {openMenu === 'settings'}
             </button>
-            {openMenu === 'company' && (
+            {openMenu === 'settings' && (
                 <ul className="menu-items">
-                    <li onClick={onSettings}>Seaded</li>
-                    <li onClick={onSelectQueries}>Päringud</li>
+                    <li onClick={onData}>Andmed</li>
+                    <li onClick={onUsers}>Kasutajad</li>
                 </ul>
             )}
             <button
@@ -59,6 +59,12 @@ const Sidebar = ({ onNewOrder, onSelectOrderList, onNewClient, onSelectClientLis
                     <li onClick={onSelectOrderList}>Tellimuste nimekiri</li>
                 </ul>
             )}
+            <button
+                className={`sidebar-button`}
+                onClick={() => toggleMenu('queries')}
+            >
+                Päringud {openMenu === 'queries'}
+            </button>
         </aside>
     );
 }

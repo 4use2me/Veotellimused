@@ -14,7 +14,7 @@
     text-align: left;
 }
 
-.sidebar .toggle-menu-button {
+.sidebar .toggle-menu-button, .sidebar-button {
     width: 100%;
     text-align: left;
     background: none;
@@ -48,5 +48,5 @@
 }
 
 .sidebar .toggle-menu-button.open {
-    color: #45a049; /* Muuda avatud menüükirje värvi */
+    color: #4CAF50; /* Muuda avatud menüükirje värvi */
 }
