@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { HashRouter as Router } from 'react-router-dom';
 import './App.css';
 import OrderForm from './OrderForm/OrderForm';
 import OrderList from './OrderList/OrderList';
 import Sidebar from './Sidebar/Sidebar';
-import Header from './Header/Header';
 import ClientForm from './ClientForm/ClientForm';
 import ClientList from './ClientList/ClientList';
 import CarrierForm from './CarrierForm/CarrierForm';
@@ -15,6 +13,7 @@ import UserForm from './UserForm/UserForm';
 import axios from 'axios';
 
 function App() {
+    const [activeUserView, setActiveUserView] = useState('');
     const [activeOrderView, setActiveOrderView] = useState(''); // '' | 'form' | 'list'
     const [activeClientView, setActiveClientView] = useState('');
     const [activeCarrierView, setActiveCarrierView] = useState('');
@@ -40,6 +39,14 @@ function App() {
         fetchData();
     }, []);
 
+    const handleProfil = () => {
+        setActiveUserView('form');
+        setActiveOrderView(''); 
+        setActiveClientView('');
+        setActiveCarrierView('');
+        setActiveSettingView('');
+    };
+
     const handleNewOrder = () => {
         setOrderData(null);
         setOrderFormKey(prevKey => prevKey + 1);
@@ -47,6 +54,7 @@ function App() {
         setActiveClientView(''); // Closes the active order view
         setActiveCarrierView('');
         setActiveSettingView('');
+        setActiveUserView('');
     };
 
     const handleNewClient = () => {
@@ -56,6 +64,7 @@ function App() {
         setActiveOrderView(''); 
         setActiveCarrierView('');
         setActiveSettingView('');
+        setActiveUserView('');
     };
 
     const handleNewCarrier = () => {
@@ -65,6 +74,7 @@ function App() {
         setActiveOrderView(''); 
         setActiveClientView('');
         setActiveSettingView('');
+        setActiveUserView('');
     };
 
     const handleData = () => {
@@ -72,6 +82,7 @@ function App() {
         setActiveOrderView(''); 
         setActiveClientView('');
         setActiveCarrierView('');
+        setActiveUserView('');
     };
 
     const handleSelectOrderList = () => {
@@ -79,6 +90,7 @@ function App() {
         setActiveClientView('');
         setActiveCarrierView('');
         setActiveSettingView('');
+        setActiveUserView('');
     };
 
     const handleSelectClientList = () => {
@@ -86,6 +98,7 @@ function App() {
         setActiveOrderView('');
         setActiveCarrierView('');
         setActiveSettingView('');
+        setActiveUserView('');
     };
 
     const handleSelectCarrierList = () => {
@@ -93,6 +106,7 @@ function App() {
         setActiveOrderView('');
         setActiveClientView('');
         setActiveSettingView('');
+        setActiveUserView('');
     };
 
     const handleSelectUserList = () => {
@@ -100,6 +114,7 @@ function App() {
         setActiveOrderView('');
         setActiveClientView('');
         setActiveCarrierView('');
+        setActiveUserView('');
     };
 
     const handleSelectOrder = async (orderId) => {
@@ -111,6 +126,7 @@ function App() {
             setActiveClientView('');
             setActiveCarrierView('');
             setActiveSettingView('');
+            setActiveUserView('');
         } catch (error) {
             console.error('Error fetching order:', error);
         }
@@ -125,6 +141,7 @@ function App() {
             setActiveOrderView('');
             setActiveCarrierView('');
             setActiveSettingView('');
+            setActiveUserView('');
         } catch (error) {
             console.error('Error fetching client:', error);
         }
@@ -139,6 +156,7 @@ function App() {
             setActiveOrderView('');
             setActiveClientView('');
             setActiveSettingView('');
+            setActiveUserView('');
         } catch (error) {
             console.error('Error fetching carrier:', error);
         }
@@ -152,6 +170,7 @@ function App() {
             setActiveOrderView('');
             setActiveClientView('');
             setActiveSettingView('');
+            setActiveUserView('');
         } catch (error) {
             console.error('Error fetching user:', error);
         }
@@ -167,6 +186,10 @@ function App() {
 
     const handleCloseCarrierForm = () => {
         setActiveCarrierView('');
+    };
+
+    const handleUserDataChange = (data) => {
+        setUserData([data]);
     };
 
     const handleOrderDataChange = (data) => {
@@ -204,59 +227,63 @@ function App() {
     };
 
     return (
-        <Router>
-            <div className="App">
-                <Header />
-                <div className="sidebar">
-                    <Sidebar onNewOrder={handleNewOrder} onSelectOrderList={handleSelectOrderList} 
-                        onNewClient={handleNewClient} onSelectClientList={handleSelectClientList}
-                        onNewCarrier={handleNewCarrier} onSelectCarrierList={handleSelectCarrierList}
-                        onData={handleData} onSelectUserList={handleSelectUserList} />
-                    <div className="content">
-                        {activeOrderView === 'form' && (
-                            <OrderForm
-                                key={orderFormKey}
-                                onClose={handleCloseOrderForm}
-                                initialData={orderData}
-                                onOrderDataChange={handleOrderDataChange}
-                                onOrderAdded={handleOrderAdded}
-                            />
-                        )}
-                        {activeOrderView === 'list' && <OrderList onSelectOrder={handleSelectOrder} />}
-
-                        {activeClientView === 'form' && (
-                            <ClientForm
-                            key={clientFormKey}
-                                onClose={handleCloseClientForm}
-                                initialData={clientData}
-                                onClientDataChange={handleClientDataChange}
-                                onClientAdded={handleClientAdded}
-                            />
-                        )}
-                        {activeClientView === 'list' && <ClientList onSelectClient={handleSelectClient} />}
-
-                        {activeCarrierView === 'form' && (
-                            <CarrierForm
-                            key={carrierFormKey}
-                                onClose={handleCloseCarrierForm}
-                                initialData={carrierData}
-                                onCarrierDataChange={handleCarrierDataChange}
-                                onCarrierAdded={handleCarrierAdded}
-                            />
-                        )}
-                        {activeCarrierView === 'list' && <CarrierList onSelectCarrier={handleSelectCarrier} />}
-
-                        {activeSettingView === 'form' && (
-                            <Data
-                                initialData={dataData && dataData.length > 0 ? dataData[0] : null}
-                                onDataDataChange={handleDataDataChange}
-                            />
-                        )}
-                        {activeSettingView === 'list' && <UserList onSelectUser={handleSelectUser} />}
-                    </div>
-                </div>
+        <div className="App">
+            <div className="sidebar">
+                <Sidebar onProfil={handleProfil} onNewOrder={handleNewOrder} onSelectOrderList={handleSelectOrderList} 
+                    onNewClient={handleNewClient} onSelectClientList={handleSelectClientList}
+                    onNewCarrier={handleNewCarrier} onSelectCarrierList={handleSelectCarrierList}
+                    onData={handleData} onSelectUserList={handleSelectUserList} />
             </div>
-        </Router>
+            <div className="content">
+            {activeUserView === 'form' && (
+                    <UserForm
+                        initialData={userData && userData.length > 0 ? userData[0] : null}
+                        onUserDataChange={handleUserDataChange}
+                    />
+                )}
+
+                {activeOrderView === 'form' && (
+                    <OrderForm
+                        key={orderFormKey}
+                        onClose={handleCloseOrderForm}
+                        initialData={orderData}
+                        onOrderDataChange={handleOrderDataChange}
+                        onOrderAdded={handleOrderAdded}
+                    />
+                )}
+                {activeOrderView === 'list' && <OrderList onSelectOrder={handleSelectOrder} />}
+
+                {activeClientView === 'form' && (
+                    <ClientForm
+                    key={clientFormKey}
+                        onClose={handleCloseClientForm}
+                        initialData={clientData}
+                        onClientDataChange={handleClientDataChange}
+                        onClientAdded={handleClientAdded}
+                    />
+                )}
+                {activeClientView === 'list' && <ClientList onSelectClient={handleSelectClient} />}
+
+                {activeCarrierView === 'form' && (
+                    <CarrierForm
+                    key={carrierFormKey}
+                        onClose={handleCloseCarrierForm}
+                        initialData={carrierData}
+                        onCarrierDataChange={handleCarrierDataChange}
+                        onCarrierAdded={handleCarrierAdded}
+                    />
+                )}
+                {activeCarrierView === 'list' && <CarrierList onSelectCarrier={handleSelectCarrier} />}
+
+                {activeSettingView === 'form' && (
+                    <Data
+                        initialData={dataData && dataData.length > 0 ? dataData[0] : null}
+                        onDataDataChange={handleDataDataChange}
+                    />
+                )}
+                {activeSettingView === 'list' && <UserList onSelectUser={handleSelectUser} />}
+            </div>
+        </div>
     );
 }
 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Sidebar.css';
 
-const Sidebar = ({ onNewOrder, onSelectOrderList, onNewClient, onSelectClientList, onNewCarrier, onSelectCarrierList, onData, onUsers }) => {
+const Sidebar = ({ onProfil, onLogOut, onNewOrder, onSelectOrderList, onNewClient, onSelectClientList, onNewCarrier, onSelectCarrierList, onData, onUsers }) => {
     const [openMenu, setOpenMenu] = useState(null);
 
     const toggleMenu = (menu) => {
@@ -10,6 +10,19 @@ const Sidebar = ({ onNewOrder, onSelectOrderList, onNewClient, onSelectClientLis
 
     return (
         <aside className="sidebar">
+            <button
+                className={`toggle-menu-button ${openMenu === 'user' ? 'open' : ''}`}
+                onClick={() => toggleMenu('user')}
+            >
+                Tere kasutaja {openMenu === 'user'}
+            </button>
+            {openMenu === 'user' && (
+                <ul className="menu-items">
+                    <li onClick={onProfil}>Profiil</li>
+                    <li onClick={onLogOut}>Logi välja</li>
+                </ul>
+            )}
+            <br /><br /><br /><br />
             <h2>Navigatsioon</h2>
             <button
                 className={`toggle-menu-button ${openMenu === 'settings' ? 'open' : ''}`}
