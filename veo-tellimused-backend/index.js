@@ -48,8 +48,36 @@ const generateOrderNumber = async () => {
     }
 };
 
-
 // API endpoints
+app.post('/api/auth/login', async (req, res) => {
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+        return res.status(400).json({ message: 'Username and password are required' });
+    }
+
+    try {
+        const request = new sql.Request();
+        request.input('Username', sql.NVarChar(50), username);
+        request.input('Password', sql.NVarChar(sql.MAX), password);
+
+        const result = await request.execute('dbo.AuthenticateUser');
+        const userId = result.returnValue;
+
+        console.log(`Result: ${JSON.stringify(result)}`);  // Logimiseks
+        console.log(`UserId: ${userId}`);  // Logimiseks
+
+        if (userId > 0) {
+            res.status(200).json({ userId });
+        } else {
+            res.status(401).json({ message: 'Invalid credentials' });
+        }
+    } catch (error) {
+        console.error('Error during authentication:', error);
+        res.status(500).send('Server error');
+    }
+});
+
 app.post('/api/tellimused', async (req, res) => {
     const {
         Klient,
@@ -539,7 +567,7 @@ app.get('/api/data', async (req, res) => {
 app.get('/api/users', async (req, res) => {
     try {
         const request = new sql.Request();
-        const result = await request.query('SELECT id, Forename, Surname, EMail, Phone FROM Users');
+        const result = await request.query('SELECT * FROM Users');
         res.status(200).json(result.recordset);
     } catch (error) {
         console.error('Error fetching users:', error);

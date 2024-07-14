@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { HashRouter as Router } from 'react-router-dom';
 import './App.css';
 import OrderForm from './OrderForm/OrderForm';
 import OrderList from './OrderList/OrderList';
 import Sidebar from './Sidebar/Sidebar';
+import Header from './Header/Header';
 import ClientForm from './ClientForm/ClientForm';
 import ClientList from './ClientList/ClientList';
 import CarrierForm from './CarrierForm/CarrierForm';
@@ -202,56 +204,59 @@ function App() {
     };
 
     return (
-        <div className="App">
-            <div className="sidebar">
-                <Sidebar onNewOrder={handleNewOrder} onSelectOrderList={handleSelectOrderList} 
-                    onNewClient={handleNewClient} onSelectClientList={handleSelectClientList}
-                    onNewCarrier={handleNewCarrier} onSelectCarrierList={handleSelectCarrierList}
-                    onData={handleData} onSelectUserList={handleSelectUserList} />
+        <Router>
+            <div className="App">
+                <Header />
+                <div className="sidebar">
+                    <Sidebar onNewOrder={handleNewOrder} onSelectOrderList={handleSelectOrderList} 
+                        onNewClient={handleNewClient} onSelectClientList={handleSelectClientList}
+                        onNewCarrier={handleNewCarrier} onSelectCarrierList={handleSelectCarrierList}
+                        onData={handleData} onSelectUserList={handleSelectUserList} />
+                    <div className="content">
+                        {activeOrderView === 'form' && (
+                            <OrderForm
+                                key={orderFormKey}
+                                onClose={handleCloseOrderForm}
+                                initialData={orderData}
+                                onOrderDataChange={handleOrderDataChange}
+                                onOrderAdded={handleOrderAdded}
+                            />
+                        )}
+                        {activeOrderView === 'list' && <OrderList onSelectOrder={handleSelectOrder} />}
+
+                        {activeClientView === 'form' && (
+                            <ClientForm
+                            key={clientFormKey}
+                                onClose={handleCloseClientForm}
+                                initialData={clientData}
+                                onClientDataChange={handleClientDataChange}
+                                onClientAdded={handleClientAdded}
+                            />
+                        )}
+                        {activeClientView === 'list' && <ClientList onSelectClient={handleSelectClient} />}
+
+                        {activeCarrierView === 'form' && (
+                            <CarrierForm
+                            key={carrierFormKey}
+                                onClose={handleCloseCarrierForm}
+                                initialData={carrierData}
+                                onCarrierDataChange={handleCarrierDataChange}
+                                onCarrierAdded={handleCarrierAdded}
+                            />
+                        )}
+                        {activeCarrierView === 'list' && <CarrierList onSelectCarrier={handleSelectCarrier} />}
+
+                        {activeSettingView === 'form' && (
+                            <Data
+                                initialData={dataData && dataData.length > 0 ? dataData[0] : null}
+                                onDataDataChange={handleDataDataChange}
+                            />
+                        )}
+                        {activeSettingView === 'list' && <UserList onSelectUser={handleSelectUser} />}
+                    </div>
+                </div>
             </div>
-            <div className="content">
-                {activeOrderView === 'form' && (
-                    <OrderForm
-                        key={orderFormKey}
-                        onClose={handleCloseOrderForm}
-                        initialData={orderData}
-                        onOrderDataChange={handleOrderDataChange}
-                        onOrderAdded={handleOrderAdded}
-                    />
-                )}
-                {activeOrderView === 'list' && <OrderList onSelectOrder={handleSelectOrder} />}
-
-                {activeClientView === 'form' && (
-                    <ClientForm
-                    key={clientFormKey}
-                        onClose={handleCloseClientForm}
-                        initialData={clientData}
-                        onClientDataChange={handleClientDataChange}
-                        onClientAdded={handleClientAdded}
-                    />
-                )}
-                {activeClientView === 'list' && <ClientList onSelectClient={handleSelectClient} />}
-
-                {activeCarrierView === 'form' && (
-                    <CarrierForm
-                    key={carrierFormKey}
-                        onClose={handleCloseCarrierForm}
-                        initialData={carrierData}
-                        onCarrierDataChange={handleCarrierDataChange}
-                        onCarrierAdded={handleCarrierAdded}
-                    />
-                )}
-                {activeCarrierView === 'list' && <CarrierList onSelectCarrier={handleSelectCarrier} />}
-
-                {activeSettingView === 'form' && (
-                    <Data
-                        initialData={dataData && dataData.length > 0 ? dataData[0] : null}
-                        onDataDataChange={handleDataDataChange}
-                    />
-                )}
-                {activeSettingView === 'list' && <UserList onSelectUser={handleSelectUser} />}
-            </div>
-        </div>
+        </Router>
     );
 }
 
