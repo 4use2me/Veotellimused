@@ -39,7 +39,7 @@ function App() {
         fetchData();
     }, []);
 
-    const handleProfil = () => {
+    const handleUser = () => {
         setActiveUserView('form');
         setActiveOrderView(''); 
         setActiveClientView('');
@@ -115,6 +115,7 @@ function App() {
         setActiveClientView('');
         setActiveCarrierView('');
         setActiveUserView('');
+        console.log('activeSettingView set to list');
     };
 
     const handleSelectOrder = async (orderId) => {
@@ -166,11 +167,11 @@ function App() {
         try {
             const response = await axios.get(`http://localhost:5000/api/users/${userId}`);
             setUserData(response.data);
+            setActiveUserView('form');
             setActiveCarrierView('');
             setActiveOrderView('');
             setActiveClientView('');
             setActiveSettingView('');
-            setActiveUserView('');
         } catch (error) {
             console.error('Error fetching user:', error);
         }
@@ -226,10 +227,12 @@ function App() {
         setActiveCarrierView('form');
     };
 
+    console.log('Rendering App with activeSettingView:', activeSettingView);
+
     return (
         <div className="App">
             <div className="sidebar">
-                <Sidebar onProfil={handleProfil} onNewOrder={handleNewOrder} onSelectOrderList={handleSelectOrderList} 
+                <Sidebar onUser={handleUser} onNewOrder={handleNewOrder} onSelectOrderList={handleSelectOrderList} 
                     onNewClient={handleNewClient} onSelectClientList={handleSelectClientList}
                     onNewCarrier={handleNewCarrier} onSelectCarrierList={handleSelectCarrierList}
                     onData={handleData} onSelectUserList={handleSelectUserList} />

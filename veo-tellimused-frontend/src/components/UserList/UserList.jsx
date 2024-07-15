@@ -9,7 +9,9 @@ const UserList = ({ onSelectUser }) => {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
+                console.log('Fetching users...');
                 const response = await axios.get('http://localhost:5000/api/users');
+                console.log('Users fetched:', response.data);
                 setUsers(response.data);
             } catch (error) {
                 console.error('Error fetching users:', error);
@@ -21,7 +23,8 @@ const UserList = ({ onSelectUser }) => {
     }, []);
 
     const filteredUsers = users.filter(user => {
-        if (!user || !user.Forename || !user.Surename || !user.Email || !user.Phone) {
+        if (!user || !user.Forename || !user.Surname || !user.EMail || !user.Phone) {
+            console.log('Skipping user due to missing properties:', user);
             return false; // Handle case where user or its properties are null/undefined
         }
 
@@ -34,9 +37,11 @@ const UserList = ({ onSelectUser }) => {
 
         return (
             user.Forename.toLowerCase().includes(term) ||
-            user.Surename.toLowerCase().includes(term) 
+            user.Surname.toLowerCase().includes(term) 
         );
     });
+
+    console.log('Filtered users:', filteredUsers);
 
     return (
         <div className="user-list">

@@ -214,8 +214,8 @@ app.post('/api/users', async (req, res) => {
         Surname,
         EMail,
         Phone,
-        Password,
-        PasswordAgain
+        Username,
+        Password
     } = req.body;
 
     try {
@@ -225,17 +225,17 @@ app.post('/api/users', async (req, res) => {
             .input('Surname', sql.NVarChar, Surname)
             .input('EMail', sql.NVarChar, EMail)
             .input('Phone', sql.NVarChar, Phone)
+            .input('Username', sql.NVarChar, Username)
             .input('Password', sql.NVarChar, Password)
-            .input('PasswordAgain', sql.Int, PasswordAgain)
             .query(
-                `INSERT INTO Users (Forename, Surname, EMail, Phone, Password, PasswordAgain, 
+                `INSERT INTO Users (Forename, Surname, EMail, Phone, Username, Password, 
                     createdAt) 
-                VALUES (@Forename, @Surname, @EMail, @Phone, @Password, @PasswordAgain, GETDATE());
+                VALUES (@Forename, @Surname, @EMail, @Phone, @Username, @Password, GETDATE());
                  SELECT SCOPE_IDENTITY() AS id;`
             );
 
-        const carrierId = result.recordset[0].id;
-        res.status(201).json({ id: carrierId });
+        const userId = result.recordset[0].id;
+        res.status(201).json({ id: userId });
     } catch (error) {
         console.error('Error adding user:', error);
         res.status(500).send('Server error');
@@ -481,8 +481,8 @@ app.put('/api/users/:id', async (req, res) => {
         Surname,
         EMail,
         Phone,
-        Password,
-        PasswordAgain
+        Username,
+        Password
     } = req.body;
 
     // We check if ID is a number
@@ -499,8 +499,8 @@ app.put('/api/users/:id', async (req, res) => {
             .input('Surname', sql.NVarChar, Surname)
             .input('EMail', sql.NVarChar, EMail)
             .input('Phone', sql.NVarChar, Phone)
+            .input('Username', sql.NVarChar, Username)
             .input('Password', sql.NVarChar, Password)
-            .input('PasswordAgain', sql.Int, PasswordAgain)
             .input('Id', sql.Int, numericId) 
             .query(
                 `UPDATE Users SET 
@@ -508,8 +508,8 @@ app.put('/api/users/:id', async (req, res) => {
                     Surname = @Surname,
                     EMail = @EMail,
                     Phone = @Phone,
-                    Password = @Password,
-                    PasswordAgain = @PasswordAgain
+                    Username = @Username,
+                    Password = @Password
                 WHERE Id = @Id`
             );
 
@@ -567,7 +567,7 @@ app.get('/api/data', async (req, res) => {
 app.get('/api/users', async (req, res) => {
     try {
         const request = new sql.Request();
-        const result = await request.query('SELECT * FROM Users');
+        const result = await request.query('SELECT id, Forename, Surname, EMail, Phone FROM Users');
         res.status(200).json(result.recordset);
     } catch (error) {
         console.error('Error fetching users:', error);
@@ -646,6 +646,31 @@ app.get('/api/carriers/:id', async (req, res) => {
         }
     } catch (error) {
         console.error('Error fetching carrier:', error);
+        res.status(500).send('Server error');
+    }
+});
+
+app.get('/api/users/:id', async (req, res) => {
+    const { id } = req.params;
+    const numericId = parseInt(id, 10);
+    if (isNaN(numericId)) {
+        res.status(400).send('Invalid ID');
+        return;
+    }
+
+    try {
+        const request = new sql.Request();
+        const result = await request
+            .input('Id', sql.Int, numericId)
+            .query('SELECT * FROM Users WHERE Id = @Id');
+
+        if (result.recordset.length === 0) {
+            res.status(404).send('User not found');
+        } else {
+            res.status(200).json(result.recordset[0]);
+        }
+    } catch (error) {
+        console.error('Error fetching user:', error);
         res.status(500).send('Server error');
     }
 });
