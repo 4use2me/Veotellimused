@@ -21,7 +21,7 @@ const OrderList = ({ onSelectOrder }) => {
     }, []);
 
     const filteredOrders = orders.filter(order => {
-        if (!order || !order.TellimuseNumber || !order.Klient || !order.Vedaja) {
+        if (!order || !order.TellimuseNumber || !order.Klient || !order.Vedaja || !order.Staatus) {
             return false; // Handle case where order or its properties are null/undefined
         }
 
@@ -35,7 +35,8 @@ const OrderList = ({ onSelectOrder }) => {
         return (
             order.TellimuseNumber.toLowerCase().includes(term) ||
             order.Klient.toLowerCase().includes(term) ||
-            order.Vedaja.toLowerCase().includes(term)
+            order.Vedaja.toLowerCase().includes(term) ||
+            order.Staatus.toLowerCase().includes(term)
         );
     });
 
@@ -44,7 +45,7 @@ const OrderList = ({ onSelectOrder }) => {
             <h2>Tellimuste nimekiri</h2>
             <input
                 type="text"
-                placeholder="Otsi tellimuse numbri, kliendi või vedaja järgi"
+                placeholder="Otsi tellimuse numbri, kliendi, vedaja või staatuse järgi"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -54,6 +55,7 @@ const OrderList = ({ onSelectOrder }) => {
                         <th>Tellimuse number</th>
                         <th>Klient</th>
                         <th>Vedaja</th>
+                        <th>Staatus</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -63,11 +65,12 @@ const OrderList = ({ onSelectOrder }) => {
                                 <td>{order.TellimuseNumber}</td>
                                 <td>{order.Klient}</td>
                                 <td>{order.Vedaja}</td>
+                                <td>{order.Staatus}</td>
                             </tr>
                         ))
                     ) : (
                         <tr>
-                            <td colSpan="3">No matching orders found.</td>
+                            <td colSpan="4">Sobivaid tellimusi ei leitud.</td>
                         </tr>
                     )}
                 </tbody>

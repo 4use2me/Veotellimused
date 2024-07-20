@@ -5,6 +5,7 @@
     width: 100%;
     padding: 20px;
     margin-top: 20px;
+    position: relative;
 }
 
 .order-form form {
@@ -15,7 +16,7 @@
 
 .order-form form > div {
     display: flex;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     align-items: center;
     width: 48%; /* Määrab iga elemendi laiuse pooleks */
 }
@@ -36,22 +37,83 @@
     padding: 10px;
     border: none;
     cursor: pointer;
-    margin-top: 20px;
+    margin-top: 0px;
+    width: 25%;
 }
 
 .order-form button[type="submit"]:hover {
     background-color: #45a049;
 }
 
-.order-form button[type="generate"] {
+.order-form .generate-purchase-button {
     background-color: #302ad3;
     color: white;
     padding: 10px;
     border: none;
     cursor: pointer;
-    margin-top: 20px;
+    margin-top: 0px;
+    width: 25%;
 }
 
-.order-form button[type="generate"]:hover {
+.order-form .generate-purchase-button:hover {
     background-color: #241fa0;
+}
+
+.order-form .generate-sale-button {
+    background-color: #d32aa0;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    margin-top: 0px;
+    width: 25%;
+}
+
+.order-form .generate-sale-button:hover {
+    background-color: #a7227f;
+}
+
+.order-form .toggle-menu-button {
+    width: 50%;
+    background: #ed9b1f;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    color: white;
+    position: relative;
+    margin-bottom: 5px;
+}
+
+.order-form .toggle-menu-button:hover {
+    background-color: #d58b1c;
+}
+
+.order-form .menu-items {
+    list-style-type: none;
+    left: 75%;
+    text-align: left;
+    font-size: small;
+    flex-direction: column;
+    position: absolute;
+    top: 89%; /* Asetab menüü nupu alla */
+    width: 15%; /* Tagab, et menüü laius vastab nupu laiusele */
+    background-color: white;
+    z-index: 1;
+}
+
+.order-form .menu-items li {
+    padding: 3px 0;
+    cursor: pointer;
+}
+
+.order-form .toggle-menu-button::after {
+    content: '▼';
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+}
+
+.bold-label {
+    font-weight: bold;
 }

@@ -210,7 +210,11 @@ function App() {
     };
 
     const handleOrderAdded = (newOrder) => {
-        setOrderData(newOrder);
+        const orderWithDefaultStatus = {
+            ...newOrder,
+            Staatus: newOrder.Staatus || 'Töös' // Kui Staatus on puudu, määrame vaikimisi 'Töös'
+        };
+        setOrderData(orderWithDefaultStatus);
         setOrderFormKey(prevKey => prevKey + 1);
         setActiveOrderView('form');
     };
@@ -225,6 +229,16 @@ function App() {
         setCarrierData(newCarrier);
         setCarrierFormKey(prevKey => prevKey + 1);
         setActiveCarrierView('form');
+    };
+
+    const handleOrderConfirmed = () => {
+        console.log('Order confirmed');
+        // Lisage kood tellimuse kinnitamiseks
+    };
+
+    const handleOrderCancelled = () => {
+        console.log('Order cancelled');
+        // Lisage kood tellimuse tühistamiseks
     };
 
     console.log('Rendering App with activeSettingView:', activeSettingView);
@@ -252,6 +266,8 @@ function App() {
                         initialData={orderData}
                         onOrderDataChange={handleOrderDataChange}
                         onOrderAdded={handleOrderAdded}
+                        onConfirmed={handleOrderConfirmed}
+                        onCancelled={handleOrderCancelled}
                     />
                 )}
                 {activeOrderView === 'list' && <OrderList onSelectOrder={handleSelectOrder} />}

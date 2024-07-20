@@ -81,21 +81,62 @@ app.post('/api/auth/login', async (req, res) => {
 app.post('/api/tellimused', async (req, res) => {
     const {
         Klient,
+        Klient2,
         PealelaadimiseEttevõte,
+        PealelaadimiseEttevõte2,
         PealelaadimiseAadress,
+        PealelaadimiseAadress2,
         Laadung,
+        Laadung2,
         PealelaadimiseKuupäev,
+        PealelaadimiseKuupäev2,
         MahalaadimiseEttevõte,
+        MahalaadimiseEttevõte2,
         MahalaadimiseAadress,
+        MahalaadimiseAadress2,
         MahalaadimiseKuupäev,
+        MahalaadimiseKuupäev2,
         Eritingimus,
+        Eritingimus2,
         Müügihind,
+        Müügihind2,
         VälineTellimusnumber,
+        VälineTellimusnumber2,
         Vedaja,
         AutoNumbrimärk,
         Kontakt,
         Hind
     } = req.body;
+
+    const newOrder = {
+        Klient,
+        Klient2,
+        PealelaadimiseEttevõte,
+        PealelaadimiseEttevõte2,
+        PealelaadimiseAadress,
+        PealelaadimiseAadress2,
+        Laadung,
+        Laadung2,
+        PealelaadimiseKuupäev,
+        PealelaadimiseKuupäev2,
+        MahalaadimiseEttevõte,
+        MahalaadimiseEttevõte2,
+        MahalaadimiseAadress,
+        MahalaadimiseAadress2,
+        MahalaadimiseKuupäev,
+        MahalaadimiseKuupäev2,
+        Eritingimus,
+        Eritingimus2,
+        Müügihind,
+        Müügihind2,
+        VälineTellimusnumber,
+        VälineTellimusnumber2,
+        Vedaja,
+        AutoNumbrimärk,
+        Kontakt,
+        Hind,
+        Staatus: 'Töös'
+    };
 
     try {
         const tellimuseNumber = await generateOrderNumber();
@@ -117,13 +158,14 @@ app.post('/api/tellimused', async (req, res) => {
             .input('AutoNumbrimärk', sql.NVarChar, AutoNumbrimärk)
             .input('Kontakt', sql.NVarChar, Kontakt)
             .input('Hind', sql.Decimal(10, 2), Hind)
+            .input('Staatus', sql.NVarChar, newOrder.Staatus)
             .query(
                 `INSERT INTO Tellimused (TellimuseNumber, Klient, PealelaadimiseEttevõte, PealelaadimiseAadress, Laadung, PealelaadimiseKuupäev, 
                     MahalaadimiseEttevõte, MahalaadimiseAadress, MahalaadimiseKuupäev, Eritingimus, Müügihind, 
-                    VälineTellimusnumber, Vedaja, AutoNumbrimärk, Kontakt, Hind, createdAt) 
+                    VälineTellimusnumber, Vedaja, AutoNumbrimärk, Kontakt, Hind, Staatus, createdAt) 
                 VALUES (@TellimuseNumber, @Klient, @PealelaadimiseEttevõte, @PealelaadimiseAadress, @Laadung, @PealelaadimiseKuupäev, 
                     @MahalaadimiseEttevõte, @MahalaadimiseAadress, @MahalaadimiseKuupäev, @Eritingimus, @Müügihind, 
-                    @VälineTellimusnumber, @Vedaja, @AutoNumbrimärk, @Kontakt, @Hind, GETDATE());
+                    @VälineTellimusnumber, @Vedaja, @AutoNumbrimärk, @Kontakt, @Hind, @Staatus, GETDATE());
                  SELECT SCOPE_IDENTITY() AS id;`
             );
 
@@ -523,7 +565,7 @@ app.put('/api/users/:id', async (req, res) => {
 app.get('/api/tellimused', async (req, res) => {
     try {
         const request = new sql.Request();
-        const result = await request.query('SELECT id, TellimuseNumber, Klient, Vedaja FROM Tellimused');
+        const result = await request.query('SELECT id, TellimuseNumber, Klient, Vedaja, Staatus FROM Tellimused');
         res.status(200).json(result.recordset);
     } catch (error) {
         console.error('Error fetching orders:', error);
