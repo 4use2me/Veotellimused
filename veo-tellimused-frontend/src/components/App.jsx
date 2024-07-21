@@ -231,6 +231,16 @@ function App() {
         setActiveCarrierView('form');
     };
 
+    const handleOrderConfirmed = () => {
+        console.log('Order confirmed');
+        // Lisage kood tellimuse kinnitamiseks
+    };
+
+    const handleOrderCancelled = () => {
+        console.log('Order cancelled');
+        // Lisage kood tellimuse tühistamiseks
+    };
+
     console.log('Rendering App with activeSettingView:', activeSettingView);
 
     return (
@@ -256,6 +266,8 @@ function App() {
                         initialData={orderData}
                         onOrderDataChange={handleOrderDataChange}
                         onOrderAdded={handleOrderAdded}
+                        onConfirmed={handleOrderConfirmed}
+                        onCancelled={handleOrderCancelled}
                     />
                 )}
                 {activeOrderView === 'list' && <OrderList onSelectOrder={handleSelectOrder} />}

@@ -357,33 +357,6 @@ app.put('/api/tellimused/:id', async (req, res) => {
     }
 });
 
-// Ainult staatuse uuendamine
-app.put('/api/tellimused/:id/status', async (req, res) => {
-    const { id } = req.params;
-    const { Staatus } = req.body;
-
-    console.log('Uuendamine ID-ga:', id, 'Staatus:', Staatus);
-
-    const numericId = parseInt(id, 10);
-    if (isNaN(numericId)) {
-        res.status(400).send('Invalid ID');
-        return;
-    }
-
-    try {
-        const request = new sql.Request();
-        await request
-            .input('Staatus', sql.NVarChar, Staatus)
-            .input('id', sql.Int, numericId)
-            .query('UPDATE tellimused SET Staatus = @Staatus WHERE id = @id');
-
-        res.status(200).send('Staatus edukalt uuendatud');
-    } catch (error) {
-        console.error('Viga staatuse uuendamisel:', error);
-        res.status(500).send('Staatuse muutmise ebaõnnestumine');
-    }
-});
-
 app.put('/api/kliendid/:id', async (req, res) => {
     const { id } = req.params;
     const {
