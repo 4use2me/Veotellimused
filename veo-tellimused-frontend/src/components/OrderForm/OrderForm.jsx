@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import './OrderForm.css';
 
-const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded, onConfirmed, onCancelled }) => {
+const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
     const [orderId, setOrderId] = useState(initialData ? initialData.id : null);
     const [klient, setKlient] = useState(initialData ? initialData.Klient : '');
     const [klient2, setKlient2] = useState(initialData ? initialData.Klient2 : '');
@@ -147,6 +147,26 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded, onConfirmed, 
         }
     };
 
+    const handleStatusChange = async (newStatus) => {
+        if (!orderId) {
+            alert('Tellimus pole salvestatud!');
+            return;
+        }
+    
+        try {
+            console.log('Saadan staatust ID-ga:', orderId);
+    
+            await axios.put(`http://localhost:5000/api/tellimused/${orderId}/status`, {
+                Staatus: newStatus
+            });
+            alert('Staatus edukalt uuendatud');
+            setOpenMenu(null); // Sulge menüü pärast muudatust
+        } catch (error) {
+            console.error('Viga staatuse uuendamisel:', error.response ? error.response.data : error.message);
+            alert('Staatuse muutmise ebaõnnestumine');
+        }
+    };    
+
     return (
         <div className="order-form">
             <h2>{tellimuseNumber ? `Veotellimus: ${tellimuseNumber}` : 'Sisesta tellimus'}</h2>
@@ -258,7 +278,7 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded, onConfirmed, 
                     <input type="text" value={kontakt} onChange={(e) => setKontakt(e.target.value)} />
                 </div>
                 <div ref={menuRef}>
-                    <button
+                    <button type='button'
                         className={`toggle-menu-button ${openMenu === 'status' ? 'open' : ''}`}
                         onClick={() => toggleMenu('status')}
                     >
@@ -266,8 +286,8 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded, onConfirmed, 
                     </button>
                     {openMenu === 'status' && (
                         <ul className="menu-items">
-                            <li onClick={onConfirmed}>Veos kinnitatud</li>
-                            <li onClick={onCancelled}>Tühistatud</li>
+                            <li onClick={() => handleStatusChange('Veos kinnitatud')}>Veos kinnitatud</li>
+                            <li onClick={() => handleStatusChange('Tühistatud')}>Tühistatud</li>
                         </ul>
                     )}
                 </div> 
