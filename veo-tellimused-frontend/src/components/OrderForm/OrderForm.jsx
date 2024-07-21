@@ -5,7 +5,7 @@ import './OrderForm.css';
 const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
     const [orderId, setOrderId] = useState(initialData ? initialData.id : null);
     const [klient, setKlient] = useState(initialData ? initialData.Klient : '');
-    const [klient2, setKlient2] = useState(initialData ? initialData.Klient2 : '');
+    const [klientII, setKlientII] = useState(initialData ? initialData.KlientII : '');
     const [pealelaadimiseEttevõte, setPealelaadimiseEttevõte] = useState(initialData ? initialData.PealelaadimiseEttevõte : '');
     const [pealelaadimiseEttevõte2, setPealelaadimiseEttevõte2] = useState(initialData ? initialData.PealelaadimiseEttevõte2 : '');
     const [pealelaadimiseAadress, setPealelaadimiseAadress] = useState(initialData ? initialData.PealelaadimiseAadress : '');
@@ -34,6 +34,7 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
     const [staatus] = useState(initialData ? initialData.Staatus : 'Töös'); // Lisa olek
     const [openMenu, setOpenMenu] = useState(null);
     const [isLocked, setIsLocked] = useState(false);
+    const [errors, setErrors] = useState({});
     const menuRef = useRef(null);
     
     const toggleMenu = (menu) => {
@@ -44,7 +45,7 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
         if (initialData) {
             setOrderId(initialData.id);
             setKlient(initialData.Klient);
-            setKlient2(initialData.Klient2);
+            setKlientII(initialData.KlientII);
             setPealelaadimiseEttevõte(initialData.PealelaadimiseEttevõte);
             setPealelaadimiseEttevõte2(initialData.PealelaadimiseEttevõte2);
             setPealelaadimiseAadress(initialData.PealelaadimiseAadress);
@@ -104,7 +105,7 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
                 try {
                     const response = await axios.get(`http://localhost:5000/api/tellimused/${orderId}`);
                     const { Staatus } = response.data;
-                    if (Staatus === 'Veos kinnitatud' || Staatus === 'Tühistatud') {
+                    if (Staatus === 'Kinnitatud' || Staatus === 'Tühistatud') {
                         setIsLocked(true);
                     }
                 } catch (error) {
@@ -112,35 +113,51 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
                 }
             }
         };
-
         fetchOrderStatus();
     }, [orderId]);
 
+    const validate = () => {
+        const newErrors = {};
+        const fields = {
+            PealelaadimiseEttevõte2: pealelaadimiseEttevõte2,
+            PealelaadimiseAadress2: pealelaadimiseAadress2,
+            Laadung2: laadung2,
+            PealelaadimiseKuupäev2: pealelaadimiseKuupäev2,
+            MahalaadimiseEttevõte2: mahalaadimiseEttevõte2,
+            MahalaadimiseAadress2: mahalaadimiseAadress2,
+            MahalaadimiseKuupäev2: mahalaadimiseKuupäev2,
+            Müügihind2: müügihind2,
+        };
+    
+        if (klientII) {
+            Object.entries(fields).forEach(([key, value]) => {
+                if (!value) newErrors[key] = 'Please fill out this field.';
+            });
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!validate()) {
+            return;
+        }
+
         const orderData = {
             Klient: klient,
-            Klient2: klient2,
             PealelaadimiseEttevõte: pealelaadimiseEttevõte,
-            PealelaadimiseEttevõte2: pealelaadimiseEttevõte2,
             PealelaadimiseAadress: pealelaadimiseAadress,
-            PealelaadimiseAadress2: pealelaadimiseAadress2,
             Laadung: laadung,
-            Laadung2: laadung2,
             PealelaadimiseKuupäev: pealelaadimiseKuupäev,
-            PealelaadimiseKuupäev2: pealelaadimiseKuupäev2,
             MahalaadimiseEttevõte: mahalaadimiseEttevõte,
-            MahalaadimiseEttevõte2: mahalaadimiseEttevõte2,
             MahalaadimiseAadress: mahalaadimiseAadress,
-            MahalaadimiseAadress2: mahalaadimiseAadress2,
             MahalaadimiseKuupäev: mahalaadimiseKuupäev,
-            MahalaadimiseKuupäev2: mahalaadimiseKuupäev2,
             Eritingimus: eritingimus,
-            Eritingimus2: eritingimus2,
             Müügihind: parseFloat(müügihind),
-            Müügihind2: parseFloat(müügihind2),
             VälineTellimusnumber: välineTellimusnumber,
-            VälineTellimusnumber2: välineTellimusnumber2,
             Vedaja: vedaja,
             AutoNumbrimärk: autoNumbrimärk,
             Kontakt: kontakt,
@@ -148,6 +165,20 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
             TellimuseNumber: tellimuseNumber,
             Staatus: staatus
         };
+
+        if (klientII) {
+            orderData.KlientII = klientII;
+            orderData.PealelaadimiseEttevõte2 = pealelaadimiseEttevõte2;
+            orderData.PealelaadimiseAadress2 = pealelaadimiseAadress2;
+            orderData.Laadung2 = laadung2;
+            orderData.PealelaadimiseKuupäev2 = pealelaadimiseKuupäev2;
+            orderData.MahalaadimiseEttevõte2 = mahalaadimiseEttevõte2;
+            orderData.MahalaadimiseAadress2 = mahalaadimiseAadress2;
+            orderData.MahalaadimiseKuupäev2 = mahalaadimiseKuupäev2;
+            orderData.Eritingimus2 = eritingimus2;
+            orderData.Müügihind2 = parseFloat(müügihind2);
+            orderData.VälineTellimusnumber2 = välineTellimusnumber2;
+        }
 
         try {
             if (isLocked) {
@@ -209,7 +240,7 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
                 </div>
                 <div>
                     <label>Klient *</label>
-                    <input type="text" value={klient2} onChange={(e) => setKlient2(e.target.value)} />
+                    <input type="text" value={klientII} onChange={(e) => setKlientII(e.target.value)} />
                 </div>
                 <div>
                     <label>Pealelaadimise ettevõte, kontakt</label>
@@ -218,6 +249,7 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
                 <div>
                     <label>Pealelaadimise ettevõte, kontakt</label>
                     <input type="text" value={pealelaadimiseEttevõte2} onChange={(e) => setPealelaadimiseEttevõte2(e.target.value)} />
+                    {errors.PealelaadimiseEttevõte2 && <div className="error">{errors.PealelaadimiseEttevõte2}</div>}
                 </div>
                 <div>
                     <label>Pealelaadimise aadress</label>
@@ -226,6 +258,7 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
                 <div>
                     <label>Pealelaadimise aadress</label>
                     <input type="text" value={pealelaadimiseAadress2} onChange={(e) => setPealelaadimiseAadress2(e.target.value)} />
+                    {errors.PealelaadimiseAadress2 && <div className="error">{errors.PealelaadimiseAadress2}</div>}
                 </div>
                 <div>
                     <label>Laadung</label>
@@ -234,6 +267,7 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
                 <div>
                     <label>Laadung</label>
                     <input type="text" value={laadung2} onChange={(e) => setLaadung2(e.target.value)} />
+                    {errors.Laadung2 && <div className="error">{errors.Laadung2}</div>}
                 </div>
                 <div>
                     <label>Pealelaadimise kuupäev</label>
@@ -242,6 +276,7 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
                 <div>
                     <label>Pealelaadimise kuupäev</label>
                     <input type="date" value={pealelaadimiseKuupäev2} onChange={(e) => setPealelaadimiseKuupäev2(e.target.value)} />
+                    {errors.PealelaadimiseKuupäev2 && <div className="error">{errors.PealelaadimiseKuupäev2}</div>}
                 </div>
                 <div>
                     <label>Mahalaadimise ettevõte, kontakt</label>
@@ -250,6 +285,7 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
                 <div>
                     <label>Mahalaadimise ettevõte, kontakt</label>
                     <input type="text" value={mahalaadimiseEttevõte2} onChange={(e) => setMahalaadimiseEttevõte2(e.target.value)} />
+                    {errors.MahalaadimiseEttevõte2 && <div className="error">{errors.MahalaadimiseEttevõte2}</div>}
                 </div>
                 <div>
                     <label>Mahalaadimise aadress</label>
@@ -258,6 +294,7 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
                 <div>
                     <label>Mahalaadimise aadress</label>
                     <input type="text" value={mahalaadimiseAadress2} onChange={(e) => setMahalaadimiseAadress2(e.target.value)} />
+                    {errors.MahalaadimiseAadress2 && <div className="error">{errors.MahalaadimiseAadress2}</div>}
                 </div>
                 <div>
                     <label>Mahalaadimise kuupäev</label>
@@ -266,6 +303,7 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
                 <div>
                     <label>Mahalaadimise kuupäev</label>
                     <input type="date" value={mahalaadimiseKuupäev2} onChange={(e) => setMahalaadimiseKuupäev2(e.target.value)} />
+                    {errors.MahalaadimiseKuupäev2 && <div className="error">{errors.MahalaadimiseKuupäev2}</div>}
                 </div>
                 <div>
                     <label>Eritingimus</label>
@@ -290,6 +328,7 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
                 <div>
                     <label>Müügihind *</label>
                     <input type="text" value={müügihind2} onChange={(e) => setMüügihind2(e.target.value)} pattern="\d+(\.\d{1,2})?" />
+                    {errors.Müügihind2 && <div className="error">{errors.Müügihind2}</div>}
                 </div>     
                 <div>
                     <label className='bold-label'>Vedaja *</label>

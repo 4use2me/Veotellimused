@@ -117,3 +117,25 @@
 .bold-label {
     font-weight: bold;
 }
+
+.error {
+    font-size: small;
+    border: 1px solid black;
+    padding: 5px;
+    border-radius: 5px;
+    display: flex;
+    white-space: nowrap; /* Ensure single line */
+}
+
+.error::before {
+    content: '!';
+    background-color: orange;
+    color: white;
+    width: 20px;
+    height: 20px;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bolder;
+    margin-right: 5px;
+}

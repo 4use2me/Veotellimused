@@ -21,24 +21,33 @@ const OrderList = ({ onSelectOrder }) => {
     }, []);
 
     const filteredOrders = orders.filter(order => {
-        if (!order || !order.TellimuseNumber || !order.Klient || !order.Vedaja || !order.Staatus) {
-            return false; // Handle case where order or its properties are null/undefined
+        if (!order) {
+            return false; // Jäta välja, kui tellimus on null/undefined
         }
-
-        const term = searchTerm.toLowerCase();
-
-        // Check if searchTerm is empty, return true to include all orders
-        if (!term.trim()) {
+    
+        const term = searchTerm.toLowerCase().trim();
+    
+        // Kontrolli omadusi ja määra vaikimisi väärtused, kui need on null/undefined
+        const tellimuseNumber = order.TellimuseNumber ? order.TellimuseNumber.toLowerCase() : '';
+        const klient = order.Klient ? order.Klient.toLowerCase() : '';
+        const klientII = order.KlientII ? order.KlientII.toLowerCase() : '';
+        const vedaja = order.Vedaja ? order.Vedaja.toLowerCase() : '';
+        const staatus = order.Staatus ? order.Staatus.toLowerCase() : '';
+    
+        // Kui otsingusõna on tühi, tagasta kõik tellimused
+        if (!term) {
             return true;
         }
-
+    
+        // Tagasta true, kui vähemalt üks omadus sisaldab otsingusõna
         return (
-            order.TellimuseNumber.toLowerCase().includes(term) ||
-            order.Klient.toLowerCase().includes(term) ||
-            order.Vedaja.toLowerCase().includes(term) ||
-            order.Staatus.toLowerCase().includes(term)
+            tellimuseNumber.includes(term) ||
+            klient.includes(term) ||
+            klientII.includes(term) ||
+            vedaja.includes(term) ||
+            staatus.includes(term)
         );
-    });
+    });    
 
     return (
         <div className="order-list">
@@ -54,6 +63,7 @@ const OrderList = ({ onSelectOrder }) => {
                     <tr>
                         <th>Tellimuse number</th>
                         <th>Klient</th>
+                        <th>Klient2</th>
                         <th>Vedaja</th>
                         <th>Staatus</th>
                     </tr>
@@ -64,13 +74,14 @@ const OrderList = ({ onSelectOrder }) => {
                             <tr key={order.id} onClick={() => onSelectOrder(order.id)}>
                                 <td>{order.TellimuseNumber}</td>
                                 <td>{order.Klient}</td>
+                                <td>{order.KlientII}</td>
                                 <td>{order.Vedaja}</td>
                                 <td>{order.Staatus}</td>
                             </tr>
                         ))
                     ) : (
                         <tr>
-                            <td colSpan="4">Sobivaid tellimusi ei leitud.</td>
+                            <td colSpan="5">Sobivaid tellimusi ei leitud.</td>
                         </tr>
                     )}
                 </tbody>

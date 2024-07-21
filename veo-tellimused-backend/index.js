@@ -81,7 +81,7 @@ app.post('/api/auth/login', async (req, res) => {
 app.post('/api/tellimused', async (req, res) => {
     const {
         Klient,
-        Klient2,
+        KlientII,
         PealelaadimiseEttevõte,
         PealelaadimiseEttevõte2,
         PealelaadimiseAadress,
@@ -110,7 +110,7 @@ app.post('/api/tellimused', async (req, res) => {
 
     const newOrder = {
         Klient,
-        Klient2,
+        KlientII,
         PealelaadimiseEttevõte,
         PealelaadimiseEttevõte2,
         PealelaadimiseAadress,
@@ -144,28 +144,45 @@ app.post('/api/tellimused', async (req, res) => {
         const result = await request
             .input('TellimuseNumber', sql.NVarChar, tellimuseNumber)
             .input('Klient', sql.NVarChar, Klient)
+            .input('KlientII', sql.NVarChar, KlientII)
             .input('PealelaadimiseEttevõte', sql.NVarChar, PealelaadimiseEttevõte)
+            .input('PealelaadimiseEttevõte2', sql.NVarChar, PealelaadimiseEttevõte2)
             .input('PealelaadimiseAadress', sql.NVarChar, PealelaadimiseAadress)
+            .input('PealelaadimiseAadress2', sql.NVarChar, PealelaadimiseAadress2)
             .input('Laadung', sql.NVarChar, Laadung)
+            .input('Laadung2', sql.NVarChar, Laadung2)
             .input('PealelaadimiseKuupäev', sql.Date, PealelaadimiseKuupäev)
+            .input('PealelaadimiseKuupäev2', sql.Date, PealelaadimiseKuupäev2)
             .input('MahalaadimiseEttevõte', sql.NVarChar, MahalaadimiseEttevõte)
+            .input('MahalaadimiseEttevõte2', sql.NVarChar, MahalaadimiseEttevõte2)
             .input('MahalaadimiseAadress', sql.NVarChar, MahalaadimiseAadress)
+            .input('MahalaadimiseAadress2', sql.NVarChar, MahalaadimiseAadress2)
             .input('MahalaadimiseKuupäev', sql.Date, MahalaadimiseKuupäev)
+            .input('MahalaadimiseKuupäev2', sql.Date, MahalaadimiseKuupäev2)
             .input('Eritingimus', sql.NVarChar, Eritingimus)
+            .input('Eritingimus2', sql.NVarChar, Eritingimus2)
             .input('Müügihind', sql.Decimal(10, 2), Müügihind)
+            .input('Müügihind2', sql.Decimal(10, 2), Müügihind2)
             .input('VälineTellimusnumber', sql.NVarChar, VälineTellimusnumber)
+            .input('VälineTellimusnumber2', sql.NVarChar, VälineTellimusnumber2)
             .input('Vedaja', sql.NVarChar, Vedaja)
             .input('AutoNumbrimärk', sql.NVarChar, AutoNumbrimärk)
             .input('Kontakt', sql.NVarChar, Kontakt)
             .input('Hind', sql.Decimal(10, 2), Hind)
             .input('Staatus', sql.NVarChar, newOrder.Staatus)
             .query(
-                `INSERT INTO Tellimused (TellimuseNumber, Klient, PealelaadimiseEttevõte, PealelaadimiseAadress, Laadung, PealelaadimiseKuupäev, 
-                    MahalaadimiseEttevõte, MahalaadimiseAadress, MahalaadimiseKuupäev, Eritingimus, Müügihind, 
-                    VälineTellimusnumber, Vedaja, AutoNumbrimärk, Kontakt, Hind, Staatus, createdAt) 
-                VALUES (@TellimuseNumber, @Klient, @PealelaadimiseEttevõte, @PealelaadimiseAadress, @Laadung, @PealelaadimiseKuupäev, 
-                    @MahalaadimiseEttevõte, @MahalaadimiseAadress, @MahalaadimiseKuupäev, @Eritingimus, @Müügihind, 
-                    @VälineTellimusnumber, @Vedaja, @AutoNumbrimärk, @Kontakt, @Hind, @Staatus, GETDATE());
+                `INSERT INTO Tellimused (TellimuseNumber, Klient, KlientII, PealelaadimiseEttevõte, 
+                    PealelaadimiseEttevõte2, PealelaadimiseAadress, PealeLaadimiseAadress2, Laadung, Laadung2, 
+                    PealelaadimiseKuupäev, PealelaadimiseKuupäev2, MahalaadimiseEttevõte, MahalaadimiseEttevõte2, 
+                    MahalaadimiseAadress, MahalaadimiseAadress2, MahalaadimiseKuupäev, MahalaadimiseKuupäev2, 
+                    Eritingimus, Eritingimus2, Müügihind, Müügihind2, VälineTellimusnumber, VälineTellimusnumber2, 
+                    Vedaja, AutoNumbrimärk, Kontakt, Hind, Staatus, createdAt) 
+                VALUES (@TellimuseNumber, @Klient, @KlientII, @PealelaadimiseEttevõte, @PealelaadimiseEttevõte2, 
+                    @PealelaadimiseAadress, @PealelaadimiseAadress2, @Laadung, @Laadung2, @PealelaadimiseKuupäev, 
+                    @PealelaadimiseKuupäev2, @MahalaadimiseEttevõte, @MahalaadimiseEttevõte2, 
+                    @MahalaadimiseAadress, @MahalaadimiseAadress2, @MahalaadimiseKuupäev, @MahalaadimiseKuupäev2, 
+                    @Eritingimus, @Eritingimus2, @Müügihind, @Müügihind2, @VälineTellimusnumber, 
+                    @VälineTellimusnumber2, @Vedaja, @AutoNumbrimärk, @Kontakt, @Hind, @Staatus, GETDATE());
                  SELECT SCOPE_IDENTITY() AS id;`
             );
 
@@ -288,16 +305,27 @@ app.put('/api/tellimused/:id', async (req, res) => {
     const { id } = req.params;
     const {
         Klient,
+        KlientII,
         PealelaadimiseEttevõte,
+        PealelaadimiseEttevõte2,
         PealelaadimiseAadress,
+        PealelaadimiseAadress2,
         Laadung,
+        Laadung2,
         PealelaadimiseKuupäev,
+        PealelaadimiseKuupäev2,
         MahalaadimiseEttevõte,
+        MahalaadimiseEttevõte2,
         MahalaadimiseAadress,
+        MahalaadimiseAadress2,
         MahalaadimiseKuupäev,
+        MahalaadimiseKuupäev2,
         Eritingimus,
+        Eritingimus2,
         Müügihind,
+        Müügihind2,
         VälineTellimusnumber,
+        VälineTellimusnumber2,
         Vedaja,
         AutoNumbrimärk,
         Kontakt,
@@ -315,16 +343,27 @@ app.put('/api/tellimused/:id', async (req, res) => {
         const request = new sql.Request();
         await request
             .input('Klient', sql.NVarChar, Klient)
+            .input('KlientII', sql.NVarChar, KlientII)
             .input('PealelaadimiseEttevõte', sql.NVarChar, PealelaadimiseEttevõte)
+            .input('PealelaadimiseEttevõte2', sql.NVarChar, PealelaadimiseEttevõte2)
             .input('PealelaadimiseAadress', sql.NVarChar, PealelaadimiseAadress)
+            .input('PealelaadimiseAadress2', sql.NVarChar, PealelaadimiseAadress2)
             .input('Laadung', sql.NVarChar, Laadung)
+            .input('Laadung2', sql.NVarChar, Laadung2)
             .input('PealelaadimiseKuupäev', sql.Date, PealelaadimiseKuupäev)
+            .input('PealelaadimiseKuupäev2', sql.Date, PealelaadimiseKuupäev2)
             .input('MahalaadimiseEttevõte', sql.NVarChar, MahalaadimiseEttevõte)
+            .input('MahalaadimiseEttevõte2', sql.NVarChar, MahalaadimiseEttevõte2)
             .input('MahalaadimiseAadress', sql.NVarChar, MahalaadimiseAadress)
+            .input('MahalaadimiseAadress2', sql.NVarChar, MahalaadimiseAadress2)
             .input('MahalaadimiseKuupäev', sql.Date, MahalaadimiseKuupäev)
+            .input('MahalaadimiseKuupäev2', sql.Date, MahalaadimiseKuupäev2)
             .input('Eritingimus', sql.NVarChar, Eritingimus)
+            .input('Eritingimus2', sql.NVarChar, Eritingimus2)
             .input('Müügihind', sql.Decimal(10, 2), Müügihind)
+            .input('Müügihind2', sql.Decimal(10, 2), Müügihind2)
             .input('VälineTellimusnumber', sql.NVarChar, VälineTellimusnumber)
+            .input('VälineTellimusnumber2', sql.NVarChar, VälineTellimusnumber2)
             .input('Vedaja', sql.NVarChar, Vedaja)
             .input('AutoNumbrimärk', sql.NVarChar, AutoNumbrimärk)
             .input('Kontakt', sql.NVarChar, Kontakt)
@@ -333,16 +372,27 @@ app.put('/api/tellimused/:id', async (req, res) => {
             .query(
                 `UPDATE Tellimused SET 
                     Klient = @Klient,
+                    KlientII = @KlientII,
                     PealelaadimiseEttevõte = @PealelaadimiseEttevõte,
+                    PealelaadimiseEttevõte2 = @PealelaadimiseEttevõte2,
                     PealelaadimiseAadress = @PealelaadimiseAadress,
+                    PealelaadimiseAadress2 = @PealelaadimiseAadress2,
                     Laadung = @Laadung,
+                    Laadung2 = @Laadung2,
                     PealelaadimiseKuupäev = @PealelaadimiseKuupäev,
+                    PealelaadimiseKuupäev2 = @PealelaadimiseKuupäev2,
                     MahalaadimiseEttevõte = @MahalaadimiseEttevõte,
+                    MahalaadimiseEttevõte2 = @MahalaadimiseEttevõte2,
                     MahalaadimiseAadress = @MahalaadimiseAadress,
+                    MahalaadimiseAadress2 = @MahalaadimiseAadress2,
                     MahalaadimiseKuupäev = @MahalaadimiseKuupäev,
+                    MahalaadimiseKuupäev2 = @MahalaadimiseKuupäev2,
                     Eritingimus = @Eritingimus,
+                    Eritingimus2 = @Eritingimus2,
                     Müügihind = @Müügihind,
+                    Müügihind2 = @Müügihind2,
                     VälineTellimusnumber = @VälineTellimusnumber,
+                    VälineTellimusnumber2 = @VälineTellimusnumber2,
                     Vedaja = @Vedaja,
                     AutoNumbrimärk = @AutoNumbrimärk,
                     Kontakt = @Kontakt,
@@ -592,7 +642,7 @@ app.put('/api/users/:id', async (req, res) => {
 app.get('/api/tellimused', async (req, res) => {
     try {
         const request = new sql.Request();
-        const result = await request.query('SELECT id, TellimuseNumber, Klient, Vedaja, Staatus FROM Tellimused');
+        const result = await request.query('SELECT id, TellimuseNumber, Klient, KlientII, Vedaja, Staatus FROM Tellimused');
         res.status(200).json(result.recordset);
     } catch (error) {
         console.error('Error fetching orders:', error);
