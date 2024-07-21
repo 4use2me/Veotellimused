@@ -33,6 +33,7 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
     const [tellimuseNumber, setTellimuseNumber] = useState(initialData ? initialData.TellimuseNumber : '');
     const [staatus] = useState(initialData ? initialData.Staatus : 'Töös'); // Lisa olek
     const [openMenu, setOpenMenu] = useState(null);
+    const [isLocked, setIsLocked] = useState(false);
     const menuRef = useRef(null);
     
     const toggleMenu = (menu) => {
@@ -97,6 +98,24 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
         };
     }, []);
 
+    useEffect(() => {
+        const fetchOrderStatus = async () => {
+            if (orderId) {
+                try {
+                    const response = await axios.get(`http://localhost:5000/api/tellimused/${orderId}`);
+                    const { Staatus } = response.data;
+                    if (Staatus === 'Veos kinnitatud' || Staatus === 'Tühistatud') {
+                        setIsLocked(true);
+                    }
+                } catch (error) {
+                    console.error('Viga staatuse pärimisel:', error.response ? error.response.data : error.message);
+                }
+            }
+        };
+
+        fetchOrderStatus();
+    }, [orderId]);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         const orderData = {
@@ -131,6 +150,11 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
         };
 
         try {
+            if (isLocked) {
+                alert('Tellimust ei saa muuta, kuna see on juba kinnitatud või tühistatud.');
+                return;
+            }
+
             if (orderId) {
                 await axios.put(`http://localhost:5000/api/tellimused/${orderId}`, orderData);
                 alert('Tellimus edukalt uuendatud');
@@ -151,7 +175,12 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
         if (!orderId) {
         alert('Tellimus pole salvestatud!');
         return;
-    }
+        }
+
+        if (isLocked) {
+            alert('Tellimuse staatust ei saa muuta, kuna see on juba kinnitatud või tühistatud.');
+            return;
+        }
     
         try {
             console.log('Saadan staatust ID-ga:', orderId);
@@ -160,6 +189,9 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
                 Staatus: newStatus
             });
             alert('Staatus edukalt uuendatud');
+            if (newStatus === 'Kinnitatud' || newStatus === 'Tühistatud') {
+                setIsLocked(true);
+            }
             setOpenMenu(null); // Sulge menüü pärast muudatust
         } catch (error) {
             console.error('Viga staatuse uuendamisel:', error.response ? error.response.data : error.message);
@@ -286,7 +318,7 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
                     </button>
                     {openMenu === 'status' && (
                         <ul className="menu-items">
-                            <li onClick={() => handleStatusChange('Veos kinnitatud')}>Veos kinnitatud</li>
+                            <li onClick={() => handleStatusChange('Kinnitatud')}>Veos kinnitatud</li>
                             <li onClick={() => handleStatusChange('Tühistatud')}>Tühistatud</li>
                         </ul>
                     )}
