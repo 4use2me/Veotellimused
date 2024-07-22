@@ -5,6 +5,7 @@ import './OrderList.css';
 const OrderList = ({ onSelectOrder }) => {
     const [orders, setOrders] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
+    const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
 
     useEffect(() => {
         const fetchOrders = async () => {
@@ -49,6 +50,30 @@ const OrderList = ({ onSelectOrder }) => {
         );
     });    
 
+    const sortedFilteredOrders = React.useMemo(() => {
+        let sortableOrders = [...filteredOrders];
+        if (sortConfig.key !== null) {
+            sortableOrders.sort((a, b) => {
+                if (a[sortConfig.key] < b[sortConfig.key]) {
+                    return sortConfig.direction === 'ascending' ? -1 : 1;
+                }
+                if (a[sortConfig.key] > b[sortConfig.key]) {
+                    return sortConfig.direction === 'ascending' ? 1 : -1;
+                }
+                return 0;
+            });
+        }
+        return sortableOrders;
+    }, [filteredOrders, sortConfig]);
+
+    const requestSort = (key) => {
+        let direction = 'ascending';
+        if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+            direction = 'descending';
+        }
+        setSortConfig({ key, direction });
+    };
+
     return (
         <div className="order-list">
             <h2>Tellimuste nimekiri</h2>
@@ -61,16 +86,16 @@ const OrderList = ({ onSelectOrder }) => {
             <table>
                 <thead>
                     <tr>
-                        <th>Tellimuse number</th>
-                        <th>Klient</th>
-                        <th>Klient2</th>
-                        <th>Vedaja</th>
-                        <th>Staatus</th>
+                    <th onClick={() => requestSort('TellimuseNumber')}>Tellimuse number</th>
+                        <th onClick={() => requestSort('Klient')}>Klient</th>
+                        <th onClick={() => requestSort('KlientII')}>Klient2</th>
+                        <th onClick={() => requestSort('Vedaja')}>Vedaja</th>
+                        <th onClick={() => requestSort('Staatus')}>Staatus</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {filteredOrders.length > 0 ? (
-                        filteredOrders.map(order => (
+                {sortedFilteredOrders.length > 0 ? (
+                        sortedFilteredOrders.map(order => (
                             <tr key={order.id} onClick={() => onSelectOrder(order.id)}>
                                 <td>{order.TellimuseNumber}</td>
                                 <td>{order.Klient}</td>

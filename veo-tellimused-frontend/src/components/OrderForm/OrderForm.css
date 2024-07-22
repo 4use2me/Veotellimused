@@ -32,20 +32,6 @@
 }
 
 .order-form button[type="submit"] {
-    background-color: #2684FF;
-    color: white;
-    padding: 10px;
-    border: none;
-    cursor: pointer;
-    margin-top: 0px;
-    width: 25%;
-}
-
-.order-form button[type="submit"]:hover {
-    background-color: #2674FF;
-}
-
-.order-form .generate-purchase-button {
     background-color: #12826a;
     color: white;
     padding: 10px;
@@ -55,8 +41,22 @@
     width: 25%;
 }
 
-.order-form .generate-purchase-button:hover {
+.order-form button[type="submit"]:hover {
     background-color: #12726a;
+}
+
+.order-form .generate-purchase-button {
+    background-color: #2169cee1;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    margin-top: 0px;
+    width: 25%;
+}
+
+.order-form .generate-purchase-button:hover {
+    background-color: #2159cee1;
 }
 
 .order-form .generate-sale-button {

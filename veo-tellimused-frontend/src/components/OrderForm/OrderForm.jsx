@@ -267,6 +267,66 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
         }
     };    
 
+    const customStyles = {
+        control: (provided, state) => ({
+            ...provided,
+            borderColor: state.isFocused ? 'black' : 'black',
+            '&:hover': {
+                borderColor: 'black'
+            },
+            boxShadow: state.isFocused ? '0 0 0 1px black' : 'none',
+        }),
+        option: (provided, state) => ({
+            ...provided,
+            backgroundColor: state.isSelected ? '#f0f0f0' : state.isFocused ? '#f0f0f0' : 'white',
+            color: state.isSelected ? 'black' : 'black',
+            '&:hover': {
+                backgroundColor: '#f0f0f0',
+                color: 'black'
+            },
+        }),
+        multiValue: (provided) => ({
+            ...provided,
+            backgroundColor: '#f0f0f0',
+        }),
+        multiValueLabel: (provided) => ({
+            ...provided,
+            color: 'black',
+        }),
+        multiValueRemove: (provided) => ({
+            ...provided,
+            color: 'black',
+            '&:hover': {
+                backgroundColor: '#f0f0f0',
+                color: 'black'
+            },
+        }),
+        dropdownIndicator: (provided) => ({
+            ...provided,
+            color: 'black',
+        }),
+        clearIndicator: (provided) => ({
+            ...provided,
+            color: 'black',
+        }),
+        indicatorSeparator: (provided) => ({
+            ...provided,
+            backgroundColor: 'black',
+        }),
+        menu: (provided) => ({
+            ...provided,
+            zIndex: 9999,
+        }),
+        placeholder: (provided) => ({
+            ...provided,
+            color: 'black',
+        }),
+        singleValue: (provided) => ({
+            ...provided,
+            color: 'black',
+        }),
+    };    
+
     return (
         <div className="order-form">
             <h2>{tellimuseNumber ? `Veotellimus: ${tellimuseNumber}` : 'Sisesta tellimus'}</h2>
@@ -279,6 +339,7 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
                         value={klient} required
                         onChange={(selectedOption) => setKlient(selectedOption)}
                         placeholder="Vali klient"
+                        styles={customStyles}
                         isClearable={true}
                     />
                 </div>
@@ -290,6 +351,7 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
                         value={klientII} 
                         onChange={(selectedOption) => setKlientII(selectedOption)}
                         placeholder="Vali klient"
+                        styles={customStyles}
                         isClearable={true}
                     />
                 </div>
@@ -389,6 +451,7 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
                         value={vedaja} required
                         onChange={(selectedOption) => setVedaja(selectedOption)}
                         placeholder="Vali vedaja"
+                        styles={customStyles}
                         isClearable={true}
                     />
                 </div>

@@ -30,7 +30,7 @@
 }
 
 .data-form button[type="submit"] {
-    background-color: #4CAF50;
+    background-color: #12826a;
     color: white;
     padding: 10px;
     border: none;
@@ -40,5 +40,5 @@
 }
 
 .data-form button[type="submit"]:hover {
-    background-color: #45a049;
+    background-color: #12726a;
 }
