@@ -32,7 +32,7 @@
 }
 
 .order-form button[type="submit"] {
-    background-color: #4CAF50;
+    background-color: #2684FF;
     color: white;
     padding: 10px;
     border: none;
@@ -42,11 +42,11 @@
 }
 
 .order-form button[type="submit"]:hover {
-    background-color: #45a049;
+    background-color: #2674FF;
 }
 
 .order-form .generate-purchase-button {
-    background-color: #302ad3;
+    background-color: #12826a;
     color: white;
     padding: 10px;
     border: none;
@@ -56,11 +56,11 @@
 }
 
 .order-form .generate-purchase-button:hover {
-    background-color: #241fa0;
+    background-color: #12726a;
 }
 
 .order-form .generate-sale-button {
-    background-color: #d32aa0;
+    background-color: #d32a92;
     color: white;
     padding: 10px;
     border: none;
@@ -70,7 +70,7 @@
 }
 
 .order-form .generate-sale-button:hover {
-    background-color: #a7227f;
+    background-color: #c32a92;
 }
 
 .order-form .toggle-menu-button {
@@ -85,25 +85,36 @@
 }
 
 .order-form .toggle-menu-button:hover {
-    background-color: #d58b1c;
+    background-color: #dd9b1f;
 }
 
 .order-form .menu-items {
     list-style-type: none;
-    left: 75%;
-    text-align: left;
+    left: 82.5%;
+    text-align: right;
     font-size: small;
     flex-direction: column;
     position: absolute;
     top: 89%; /* Asetab menüü nupu alla */
     width: 15%; /* Tagab, et menüü laius vastab nupu laiusele */
-    background-color: white;
+    background-color: white; 
     z-index: 1;
+    border: 1px solid #ccc; /* Lisab piiri menüüle */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Lisab varju menüüle */
+    padding: 0;
+    
 }
 
 .order-form .menu-items li {
-    padding: 3px 0;
+    padding: 5px 12px; /* Lisab sisepaddingut */
     cursor: pointer;
+    width: 100%; /* Määrab elemendi laiuse 100% ulatuses */
+    display: block; /* Määrab elemendi kuvamise plokina */
+    box-sizing: border-box; /* Veendub, et padding ja border arvestatakse elemendi üldlaiusesse */
+}
+
+.order-form .menu-items li:hover {
+    background-color: #f6e8d4; /* Muudab taustavärvi, kui kursor on elemendi kohal */
 }
 
 .order-form .toggle-menu-button::after {
@@ -138,4 +149,8 @@
     justify-content: center;
     font-weight: bolder;
     margin-right: 5px;
+}
+
+.select-container {
+    width: 66%; /* Või määrake konkreetne laius, nt 300px */
 }

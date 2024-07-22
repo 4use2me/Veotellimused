@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import Select from 'react-select';
 import axios from 'axios';
 import './OrderForm.css';
 
@@ -35,6 +36,8 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
     const [openMenu, setOpenMenu] = useState(null);
     const [isLocked, setIsLocked] = useState(false);
     const [errors, setErrors] = useState({});
+    const [clients, setClients] = useState([]);
+    const [carriers, setCarriers] = useState([]);
     const menuRef = useRef(null);
     
     const toggleMenu = (menu) => {
@@ -115,6 +118,40 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
         };
         fetchOrderStatus();
     }, [orderId]);
+
+    useEffect(() => {
+        const fetchClients = async () => {
+            try {
+                const response = await axios.get('http://localhost:5000/api/kliendid');
+                const clientOptions = response.data.map(client => ({
+                    value: client.id,
+                    label: client.Ettevõte,
+                }));
+                setClients(clientOptions);
+            } catch (error) {
+                console.error('Error fetching clients:', error);
+            }
+        };
+
+        fetchClients();
+    }, []);
+
+    useEffect(() => {
+        const fetchCarriers = async () => {
+            try {
+                const response = await axios.get('http://localhost:5000/api/carriers');
+                const carrierOptions = response.data.map(carrier => ({
+                    value: carrier.id,
+                    label: carrier.Company,
+                }));
+                setCarriers(carrierOptions);
+            } catch (error) {
+                console.error('Error fetching carriers:', error);
+            }
+        };
+
+        fetchCarriers();
+    }, []);
 
     const validate = () => {
         const newErrors = {};
@@ -236,11 +273,25 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
             <form onSubmit={handleSubmit}>
                 <div>
                     <label className='bold-label'>Klient *</label>
-                    <input type="text" value={klient} onChange={(e) => setKlient(e.target.value)} required />
+                    <Select 
+                        className="select-container"
+                        options={clients}
+                        value={klient} required
+                        onChange={(selectedOption) => setKlient(selectedOption)}
+                        placeholder="Vali klient"
+                        isClearable={true}
+                    />
                 </div>
                 <div>
                     <label>Klient *</label>
-                    <input type="text" value={klientII} onChange={(e) => setKlientII(e.target.value)} />
+                   <Select 
+                        className="select-container"
+                        options={clients}
+                        value={klientII} 
+                        onChange={(selectedOption) => setKlientII(selectedOption)}
+                        placeholder="Vali klient"
+                        isClearable={true}
+                    />
                 </div>
                 <div>
                     <label>Pealelaadimise ettevõte, kontakt</label>
@@ -332,7 +383,14 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
                 </div>     
                 <div>
                     <label className='bold-label'>Vedaja *</label>
-                    <input type="text" value={vedaja} onChange={(e) => setVedaja(e.target.value)} required />
+                    <Select 
+                        className="select-container"
+                        options={carriers}
+                        value={vedaja} required
+                        onChange={(selectedOption) => setVedaja(selectedOption)}
+                        placeholder="Vali vedaja"
+                        isClearable={true}
+                    />
                 </div>
                 <div>
                     <button type="submit">Salvesta</button>
