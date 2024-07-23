@@ -1,4 +1,5 @@
 const express = require('express');
+const axios = require('axios');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const sql = require('mssql');
@@ -6,6 +7,8 @@ const sql = require('mssql');
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
+
+const API_KEY = '5151a18b04a80f82c01cd1c13a1b7bcc';
 
 // SQL Serveri konfiguratsioon
 const dbConfig = {
@@ -669,6 +672,25 @@ app.get('/api/carriers', async (req, res) => {
     } catch (error) {
         console.error('Error fetching carriers:', error);
         res.status(500).send('Server error');
+    }
+});
+
+app.get('/api/validate-vat', async (req, res) => {
+    const vatNumber = req.query.vatNumber;
+    try {
+        const response = await axios.get(`http://apilayer.net/api/validate?access_key=${API_KEY}&vat_number=${vatNumber}`);
+        if (response.data && response.data.valid) {
+            res.json({
+                valid: response.data.valid,
+                company_name: response.data.company_name,
+                company_address: response.data.company_address
+            });
+        } else {
+            res.json({ valid: false });
+        }
+    } catch (error) {
+        console.error('Error validating VAT number:', error.message);
+        res.status(500).json({ error: 'Error validating VAT number' });
     }
 });
 

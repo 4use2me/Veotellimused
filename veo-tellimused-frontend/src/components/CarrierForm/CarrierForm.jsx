@@ -11,6 +11,7 @@ const CarrierForm = ({ initialData, onCarrierDataChange, onCarrierAdded }) => {
     const [registryCode, setRegistryCode] = useState(initialData ? initialData.RegistryCode : '');
     const [vatNumber, setVatNumber] = useState(initialData ? initialData.VatNumber : '');
     const [paymentTerm, setPaymentTerm] = useState(initialData ? initialData.PaymentTerm : '');
+    const [error, setError] = useState('');
 
     useEffect(() => {
         if (initialData) {
@@ -24,6 +25,22 @@ const CarrierForm = ({ initialData, onCarrierDataChange, onCarrierAdded }) => {
             setPaymentTerm(initialData.PaymentTerm);
         }
     }, [initialData]);
+
+    const handleVatValidation = async () => {
+        setError('');
+        try {
+            const response = await axios.get(`http://localhost:5000/api/validate-vat?vatNumber=${vatNumber}`);
+            if (response.data.valid) {
+                setCompany(response.data.company_name || '');
+                setAddress(response.data.company_address || '');
+            } else {
+                setError('Käibemaksukohustuslase number ei kehti.');
+            }
+        } catch (error) {
+            console.error('Error validating VAT number:', error); // Debugging line
+            setError('Error validating VAT number');
+        }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -56,15 +73,15 @@ const CarrierForm = ({ initialData, onCarrierDataChange, onCarrierAdded }) => {
 
     return (
         <div className="carrier-form">
-            <h2>Lisa vedaja</h2>
+            <h2>Vedaja</h2>
             <form onSubmit={handleSubmit}>
                 <div>
                     <label>Ettevõte</label>
-                    <input type="text" value={company} onChange={(e) => setCompany(e.target.value)} required />
+                    <input type="text" value={company} readOnly />
                 </div>
                 <div>
                     <label>Aadress</label>
-                    <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} required />
+                    <input type="text" value={address} readOnly />
                 </div>
                 <div>
                     <label>E-post</label>
@@ -81,7 +98,9 @@ const CarrierForm = ({ initialData, onCarrierDataChange, onCarrierAdded }) => {
                 <div>
                     <label>Käibemaksukohustuslase number</label>
                     <input type="text" value={vatNumber} onChange={(e) => setVatNumber(e.target.value)} />
+                    <button type="button" onClick={handleVatValidation}>Valideeri VAT number</button>
                 </div>
+                {error && <div className="error">{error}</div>}
                 <div>
                     <label>Maksetähtaeg</label>
                     <input type="number" value={paymentTerm} onChange={(e) => setPaymentTerm(e.target.value)} required />

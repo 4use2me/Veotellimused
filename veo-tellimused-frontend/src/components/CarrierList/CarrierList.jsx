@@ -51,8 +51,6 @@ const CarrierList = ({ onSelectCarrier }) => {
                 <thead>
                     <tr>
                         <th>Ettevõte</th>
-                        <th>E-post</th>
-                        <th>Telefon</th>
                         <th>Äriregistrikood</th>
                     </tr>
                 </thead>
@@ -61,8 +59,6 @@ const CarrierList = ({ onSelectCarrier }) => {
                         filteredCarriers.map(carrier => (
                             <tr key={carrier.id} onClick={() => onSelectCarrier(carrier.id)}>
                                 <td>{carrier.Company}</td>
-                                <td>{carrier.EMail}</td>
-                                <td>{carrier.Phone}</td>
                                 <td>{carrier.RegistryCode}</td>
                             </tr>
                         ))
