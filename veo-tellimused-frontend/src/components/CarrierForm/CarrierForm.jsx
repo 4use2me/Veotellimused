@@ -12,6 +12,8 @@ const CarrierForm = ({ initialData, onCarrierDataChange, onCarrierAdded }) => {
     const [vatNumber, setVatNumber] = useState(initialData ? initialData.VatNumber : '');
     const [paymentTerm, setPaymentTerm] = useState(initialData ? initialData.PaymentTerm : '');
     const [error, setError] = useState('');
+    const [duplicateError, setDuplicateError] = useState('');
+    const [vatValidated, setVatValidated] = useState(false);
 
     useEffect(() => {
         if (initialData) {
@@ -23,27 +25,67 @@ const CarrierForm = ({ initialData, onCarrierDataChange, onCarrierAdded }) => {
             setRegistryCode(initialData.RegistryCode);
             setVatNumber(initialData.VatNumber);
             setPaymentTerm(initialData.PaymentTerm);
+            setVatValidated(true); // Kui andmed on algselt olemas, eeldame, et VAT on valideeritud
         }
     }, [initialData]);
 
     const handleVatValidation = async () => {
-        setError('');
         try {
-            const response = await axios.get(`http://localhost:5000/api/validate-vat?vatNumber=${vatNumber}`);
+            const response = await axios.get('http://localhost:5000/api/validate-vat', {
+                params: { vatNumber }
+            });
+
             if (response.data.valid) {
-                setCompany(response.data.company_name || '');
-                setAddress(response.data.company_address || '');
+                setCompany(response.data.company_name);
+                setAddress(response.data.company_address);
+                setVatValidated(true);
+                setError('');
             } else {
-                setError('Käibemaksukohustuslase number ei kehti.');
+                setError('Kehtetu käibemaksukohustuslase number.');
+                setVatValidated(false);
             }
         } catch (error) {
-            console.error('Error validating VAT number:', error); // Debugging line
-            setError('Error validating VAT number');
+            console.error('Error validating VAT number:', error.message);
+            setError('Käibemaksukohustuslase numbri valideerimine ebaõnnestus.');
+            setVatValidated(false);
         }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError('');
+        setDuplicateError('');
+
+        // Kontrollid ainult uue vedaja lisamisel
+        if (!carrierId) {
+            if (!vatValidated) {
+                setError('Käibemaksukohustuslase number ei ole valideeritud.');
+                return;
+            }
+
+            if (!company || !address) {
+                setError('Ettevõtte nimi ja aadress peavad olema täidetud.');
+                return;
+            }
+
+            // Kontrolli, kas vedaja juba eksisteerib ainult uue vedaja lisamisel
+            try {
+                const response = await axios.get('http://localhost:5000/api/carriers/check', {
+                    params: { registryCode }
+                });
+
+                if (response.data.exists) {
+                    setDuplicateError('Selline vedaja on juba olemas.');
+                    return;
+                }
+            } catch (error) {
+                console.error('Error checking carrier existence:', error.message);
+                alert('Vedaja olemasolu kontrollimine ebaõnnestus');
+                return;
+            }
+        }
+
+        // Kui kõik kontrollid on läbitud, salvesta andmed
         const carrierData = {
             Company: company,
             Address: address,
@@ -66,22 +108,22 @@ const CarrierForm = ({ initialData, onCarrierDataChange, onCarrierAdded }) => {
                 onCarrierAdded(response.data);
             }
         } catch (error) {
-            console.error('Error adding / updating the carrier:', error);
+            console.error('Error adding / updating the carrier:', error.message);
             alert('Vedaja lisamine / uuendamine ebaõnnestus');
         }
     };
 
     return (
         <div className="carrier-form">
-            <h2>Vedaja</h2>
+            <h2>{carrierId ? 'Uuenda vedaja andmeid' : 'Lisa vedaja'}</h2>
             <form onSubmit={handleSubmit}>
                 <div>
                     <label>Ettevõte</label>
-                    <input type="text" value={company} readOnly />
+                    <input type="text" value={company} onChange={(e) => setCompany(e.target.value)} required />
                 </div>
                 <div>
                     <label>Aadress</label>
-                    <input type="text" value={address} readOnly />
+                    <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} required />
                 </div>
                 <div>
                     <label>E-post</label>
@@ -101,6 +143,7 @@ const CarrierForm = ({ initialData, onCarrierDataChange, onCarrierAdded }) => {
                     <button type="button" onClick={handleVatValidation}>Valideeri VAT number</button>
                 </div>
                 {error && <div className="error">{error}</div>}
+                {duplicateError && <div className="error">{duplicateError}</div>}
                 <div>
                     <label>Maksetähtaeg</label>
                     <input type="number" value={paymentTerm} onChange={(e) => setPaymentTerm(e.target.value)} required />

@@ -694,6 +694,28 @@ app.get('/api/validate-vat', async (req, res) => {
     }
 });
 
+// Backend: kontrollige, kas vedaja on olemas
+app.get('/api/carriers/check', async (req, res) => {
+    const { registryCode } = req.query;
+
+    if (!registryCode) {
+        return res.status(400).json({ error: 'Registry code is required' });
+    }
+
+    try {
+        const request = new sql.Request();
+        const result = await request
+            .input('RegistryCode', sql.NVarChar, registryCode)
+            .query('SELECT COUNT(*) AS count FROM Carriers WHERE RegistryCode = @RegistryCode');
+
+        const exists = result.recordset[0].count > 0;
+        res.json({ exists });
+    } catch (error) {
+        console.error('Error checking carrier existence:', error.message);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
 app.get('/api/data', async (req, res) => {
     try {
         const request = new sql.Request();

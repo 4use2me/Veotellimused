@@ -21,12 +21,13 @@
 .carrier-form label {
     flex: 1;
     margin-right: 10px;
-    margin-left: 0px;
+    margin-left: 20px;
     text-align: right; 
 }
 
 .carrier-form input, .carrier-form button {
-    flex: 2;
+    flex: 2.17;
+    padding: 5px;
 }
 
 .carrier-form button[type="submit"] {

@@ -227,7 +227,7 @@ function App() {
 
     const handleCarrierAdded = (newCarrier) => {
         setCarrierData(newCarrier);
-        setCarrierFormKey(prevKey => prevKey + 1);
+        // setCarrierFormKey(prevKey => prevKey + 1);
         setActiveCarrierView('form');
     };
 
