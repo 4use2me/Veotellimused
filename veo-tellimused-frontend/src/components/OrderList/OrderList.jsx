@@ -94,7 +94,7 @@ const OrderList = ({ onSelectOrder }) => {
                     </tr>
                 </thead>
                 <tbody>
-                {sortedFilteredOrders.length > 0 ? (
+                    {sortedFilteredOrders.length > 0 ? (
                         sortedFilteredOrders.map(order => (
                             <tr key={order.id} onClick={() => onSelectOrder(order.id)}>
                                 <td>{order.TellimuseNumber}</td>

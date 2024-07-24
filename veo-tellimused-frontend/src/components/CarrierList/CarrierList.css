@@ -14,6 +14,7 @@
     padding: 10px;
     border: 1px solid #ccc;
     text-align: left;
+    position: relative; /* Ensure sorting icons can be positioned absolutely */
 }
 
 .carrier-list th {
@@ -30,4 +31,22 @@
     padding: 8px;
     margin-bottom: 10px;
     box-sizing: border-box;
+}
+
+th {
+    position: relative;
+    padding-right: 30px; /* Ensure space for sort icon */
+}
+
+.sort-icon {
+    position: absolute;
+    right: 15px; /* Adjust as needed */
+    top: 50%;
+    transform: translateY(-50%); /* Center vertically */
+    opacity: 0.5;
+    pointer-events: none; /* Ensure clicks go through to the th */
+}
+
+th:hover .sort-icon {
+    opacity: 1;
 }
