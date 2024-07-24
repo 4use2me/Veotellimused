@@ -221,7 +221,7 @@ function App() {
 
     const handleClientAdded = (newClient) => {
         setClientData(newClient);
-        setClientFormKey(prevKey => prevKey + 1);
+        //setClientFormKey(prevKey => prevKey + 1);
         setActiveClientView('form');
     };
 

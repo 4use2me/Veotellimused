@@ -87,6 +87,7 @@ const CarrierList = ({ onSelectCarrier }) => {
                         <th onClick={() => requestSort('Company')}>Ettevõte
                         <FontAwesomeIcon icon={getSortIcon('Company')} className="sort-icon" />
                         </th>
+                        <th>Telefon</th>
                         <th onClick={() => requestSort('RegistryCode')}>Äriregistrikood
                         <FontAwesomeIcon icon={getSortIcon('RegistryCode')} className="sort-icon" />
                         </th>
@@ -97,6 +98,7 @@ const CarrierList = ({ onSelectCarrier }) => {
                         sortedFilteredCarriers.map(carrier => (
                             <tr key={carrier.id} onClick={() => onSelectCarrier(carrier.id)}>
                                 <td>{carrier.Company}</td>
+                                <td>{carrier.Phone}</td>
                                 <td>{carrier.RegistryCode}</td>
                             </tr>
                         ))

@@ -664,6 +664,28 @@ app.get('/api/kliendid', async (req, res) => {
     }
 });
 
+// Backend: kontrollige, kas klient on olemas
+app.get('/api/kliendid/check', async (req, res) => {
+    const { äriregistrikood } = req.query;
+
+    if (!äriregistrikood) {
+        return res.status(400).json({ error: 'Registry code is required' });
+    }
+
+    try {
+        const request = new sql.Request();
+        const result = await request
+            .input('Äriregistrikood', sql.NVarChar, äriregistrikood)
+            .query('SELECT COUNT(*) AS count FROM Kliendid WHERE Äriregistrikood = @Äriregistrikood');
+
+        const exists = result.recordset[0].count > 0;
+        res.json({ exists });
+    } catch (error) {
+        console.error('Error checking client existence:', error.message);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
 app.get('/api/carriers', async (req, res) => {
     try {
         const request = new sql.Request();

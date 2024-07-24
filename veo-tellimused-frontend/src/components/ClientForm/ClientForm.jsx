@@ -11,6 +11,7 @@ const ClientForm = ({ initialData, onClientDataChange, onClientAdded }) => {
     const [äriregistrikood, setÄriregistrikood] = useState(initialData ? initialData.Äriregistrikood : '');
     const [käibemaksukohustuslaseNumber, setKäibemaksukohustuslaseNumber] = useState(initialData ? initialData.KäibemaksukohustuslaseNumber : '');
     const [maksetähtaeg, setMaksetähtaeg] = useState(initialData ? initialData.Maksetähtaeg : '');
+    const [duplicateError, setDuplicateError] = useState('');
 
     useEffect(() => {
         if (initialData) {
@@ -27,6 +28,23 @@ const ClientForm = ({ initialData, onClientDataChange, onClientAdded }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setDuplicateError('');
+
+        try {
+            const response = await axios.get('http://localhost:5000/api/kliendid/check', {
+                params: { äriregistrikood }
+            });
+
+            if (response.data.exists) {
+                setDuplicateError('Selline klient on juba olemas.');
+                return;
+            }
+        } catch (error) {
+            console.error('Error checking client existence:', error.message);
+            alert('Kliendi olemasolu kontrollimine ebaõnnestus');
+            return;
+        }
+
         const clientData = {
             Ettevõte: ettevõte,
             Aadress: aadress,
@@ -56,7 +74,7 @@ const ClientForm = ({ initialData, onClientDataChange, onClientAdded }) => {
 
     return (
         <div className="client-form">
-            <h2>Lisa klient</h2>
+            <h2>{clientId ? 'Uuenda kliendi andmeid' : 'Lisa klient'}</h2>
             <form onSubmit={handleSubmit}>
                 <div>
                     <label>Ettevõte</label>
@@ -78,6 +96,7 @@ const ClientForm = ({ initialData, onClientDataChange, onClientAdded }) => {
                     <label>Äriregistrikood</label>
                     <input type="text" value={äriregistrikood} onChange={(e) => setÄriregistrikood(e.target.value)} required />
                 </div>
+                {duplicateError && <div className="error">{duplicateError}</div>}
                 <div>
                     <label>Käibemaksukohustuslase number</label>
                     <input type="text" value={käibemaksukohustuslaseNumber} onChange={(e) => setKäibemaksukohustuslaseNumber(e.target.value)} />

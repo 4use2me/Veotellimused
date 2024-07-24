@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './ClientList.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSort, faSortUp, faSortDown } from '@fortawesome/free-solid-svg-icons';
 
 const ClientList = ({ onSelectClient }) => {
     const [clients, setClients] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
+    const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
+
 
     useEffect(() => {
         const fetchClients = async () => {
@@ -38,6 +42,37 @@ const ClientList = ({ onSelectClient }) => {
         );
     });
 
+    const sortedFilteredClients = React.useMemo(() => {
+        let sortableClients = [...filteredClients];
+        if (sortConfig.key !== null) {
+            sortableClients.sort((a, b) => {
+                if (a[sortConfig.key] < b[sortConfig.key]) {
+                    return sortConfig.direction === 'ascending' ? -1 : 1;
+                }
+                if (a[sortConfig.key] > b[sortConfig.key]) {
+                    return sortConfig.direction === 'ascending' ? 1 : -1;
+                }
+                return 0;
+            });
+        }
+        return sortableClients;
+    }, [filteredClients, sortConfig]);
+
+    const requestSort = (key) => {
+        let direction = 'ascending';
+        if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+            direction = 'descending';
+        }
+        setSortConfig({ key, direction });
+    };
+
+    const getSortIcon = (key) => {
+        if (sortConfig.key === key) {
+            return sortConfig.direction === 'ascending' ? faSortUp : faSortDown;
+        }
+        return faSort;
+    };
+
     return (
         <div className="client-list">
             <h2>Klientide nimekiri</h2>
@@ -50,15 +85,19 @@ const ClientList = ({ onSelectClient }) => {
             <table>
                 <thead>
                     <tr>
-                        <th>Ettevõte</th>
+                        <th onClick={() => requestSort('Ettevõte')}>Ettevõte
+                        <FontAwesomeIcon icon={getSortIcon('Ettevõte')} className="sort-icon" />
+                        </th>
                         <th>E-post</th>
                         <th>Telefon</th>
-                        <th>Äriregistrikood</th>
+                        <th onClick={() => requestSort('Äriregistrikood')}>Äriregistrikood
+                        <FontAwesomeIcon icon={getSortIcon('Äriregistrikood')} className="sort-icon" />
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
-                    {filteredClients.length > 0 ? (
-                        filteredClients.map(client => (
+                    {sortedFilteredClients.length > 0 ? (
+                        sortedFilteredClients.map(client => (
                             <tr key={client.id} onClick={() => onSelectClient(client.id)}>
                                 <td>{client.Ettevõte}</td>
                                 <td>{client.EPost}</td>

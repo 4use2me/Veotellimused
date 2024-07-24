@@ -137,13 +137,13 @@ const CarrierForm = ({ initialData, onCarrierDataChange, onCarrierAdded }) => {
                     <label>Äriregistrikood</label>
                     <input type="text" value={registryCode} onChange={(e) => setRegistryCode(e.target.value)} required />
                 </div>
+                {duplicateError && <div className="error">{duplicateError}</div>}
                 <div>
                     <label>Käibemaksukohustuslase number</label>
                     <input type="text" value={vatNumber} onChange={(e) => setVatNumber(e.target.value)} />
                     <button type="button" onClick={handleVatValidation}>Valideeri VAT number</button>
                 </div>
                 {error && <div className="error">{error}</div>}
-                {duplicateError && <div className="error">{duplicateError}</div>}
                 <div>
                     <label>Maksetähtaeg</label>
                     <input type="number" value={paymentTerm} onChange={(e) => setPaymentTerm(e.target.value)} required />
