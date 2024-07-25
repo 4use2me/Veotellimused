@@ -136,11 +136,6 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
         fetchClients();
     }, []);
 
-    const handleClientChange = (selectedOption) => {
-        setKlient(selectedOption);
-        console.log('Selected client:', selectedOption); // Debug line
-    };    
-
     useEffect(() => {
         const fetchCarriers = async () => {
             try {
@@ -157,10 +152,6 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
 
         fetchCarriers();
     }, []);
-
-    const handleCarrierChange = (selectedOption) => {
-        setVedaja(selectedOption);
-    };
 
     const validate = () => {
         const newErrors = {};
@@ -193,7 +184,7 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
         }
 
         const orderData = {
-            Klient: klient ? klient.label : '',
+            Klient: klient,
             PealelaadimiseEttevõte: pealelaadimiseEttevõte,
             PealelaadimiseAadress: pealelaadimiseAadress,
             Laadung: laadung,
@@ -204,7 +195,7 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
             Eritingimus: eritingimus,
             Müügihind: parseFloat(müügihind),
             VälineTellimusnumber: välineTellimusnumber,
-            Vedaja: vedaja ? vedaja.label : '',
+            Vedaja: vedaja,
             AutoNumbrimärk: autoNumbrimärk,
             Kontakt: kontakt,
             Hind: hind,
@@ -345,13 +336,12 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
                     <Select 
                         className="select-container"
                         options={clients}
-                        value={clients.find(option => option.label === klient)} 
-                        onChange={handleClientChange}
+                        value={klient} required
+                        onChange={(selectedOption) => setKlient(selectedOption)}
                         placeholder="Vali klient"
                         styles={customStyles}
                         isClearable={true}
                     />
-                    {errors.Klient && <span className="error">{errors.Klient}</span>}
                 </div>
                 <div>
                     <label>Klient *</label>
@@ -458,8 +448,8 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
                     <Select 
                         className="select-container"
                         options={carriers}
-                        value={carriers.find(option => option.label === vedaja)} 
-                        onChange={handleCarrierChange}
+                        value={vedaja} required
+                        onChange={(selectedOption) => setVedaja(selectedOption)}
                         placeholder="Vali vedaja"
                         styles={customStyles}
                         isClearable={true}

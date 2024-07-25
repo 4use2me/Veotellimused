@@ -45,7 +45,7 @@ const ClientForm = ({ initialData, onClientDataChange, onClientAdded }) => {
                 alert('Kliendi olemasolu kontrollimine ebaõnnestus');
                 return;
             }
-        } 
+        }
 
         const clientData = {
             Ettevõte: ettevõte,

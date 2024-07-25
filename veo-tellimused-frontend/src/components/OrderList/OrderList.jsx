@@ -115,4 +115,4 @@ const OrderList = ({ onSelectOrder }) => {
     );
 };
 
-export default OrderList
+export default OrderList;
