@@ -30,20 +30,22 @@ const ClientForm = ({ initialData, onClientDataChange, onClientAdded }) => {
         e.preventDefault();
         setDuplicateError('');
 
-        try {
-            const response = await axios.get('http://localhost:5000/api/kliendid/check', {
-                params: { äriregistrikood }
-            });
+        if (!clientId) {
+            try {
+                const response = await axios.get('http://localhost:5000/api/kliendid/check', {
+                    params: { äriregistrikood }
+                });
 
-            if (response.data.exists) {
-                setDuplicateError('Selline klient on juba olemas.');
+                if (response.data.exists) {
+                    setDuplicateError('Selline klient on juba olemas.');
+                    return;
+                }
+            } catch (error) {
+                console.error('Error checking client existence:', error.message);
+                alert('Kliendi olemasolu kontrollimine ebaõnnestus');
                 return;
             }
-        } catch (error) {
-            console.error('Error checking client existence:', error.message);
-            alert('Kliendi olemasolu kontrollimine ebaõnnestus');
-            return;
-        }
+        } 
 
         const clientData = {
             Ettevõte: ettevõte,

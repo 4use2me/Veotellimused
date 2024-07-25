@@ -29,6 +29,7 @@
 
 .order-form input, .order-form button {
     flex: 2;
+    padding: 5px;
 }
 
 .order-form button[type="submit"] {
