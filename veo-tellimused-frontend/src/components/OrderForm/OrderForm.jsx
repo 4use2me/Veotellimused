@@ -6,7 +6,7 @@ import './OrderForm.css';
 const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
     const [orderId, setOrderId] = useState(initialData ? initialData.id : null);
     const [klient, setKlient] = useState(initialData ? { value: initialData.KlientID, label: initialData.Klient } : null);
-    const [klientII, setKlientII] = useState(initialData ? initialData.KlientII : '');
+    const [klientII, setKlientII] = useState(initialData ? { value: initialData.KlientIIID, label: initialData.KlientII } : null);
     const [pealelaadimiseEttevõte, setPealelaadimiseEttevõte] = useState(initialData ? initialData.PealelaadimiseEttevõte : '');
     const [pealelaadimiseEttevõte2, setPealelaadimiseEttevõte2] = useState(initialData ? initialData.PealelaadimiseEttevõte2 : '');
     const [pealelaadimiseAadress, setPealelaadimiseAadress] = useState(initialData ? initialData.PealelaadimiseAadress : '');
@@ -48,7 +48,7 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
         if (initialData) {
             setOrderId(initialData.id);
             setKlient({ value: initialData.KlientID, label: initialData.Klient });
-            setKlientII(initialData.KlientII);
+            setKlientII({ value: initialData.KlientIIID, label: initialData.KlientII });
             setPealelaadimiseEttevõte(initialData.PealelaadimiseEttevõte);
             setPealelaadimiseEttevõte2(initialData.PealelaadimiseEttevõte2);
             setPealelaadimiseAadress(initialData.PealelaadimiseAadress);
@@ -139,6 +139,11 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
     const handleClientChange = (selectedOption) => {
         setKlient(selectedOption);
         console.log('Selected client:', selectedOption); // Debug line
+    };
+    
+    const handleClientIIChange = (selectedOption) => {
+        setKlientII(selectedOption);
+        console.log('Selected client:', selectedOption); // Debug line
     };    
 
     useEffect(() => {
@@ -216,7 +221,7 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
         };
 
         if (klientII) {
-            orderData.KlientII = klientII;
+            orderData.KlientII = klientII ? klientII.label : '';
             orderData.PealelaadimiseEttevõte2 = pealelaadimiseEttevõte2;
             orderData.PealelaadimiseAadress2 = pealelaadimiseAadress2;
             orderData.Laadung2 = laadung2;
@@ -360,13 +365,14 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
                     <label>Klient *</label>
                    <Select 
                         className="select-container"
+                        value={klientII}
+                        onChange={handleClientIIChange}
                         options={clients}
-                        value={klientII} 
-                        onChange={(selectedOption) => setKlientII(selectedOption)}
                         placeholder="Vali klient"
                         styles={customStyles}
                         isClearable={true}
                     />
+                    {errors.klientII && <div className="error">{errors.klientII}</div>}
                 </div>
                 <div>
                     <label>Pealelaadimise ettevõte, kontakt</label>
