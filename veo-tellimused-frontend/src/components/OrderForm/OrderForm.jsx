@@ -5,7 +5,7 @@ import './OrderForm.css';
 
 const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
     const [orderId, setOrderId] = useState(initialData ? initialData.id : null);
-    const [klient, setKlient] = useState(initialData ? initialData.Klient : '');
+    const [klient, setKlient] = useState(initialData ? { value: initialData.KlientID, label: initialData.Klient } : null);
     const [klientII, setKlientII] = useState(initialData ? initialData.KlientII : '');
     const [pealelaadimiseEttevõte, setPealelaadimiseEttevõte] = useState(initialData ? initialData.PealelaadimiseEttevõte : '');
     const [pealelaadimiseEttevõte2, setPealelaadimiseEttevõte2] = useState(initialData ? initialData.PealelaadimiseEttevõte2 : '');
@@ -27,7 +27,7 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
     const [müügihind2, setMüügihind2] = useState(initialData ? initialData.Müügihind2 : '');
     const [välineTellimusnumber, setVälineTellimusnumber] = useState(initialData ? initialData.VälineTellimusnumber : '');
     const [välineTellimusnumber2, setVälineTellimusnumber2] = useState(initialData ? initialData.VälineTellimusnumber2 : '');
-    const [vedaja, setVedaja] = useState(initialData ? initialData.Vedaja : '');
+    const [vedaja, setVedaja] = useState(initialData ? { value: initialData.VedajaID, label: initialData.Vedaja } : null);
     const [autoNumbrimärk, setAutoNumbrimärk] = useState(initialData ? initialData.AutoNumbrimärk : '');
     const [kontakt, setKontakt] = useState(initialData ? initialData.Kontakt : '');
     const [hind, setHind] = useState(initialData ? initialData.Hind : '');
@@ -47,7 +47,7 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
     useEffect(() => {
         if (initialData) {
             setOrderId(initialData.id);
-            setKlient(initialData.Klient);
+            setKlient({ value: initialData.KlientID, label: initialData.Klient });
             setKlientII(initialData.KlientII);
             setPealelaadimiseEttevõte(initialData.PealelaadimiseEttevõte);
             setPealelaadimiseEttevõte2(initialData.PealelaadimiseEttevõte2);
@@ -81,7 +81,7 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
             setMüügihind2(initialData.Müügihind2);
             setVälineTellimusnumber(initialData.VälineTellimusnumber);
             setVälineTellimusnumber2(initialData.VälineTellimusnumber2);
-            setVedaja(initialData.Vedaja);
+            setVedaja({ value: initialData.VedajaID, label: initialData.Vedaja });
             setAutoNumbrimärk(initialData.AutoNumbrimärk);
             setKontakt(initialData.Kontakt);
             setHind(initialData.Hind);
@@ -136,6 +136,11 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
         fetchClients();
     }, []);
 
+    const handleClientChange = (selectedOption) => {
+        setKlient(selectedOption);
+        console.log('Selected client:', selectedOption); // Debug line
+    };    
+
     useEffect(() => {
         const fetchCarriers = async () => {
             try {
@@ -152,6 +157,10 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
 
         fetchCarriers();
     }, []);
+
+    const handleCarrierChange = (selectedOption) => {
+        setVedaja(selectedOption);
+    };
 
     const validate = () => {
         const newErrors = {};
@@ -184,7 +193,7 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
         }
 
         const orderData = {
-            Klient: klient,
+            Klient: klient ? klient.label : '',
             PealelaadimiseEttevõte: pealelaadimiseEttevõte,
             PealelaadimiseAadress: pealelaadimiseAadress,
             Laadung: laadung,
@@ -195,7 +204,7 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
             Eritingimus: eritingimus,
             Müügihind: parseFloat(müügihind),
             VälineTellimusnumber: välineTellimusnumber,
-            Vedaja: vedaja,
+            Vedaja: vedaja ? vedaja.label : '',
             AutoNumbrimärk: autoNumbrimärk,
             Kontakt: kontakt,
             Hind: hind,
@@ -335,9 +344,9 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
                     <label className='bold-label'>Klient *</label>
                     <Select 
                         className="select-container"
+                        value={klient}
+                        onChange={handleClientChange}
                         options={clients}
-                        value={klient} required
-                        onChange={(selectedOption) => setKlient(selectedOption)}
                         placeholder="Vali klient"
                         styles={customStyles}
                         isClearable={true}
@@ -447,9 +456,9 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
                     <label className='bold-label'>Vedaja *</label>
                     <Select 
                         className="select-container"
+                        value={vedaja}
+                        onChange={handleCarrierChange}
                         options={carriers}
-                        value={vedaja} required
-                        onChange={(selectedOption) => setVedaja(selectedOption)}
                         placeholder="Vali vedaja"
                         styles={customStyles}
                         isClearable={true}
