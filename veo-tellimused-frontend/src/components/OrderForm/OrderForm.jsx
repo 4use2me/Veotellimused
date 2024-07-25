@@ -164,6 +164,9 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
 
     const validate = () => {
         const newErrors = {};
+        if (!klient) newErrors.klient = 'Klient on kohustuslik';
+        if (!vedaja) newErrors.vedaja = 'Vedaja on kohustuslik';
+
         const fields = {
             PealelaadimiseEttevõte2: pealelaadimiseEttevõte2,
             PealelaadimiseAadress2: pealelaadimiseAadress2,
@@ -351,6 +354,7 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
                         styles={customStyles}
                         isClearable={true}
                     />
+                    {errors.klient && <div className="error">{errors.klient}</div>}
                 </div>
                 <div>
                     <label>Klient *</label>
@@ -463,6 +467,7 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
                         styles={customStyles}
                         isClearable={true}
                     />
+                    {errors.vedaja && <div className="error">{errors.vedaja}</div>}
                 </div>
                 <div>
                     <button type="submit">Salvesta</button>
