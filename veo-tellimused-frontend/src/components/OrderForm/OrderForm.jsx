@@ -349,7 +349,7 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
             <h2>{tellimuseNumber ? `Veotellimus: ${tellimuseNumber}` : 'Sisesta tellimus'}</h2>
             <form onSubmit={handleSubmit}>
                 <div>
-                    <label className='bold-label'>Klient *</label>
+                    <label className='bold-label'>Klient</label>
                     <Select 
                         className="select-container"
                         value={klient}
@@ -362,7 +362,7 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
                     {errors.klient && <div className="error">{errors.klient}</div>}
                 </div>
                 <div>
-                    <label>Klient *</label>
+                    <label className='bold-label'>Klient</label>
                    <Select 
                         className="select-container"
                         value={klientII}
@@ -384,11 +384,11 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
                     {errors.PealelaadimiseEttevõte2 && <div className="error">{errors.PealelaadimiseEttevõte2}</div>}
                 </div>
                 <div>
-                    <label>Pealelaadimise aadress</label>
+                    <label className='bold-label'>Pealelaadimise aadress</label>
                     <input type="text" value={pealelaadimiseAadress} onChange={(e) => setPealelaadimiseAadress(e.target.value)} required />
                 </div>
                 <div>
-                    <label>Pealelaadimise aadress</label>
+                    <label className='bold-label'>Pealelaadimise aadress</label>
                     <input type="text" value={pealelaadimiseAadress2} onChange={(e) => setPealelaadimiseAadress2(e.target.value)} />
                     {errors.PealelaadimiseAadress2 && <div className="error">{errors.PealelaadimiseAadress2}</div>}
                 </div>
@@ -420,11 +420,11 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
                     {errors.MahalaadimiseEttevõte2 && <div className="error">{errors.MahalaadimiseEttevõte2}</div>}
                 </div>
                 <div>
-                    <label>Mahalaadimise aadress</label>
+                    <label className='bold-label'>Mahalaadimise aadress</label>
                     <input type="text" value={mahalaadimiseAadress} onChange={(e) => setMahalaadimiseAadress(e.target.value)} required />
                 </div>
                 <div>
-                    <label>Mahalaadimise aadress</label>
+                    <label className='bold-label'>Mahalaadimise aadress</label>
                     <input type="text" value={mahalaadimiseAadress2} onChange={(e) => setMahalaadimiseAadress2(e.target.value)} />
                     {errors.MahalaadimiseAadress2 && <div className="error">{errors.MahalaadimiseAadress2}</div>}
                 </div>
@@ -446,24 +446,24 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
                     <input type="text" value={eritingimus2} onChange={(e) => setEritingimus2(e.target.value)} />
                 </div>
                 <div>
-                    <label>Väline tellimusnumber *</label>
+                    <label className='bold-label'>Väline tellimusnumber</label>
                     <input type="text" value={välineTellimusnumber} onChange={(e) => setVälineTellimusnumber(e.target.value)} />
                 </div>
                 <div>
-                    <label>Väline tellimusnumber *</label>
+                    <label className='bold-label'>Väline tellimusnumber</label>
                     <input type="text" value={välineTellimusnumber2} onChange={(e) => setVälineTellimusnumber2(e.target.value)} />
                 </div>
                 <div>
-                    <label>Müügihind *</label>
+                    <label className='bold-label'>Müügihind</label>
                     <input type="text" value={müügihind} onChange={(e) => setMüügihind(e.target.value)} pattern="\d+(\.\d{1,2})?" required />
                 </div>
                 <div>
-                    <label>Müügihind *</label>
+                    <label className='bold-label'>Müügihind</label>
                     <input type="text" value={müügihind2} onChange={(e) => setMüügihind2(e.target.value)} pattern="\d+(\.\d{1,2})?" />
                     {errors.Müügihind2 && <div className="error">{errors.Müügihind2}</div>}
                 </div>     
                 <div>
-                    <label className='bold-label'>Vedaja *</label>
+                    <label className='bold-label'>Vedaja</label>
                     <Select 
                         className="select-container"
                         value={vedaja}
@@ -479,7 +479,7 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
                     <button type="submit">Salvesta</button>
                 </div>
                 <div>
-                    <label>Auto numbrimärk *</label>
+                    <label className='bold-label'>Auto numbrimärk</label>
                     <input type="text" value={autoNumbrimärk} onChange={(e) => setAutoNumbrimärk(e.target.value)} required />
                 </div>
                 <div>
@@ -504,7 +504,7 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
                     )}
                 </div> 
                 <div>
-                    <label>Hind *</label>
+                    <label className='bold-label'>Hind</label>
                     <input type="text" value={hind} onChange={(e) => setHind(e.target.value)} pattern="\d+(\.\d{1,2})?" required />
                 </div>
                 <div>

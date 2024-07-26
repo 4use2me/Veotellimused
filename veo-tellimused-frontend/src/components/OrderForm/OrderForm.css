@@ -1,9 +1,9 @@
 .order-form {
-    max-width: 800px; /* Määrab maksimaalse laiuse, et mahutada kaks veergu */
+    max-width: 850px; /* Määrab maksimaalse laiuse, et mahutada kaks veergu */
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     width: 100%;
-    padding: 20px;
+    padding-right: 20px;
     margin-top: 20px;
     position: relative;
 }
@@ -25,6 +25,7 @@
     flex: 1;
     margin-right: 10px;
     text-align: right; /* Joondab sildid paremale */
+    padding-left: 20px;
 }
 
 .order-form input, .order-form button {
@@ -153,5 +154,5 @@
 }
 
 .select-container {
-    width: 66%; /* Või määrake konkreetne laius, nt 300px */
+    width: 63%; /* Või määrake konkreetne laius, nt 300px */
 }

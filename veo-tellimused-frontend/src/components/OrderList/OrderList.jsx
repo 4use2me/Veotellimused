@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './OrderList.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSort, faSortUp, faSortDown } from '@fortawesome/free-solid-svg-icons';
 
 const OrderList = ({ onSelectOrder }) => {
     const [orders, setOrders] = useState([]);
@@ -74,6 +76,13 @@ const OrderList = ({ onSelectOrder }) => {
         setSortConfig({ key, direction });
     };
 
+    const getSortIcon = (key) => {
+        if (sortConfig.key === key) {
+            return sortConfig.direction === 'ascending' ? faSortUp : faSortDown;
+        }
+        return faSort;
+    };
+
     return (
         <div className="order-list">
             <h2>Tellimuste nimekiri</h2>
@@ -86,11 +95,19 @@ const OrderList = ({ onSelectOrder }) => {
             <table>
                 <thead>
                     <tr>
-                    <th onClick={() => requestSort('TellimuseNumber')}>Tellimuse number</th>
-                        <th onClick={() => requestSort('Klient')}>Klient</th>
+                        <th onClick={() => requestSort('TellimuseNumber')}>Tellimuse number
+                        <FontAwesomeIcon icon={getSortIcon('TellimuseNumber')} className="sort-icon" />
+                        </th>
+                        <th onClick={() => requestSort('Klient')}>Klient
+                        <FontAwesomeIcon icon={getSortIcon('Klient')} className="sort-icon" />
+                        </th>
                         <th onClick={() => requestSort('KlientII')}>Klient2</th>
-                        <th onClick={() => requestSort('Vedaja')}>Vedaja</th>
-                        <th onClick={() => requestSort('Staatus')}>Staatus</th>
+                        <th onClick={() => requestSort('Vedaja')}>Vedaja
+                        <FontAwesomeIcon icon={getSortIcon('Vedaja')} className="sort-icon" />
+                        </th>
+                        <th onClick={() => requestSort('Staatus')}>Staatus
+                        <FontAwesomeIcon icon={getSortIcon('Staatus')} className="sort-icon" />
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
