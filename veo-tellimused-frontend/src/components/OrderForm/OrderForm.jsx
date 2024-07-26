@@ -48,7 +48,7 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
         if (initialData) {
             setOrderId(initialData.id);
             setKlient({ value: initialData.KlientID, label: initialData.Klient });
-            setKlientII(initialData.KlientIIID ? { value: initialData.KlientIIID, label: initialData.KlientII } : null);
+            setKlientII({ value: initialData.KlientIIID, label: initialData.KlientII });
             setPealelaadimiseEttevõte(initialData.PealelaadimiseEttevõte);
             setPealelaadimiseEttevõte2(initialData.PealelaadimiseEttevõte2);
             setPealelaadimiseAadress(initialData.PealelaadimiseAadress);
@@ -88,6 +88,41 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
             setTellimuseNumber(initialData.TellimuseNumber);
         }
     }, [initialData]);
+
+    useEffect(() => {
+        if (orderId) {
+            // Lae tellimuse andmed serverist
+            axios.get(`http://localhost:5000/api/tellimused/${orderId}`)
+                .then(response => {
+                    const order = response.data;
+                    setKlient({ label: order.Klient });
+                    setKlientII({ label: order.KlientII });
+                    setPealelaadimiseEttevõte(order.PealelaadimiseEttevõte);
+                    setMahalaadimiseEttevõte2(order.MahalaadimiseEttevõte2);
+                    setPealelaadimiseAadress(order.PealelaadimiseAadress);
+                    setPealelaadimiseAadress2(order.PealelaadimiseAadress2);
+                    setLaadung(order.Laadung);
+                    setLaadung2(order.Laadung2);
+                    setMahalaadimiseEttevõte(order.MahalaadimiseEttevõte);
+                    setMahalaadimiseEttevõte2(order.MahalaadimiseEttevõte2);
+                    setMahalaadimiseAadress(order.MahalaadimiseAadress);
+                    setMahalaadimiseAadress2(order.MahalaadimiseAadress2);
+                    setEritingimus(order.Eritingimus);
+                    setEritingimus2(order.Eritingimus2);
+                    setMüügihind(order.Müügihind);
+                    setMüügihind2(order.Müügihind2);
+                    setVälineTellimusnumber(order.VälineTellimusnumber);
+                    setVälineTellimusnumber2(order.VälineTellimusnumber2);
+                    setVedaja({label: order.Vedaja});
+                    setAutoNumbrimärk(order.AutoNumbrimärk);
+                    setKontakt(order.Kontakt);
+                    setHind(order.Hind);
+                    setTellimuseNumber(order.TellimuseNumber);
+                    // ... määrake kõik muud väljad
+                })
+                .catch(error => console.error('Tellimuse andmete laadimine ebaõnnestus:', error));
+        }
+    }, [orderId]);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
