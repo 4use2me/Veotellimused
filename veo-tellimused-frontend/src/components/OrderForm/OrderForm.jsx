@@ -48,7 +48,7 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
         if (initialData) {
             setOrderId(initialData.id);
             setKlient({ value: initialData.KlientID, label: initialData.Klient });
-            setKlientII({ value: initialData.KlientIIID, label: initialData.KlientII });
+            setKlientII(initialData.KlientIIID ? { value: initialData.KlientIIID, label: initialData.KlientII } : null);
             setPealelaadimiseEttevõte(initialData.PealelaadimiseEttevõte);
             setPealelaadimiseEttevõte2(initialData.PealelaadimiseEttevõte2);
             setPealelaadimiseAadress(initialData.PealelaadimiseAadress);

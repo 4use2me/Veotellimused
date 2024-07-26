@@ -215,7 +215,7 @@ function App() {
             Staatus: newOrder.Staatus || 'Töös' // Kui Staatus on puudu, määrame vaikimisi 'Töös'
         };
         setOrderData(orderWithDefaultStatus);
-        //setOrderFormKey(prevKey => prevKey + 1);
+        setOrderFormKey(prevKey => prevKey + 1);
         setActiveOrderView('form');
     };
 

@@ -36,7 +36,7 @@ const OrderList = ({ onSelectOrder }) => {
         const klientII = order.KlientII ? order.KlientII.toLowerCase() : '';
         const vedaja = order.Vedaja ? order.Vedaja.toLowerCase() : '';
         const staatus = order.Staatus ? order.Staatus.toLowerCase() : '';
-    
+        
         // Kui otsingusõna on tühi, tagasta kõik tellimused
         if (!term) {
             return true;
