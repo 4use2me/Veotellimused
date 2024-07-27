@@ -48,7 +48,7 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
         if (initialData) {
             setOrderId(initialData.id);
             setKlient({ value: initialData.KlientID, label: initialData.Klient });
-            setKlientII({ value: initialData.KlientIIID, label: initialData.KlientII });
+            setKlientII(initialData.KlientIIID ? { value: initialData.KlientIIID, label: initialData.KlientII } : null);
             setPealelaadimiseEttevõte(initialData.PealelaadimiseEttevõte);
             setPealelaadimiseEttevõte2(initialData.PealelaadimiseEttevõte2);
             setPealelaadimiseAadress(initialData.PealelaadimiseAadress);
@@ -96,7 +96,7 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
                 .then(response => {
                     const order = response.data;
                     setKlient({ label: order.Klient });
-                    setKlientII({ label: order.KlientII });
+                    setKlientII( order.KlientIIID ? {label: order.KlientII } : null);
                     setPealelaadimiseEttevõte(order.PealelaadimiseEttevõte);
                     setMahalaadimiseEttevõte2(order.MahalaadimiseEttevõte2);
                     setPealelaadimiseAadress(order.PealelaadimiseAadress);
@@ -290,6 +290,50 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
             alert('Tellimuse lisamine / uuendamine ebaõnnestus');
         }
     };
+
+    const handleGeneratePDF = async () => {
+        if (!tellimuseNumber || !vedaja || !pealelaadimiseEttevõte || !pealelaadimiseAadress || 
+            !laadung || !pealelaadimiseKuupäev || !mahalaadimiseEttevõte || !mahalaadimiseAadress || 
+            !mahalaadimiseKuupäev || !hind) {
+            console.error('Missing order data');
+            return;
+        }
+    
+        const orderData = {
+            tellimuseNumber, // Siin on kasutatud tellimuseNumber, mitte orderNumber
+            vedaja: vedaja.label,
+            pealelaadimiseEttevõte,
+            pealelaadimiseAadress,
+            laadung,
+            pealelaadimiseKuupäev,
+            mahalaadimiseEttevõte,
+            mahalaadimiseAadress,
+            mahalaadimiseKuupäev,
+            hind
+        };
+    
+        // Lisame valikulised väljad ainult siis, kui need on täidetud
+        if (eritingimus) {
+            orderData.eritingimus = eritingimus;
+        }
+    
+        console.log('Sending orderData:', orderData);
+    
+        try {
+            const response = await axios.post('http://localhost:5000/api/generate-pdf', orderData, {
+                responseType: 'blob'
+            });
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `order_${orderData.tellimuseNumber}.pdf`);
+            document.body.appendChild(link);
+            link.click();
+            link.parentNode.removeChild(link);
+        } catch (error) {
+            console.error('Error generating PDF:', error);
+        }
+    };    
 
     const handleStatusChange = async (newStatus) => {
         if (!orderId) {
@@ -518,7 +562,7 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
                     <input type="text" value={autoNumbrimärk} onChange={(e) => setAutoNumbrimärk(e.target.value)} required />
                 </div>
                 <div>
-                <button type="button" className="generate-purchase-button">Genereeri ostutellimus</button>
+                <button type="button" className="generate-purchase-button" onClick={handleGeneratePDF}>Genereeri ostutellimus</button>
                 </div>
                 <div>
                     <label>Kontakt</label>

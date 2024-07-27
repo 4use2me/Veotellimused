@@ -1,6 +1,9 @@
 const express = require('express');
 const axios = require('axios');
 const bodyParser = require('body-parser');
+const { generatePDF } = require('./pdfGenerator');
+const fs = require('fs');
+const path = require('path');
 const cors = require('cors');
 const sql = require('mssql');
 
@@ -194,6 +197,45 @@ app.post('/api/tellimused', async (req, res) => {
     } catch (error) {
         console.error('Error adding order:', error);
         res.status(500).send('Server error');
+    }
+});
+
+app.post('/api/generate-pdf', async (req, res) => {
+    try {
+        const orderData = req.body;
+
+        console.log('Received orderData:', orderData);
+
+        // Kontrollime, kas kõik vajalikud andmed on olemas
+        if (!orderData || !orderData.tellimuseNumber || !orderData.vedaja || !orderData.pealelaadimiseEttevõte || 
+            !orderData.pealelaadimiseAadress || !orderData.laadung || !orderData.pealelaadimiseKuupäev || 
+            !orderData.mahalaadimiseEttevõte || !orderData.mahalaadimiseAadress || !orderData.mahalaadimiseKuupäev || 
+            !orderData.hind) {
+            console.log('Missing required order data');
+            return res.status(400).send('Bad Request: Missing order data');
+        }
+
+        const filePath = await generatePDF(orderData);
+
+        if (!fs.existsSync(filePath)) {
+            return res.status(500).send('Internal Server Error: File not found');
+        }
+
+        res.download(filePath, `order_${orderData.tellimuseNumber}.pdf`, (err) => {
+            if (err) {
+                console.error('Error downloading file:', err);
+                res.status(500).send('Internal Server Error: Download failed');
+            } else {
+                fs.unlink(filePath, (unlinkErr) => {
+                    if (unlinkErr) {
+                        console.error('Error deleting file:', unlinkErr);
+                    }
+                });
+            }
+        });
+    } catch (error) {
+        console.error('Error generating PDF:', error);
+        res.status(500).send('Internal Server Error');
     }
 });
 
