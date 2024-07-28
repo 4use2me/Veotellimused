@@ -48,7 +48,7 @@ const OrderForm = ({ initialData, dataData, onOrderDataChange, onOrderAdded }) =
         if (initialData) {
             setOrderId(initialData.id);
             setKlient({ value: initialData.KlientID, label: initialData.Klient });
-            setKlientII(initialData.KlientIIID ? { value: initialData.KlientIIID, label: initialData.KlientII } : null);
+            setKlientII({ value: initialData.KlientIIID, label: initialData.KlientII });
             setPealelaadimiseEttevõte(initialData.PealelaadimiseEttevõte);
             setPealelaadimiseEttevõte2(initialData.PealelaadimiseEttevõte2);
             setPealelaadimiseAadress(initialData.PealelaadimiseAadress);
@@ -96,7 +96,7 @@ const OrderForm = ({ initialData, dataData, onOrderDataChange, onOrderAdded }) =
                 .then(response => {
                     const order = response.data;
                     setKlient({ label: order.Klient });
-                    setKlientII( order.KlientIIID ? {label: order.KlientII } : null);
+                    setKlientII( order.KlientII ? {label: order.KlientII } : null);
                     setPealelaadimiseEttevõte(order.PealelaadimiseEttevõte);
                     setMahalaadimiseEttevõte2(order.MahalaadimiseEttevõte2);
                     setPealelaadimiseAadress(order.PealelaadimiseAadress);
@@ -402,13 +402,13 @@ const OrderForm = ({ initialData, dataData, onOrderDataChange, onOrderAdded }) =
 
         // Lisame valikulised väljad ainult siis, kui need on täidetud
         if (klientII) {
-            orderData.KlientII = klientII ? klientII.label : '';
-            orderData.PealelaadimiseAadress2 = pealelaadimiseAadress2;
-            orderData.PealelaadimiseKuupäev2 = pealelaadimiseKuupäev2;
-            orderData.MahalaadimiseAadress2 = mahalaadimiseAadress2;
-            orderData.MahalaadimiseKuupäev2 = mahalaadimiseKuupäev2;
-            orderData.Müügihind2 = parseFloat(müügihind2);
-            orderData.VälineTellimusnumber2 = välineTellimusnumber2;
+            orderData.klientII = klientII ? klientII.label : '';
+            orderData.pealelaadimiseAadress2 = pealelaadimiseAadress2;
+            orderData.pealelaadimiseKuupäev2 = pealelaadimiseKuupäev2;
+            orderData.mahalaadimiseAadress2 = mahalaadimiseAadress2;
+            orderData.mahalaadimiseKuupäev2 = mahalaadimiseKuupäev2;
+            orderData.müügihind2 = parseFloat(müügihind2);
+            orderData.välineTellimusnumber2 = välineTellimusnumber2;
         }
 
         if (välineTellimusnumber) {
