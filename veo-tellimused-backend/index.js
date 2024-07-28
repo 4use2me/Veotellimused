@@ -202,20 +202,24 @@ app.post('/api/tellimused', async (req, res) => {
 
 app.post('/api/generate-pdf', async (req, res) => {
     try {
-        const orderData = req.body;
+        // Kontrollime, kas kõik vajalikud andmed on olemas
+        console.log('Received request body:', req.body);
+
+        const { orderData, dataData, carriers } = req.body;
 
         console.log('Received orderData:', orderData);
+        console.log('Received dataData:', dataData);
 
         // Kontrollime, kas kõik vajalikud andmed on olemas
-        if (!orderData || !orderData.tellimuseNumber || !orderData.vedaja || !orderData.pealelaadimiseEttevõte || 
-            !orderData.pealelaadimiseAadress || !orderData.laadung || !orderData.pealelaadimiseKuupäev || 
-            !orderData.mahalaadimiseEttevõte || !orderData.mahalaadimiseAadress || !orderData.mahalaadimiseKuupäev || 
-            !orderData.hind) {
+        if (!orderData || !orderData.tellimuseNumber || !orderData.vedaja || !orderData.autoNumbrimärk || 
+            !orderData.pealelaadimiseEttevõte || !orderData.pealelaadimiseAadress || !orderData.laadung || 
+            !orderData.pealelaadimiseKuupäev || !orderData.mahalaadimiseEttevõte || 
+            !orderData.mahalaadimiseAadress || !orderData.mahalaadimiseKuupäev || !orderData.hind) {
             console.log('Missing required order data');
             return res.status(400).send('Bad Request: Missing order data');
         }
 
-        const filePath = await generatePDF(orderData);
+        const filePath = await generatePDF(orderData, dataData, carriers);
 
         if (!fs.existsSync(filePath)) {
             return res.status(500).send('Internal Server Error: File not found');
@@ -731,7 +735,7 @@ app.get('/api/kliendid/check', async (req, res) => {
 app.get('/api/carriers', async (req, res) => {
     try {
         const request = new sql.Request();
-        const result = await request.query('SELECT id, Company, EMail, Phone, RegistryCode  FROM Carriers');
+        const result = await request.query('SELECT id, Company, EMail, Phone, RegistryCode, PaymentTerm  FROM Carriers');
         res.status(200).json(result.recordset);
     } catch (error) {
         console.error('Error fetching carriers:', error);

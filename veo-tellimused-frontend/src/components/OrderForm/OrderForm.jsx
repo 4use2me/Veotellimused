@@ -3,7 +3,7 @@ import Select from 'react-select';
 import axios from 'axios';
 import './OrderForm.css';
 
-const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
+const OrderForm = ({ initialData, dataData, onOrderDataChange, onOrderAdded }) => {
     const [orderId, setOrderId] = useState(initialData ? initialData.id : null);
     const [klient, setKlient] = useState(initialData ? { value: initialData.KlientID, label: initialData.Klient } : null);
     const [klientII, setKlientII] = useState(initialData ? { value: initialData.KlientIIID, label: initialData.KlientII } : null);
@@ -188,6 +188,7 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
                 const carrierOptions = response.data.map(carrier => ({
                     value: carrier.id,
                     label: carrier.Company,
+                    paymentTerm: carrier.PaymentTerm,
                 }));
                 setCarriers(carrierOptions);
             } catch (error) {
@@ -292,16 +293,22 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
     };
 
     const handleGeneratePDF = async () => {
-        if (!tellimuseNumber || !vedaja || !pealelaadimiseEttevõte || !pealelaadimiseAadress || 
+        if (!tellimuseNumber || !vedaja || !autoNumbrimärk || !pealelaadimiseEttevõte || !pealelaadimiseAadress || 
             !laadung || !pealelaadimiseKuupäev || !mahalaadimiseEttevõte || !mahalaadimiseAadress || 
             !mahalaadimiseKuupäev || !hind) {
             console.error('Missing order data');
             return;
         }
+
+        const carrier = carriers.find(carrier => carrier.label === vedaja.label);
+        const paymentTerm = carrier ? carrier.paymentTerm : 'N/A';
+
+        console.log('Payment Term:', paymentTerm);
     
         const orderData = {
             tellimuseNumber, // Siin on kasutatud tellimuseNumber, mitte orderNumber
             vedaja: vedaja.label,
+            autoNumbrimärk,
             pealelaadimiseEttevõte,
             pealelaadimiseAadress,
             laadung,
@@ -309,9 +316,11 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
             mahalaadimiseEttevõte,
             mahalaadimiseAadress,
             mahalaadimiseKuupäev,
-            hind
+            hind,
+            paymentTerm,
+            dataData
         };
-    
+
         // Lisame valikulised väljad ainult siis, kui need on täidetud
         if (eritingimus) {
             orderData.eritingimus = eritingimus;
@@ -320,7 +329,11 @@ const OrderForm = ({ initialData, onOrderDataChange, onOrderAdded }) => {
         console.log('Sending orderData:', orderData);
     
         try {
-            const response = await axios.post('http://localhost:5000/api/generate-pdf', orderData, {
+            const response = await axios.post('http://localhost:5000/api/generate-pdf', {
+                orderData,
+                dataData,
+                carriers
+            }, {
                 responseType: 'blob'
             });
             const url = window.URL.createObjectURL(new Blob([response.data]));

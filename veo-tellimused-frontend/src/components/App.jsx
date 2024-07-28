@@ -32,6 +32,9 @@ function App() {
             try {
                 const response = await axios.get('http://localhost:5000/api/data');
                 setDataData(response.data);
+
+                const carriersResponse = await axios.get('http://localhost:5000/api/carriers');
+                setCarrierData(carriersResponse.data);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -254,6 +257,8 @@ function App() {
                         key={orderFormKey}
                         onClose={handleCloseOrderForm}
                         initialData={orderData}
+                        dataData={dataData}
+                        carriers={carrierData}
                         onOrderDataChange={handleOrderDataChange}
                         onOrderAdded={handleOrderAdded}
                    />
