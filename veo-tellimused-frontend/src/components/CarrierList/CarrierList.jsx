@@ -87,6 +87,7 @@ const CarrierList = ({ onSelectCarrier }) => {
                         <th onClick={() => requestSort('Company')}>Ettevõte
                         <FontAwesomeIcon icon={getSortIcon('Company')} className="sort-icon" />
                         </th>
+                        <th>E-post</th>
                         <th>Telefon</th>
                         <th onClick={() => requestSort('RegistryCode')}>Äriregistrikood
                         <FontAwesomeIcon icon={getSortIcon('RegistryCode')} className="sort-icon" />
@@ -96,8 +97,15 @@ const CarrierList = ({ onSelectCarrier }) => {
                 <tbody>
                     {sortedFilteredCarriers.length > 0 ? (
                         sortedFilteredCarriers.map(carrier => (
-                            <tr key={carrier.id} onClick={() => onSelectCarrier(carrier.id)}>
-                                <td>{carrier.Company}</td>
+                            <tr key={carrier.id}>
+                                <td onClick={() => onSelectCarrier(carrier.id)} style={{ cursor: 'pointer' }}>
+                                    {carrier.Company}
+                                </td>
+                                <td>
+                                    <a href={`mailto:${carrier.EMail}`} title={carrier.EMail}>
+                                        {carrier.EMail}
+                                    </a>
+                                </td>
                                 <td>{carrier.Phone}</td>
                                 <td>{carrier.RegistryCode}</td>
                             </tr>

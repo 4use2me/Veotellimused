@@ -98,9 +98,15 @@ const ClientList = ({ onSelectClient }) => {
                 <tbody>
                     {sortedFilteredClients.length > 0 ? (
                         sortedFilteredClients.map(client => (
-                            <tr key={client.id} onClick={() => onSelectClient(client.id)}>
-                                <td>{client.Ettevõte}</td>
-                                <td>{client.EPost}</td>
+                            <tr key={client.id}>
+                                <td onClick={() => onSelectClient(client.id)} style={{ cursor: 'pointer' }}>
+                                    {client.Ettevõte}
+                                </td>
+                                <td>
+                                    <a href={`mailto:${client.EPost}`} title={client.EPost}>
+                                        {client.EPost}
+                                    </a>
+                                </td>
                                 <td>{client.Telefon}</td>
                                 <td>{client.Äriregistrikood}</td>
                             </tr>

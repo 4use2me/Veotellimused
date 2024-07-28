@@ -14,11 +14,41 @@
     padding: 10px;
     border: 1px solid #ccc;
     text-align: left;
-    position: relative; /* Ensure sorting icons can be positioned absolutely */
 }
 
 .carrier-list th {
     background-color: #f0f0f0;
+}
+
+.carrier-list td {
+    overflow: hidden; /* Lisatud, et vältida teksti ületäitumist */
+    text-overflow: ellipsis; /* Lisatud, et näidata ületäitumise korral ellipsit (...) */ 
+    white-space: nowrap; /* Lisatud, et vältida reavahetust */
+}
+
+/* Määrake veergude laius */
+.carrier-list th:nth-child(1),
+.carrier-list td:nth-child(1) {
+    min-width: 150px; /* Minimaalne laius 150px */
+    max-width: 300px; /* Maksimaalne laius 300px */
+}
+
+.carrier-list th:nth-child(2),
+.carrier-list td:nth-child(2) {
+    min-width: 100px; /* Minimaalne laius 150px */
+    max-width: 200px; /* Maksimaalne laius 300px */
+}
+
+.carrier-list th:nth-child(3),
+.carrier-list td:nth-child(3) {
+    min-width: 100px; /* Minimaalne laius 150px */
+    max-width: 100px; /* Maksimaalne laius 300px */
+}
+
+.carrier-list th:nth-child(4),
+.carrier-list td:nth-child(4) {
+    min-width: 100px; /* Minimaalne laius 150px */
+    max-width: 150px; /* Maksimaalne laius 300px */
 }
 
 .carrier-list tr:hover {
