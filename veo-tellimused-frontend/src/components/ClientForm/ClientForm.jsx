@@ -11,7 +11,9 @@ const ClientForm = ({ initialData, onClientDataChange, onClientAdded }) => {
     const [äriregistrikood, setÄriregistrikood] = useState(initialData ? initialData.Äriregistrikood : '');
     const [käibemaksukohustuslaseNumber, setKäibemaksukohustuslaseNumber] = useState(initialData ? initialData.KäibemaksukohustuslaseNumber : '');
     const [maksetähtaeg, setMaksetähtaeg] = useState(initialData ? initialData.Maksetähtaeg : '');
+    const [error, setError] = useState('');
     const [duplicateError, setDuplicateError] = useState('');
+    const [vatValidated, setVatValidated] = useState(false);
 
     useEffect(() => {
         if (initialData) {
@@ -23,14 +25,45 @@ const ClientForm = ({ initialData, onClientDataChange, onClientAdded }) => {
             setÄriregistrikood(initialData.Äriregistrikood);
             setKäibemaksukohustuslaseNumber(initialData.KäibemaksukohustuslaseNumber);
             setMaksetähtaeg(initialData.Maksetähtaeg);
+            setVatValidated(true); // Kui andmed on algselt olemas, eeldame, et VAT on valideeritud
         }
     }, [initialData]);
 
+    const handleVatValidation = async () => {
+        try {
+            const response = await axios.get('http://localhost:5000/api/validate-vat', {
+                params: { vatNumber: käibemaksukohustuslaseNumber }
+            });
+
+            if (response.data.valid) {
+                setEttevõte(response.data.company_name);
+                setAadress(response.data.company_address);
+                setVatValidated(true);
+                setError('');
+            } else {
+                setError('Kehtetu käibemaksukohustuslase number.');
+                setVatValidated(false);
+            }
+        } catch (error) {
+            console.error('Error validating VAT number:', error.message);
+            setError('Käibemaksukohustuslase numbri valideerimine ebaõnnestus.');
+            setVatValidated(false);
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError('');
         setDuplicateError('');
 
         if (!clientId) {
+            if (!käibemaksukohustuslaseNumber.startsWith('EE')) {
+                if (!vatValidated) {
+                    setError('Käibemaksukohustuslase number ei ole valideeritud.');
+                    return;
+                }
+            }
+            
             try {
                 const response = await axios.get('http://localhost:5000/api/kliendid/check', {
                     params: { äriregistrikood }
@@ -102,7 +135,9 @@ const ClientForm = ({ initialData, onClientDataChange, onClientAdded }) => {
                 <div>
                     <label>Käibemaksukohustuslase number</label>
                     <input type="text" value={käibemaksukohustuslaseNumber} onChange={(e) => setKäibemaksukohustuslaseNumber(e.target.value)} />
+                    <button type="button" onClick={handleVatValidation}>Valideeri VAT number</button>
                 </div>
+                {error && <div className="error">{error}</div>}
                 <div>
                     <label>Maksetähtaeg</label>
                     <input type="number" value={maksetähtaeg} onChange={(e) => setMaksetähtaeg(e.target.value)} required />
