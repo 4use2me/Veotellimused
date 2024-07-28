@@ -101,13 +101,13 @@ const OrderList = ({ onSelectOrder }) => {
                         <th onClick={() => requestSort('Klient')}>Klient
                         <FontAwesomeIcon icon={getSortIcon('Klient')} className="sort-icon" />
                         </th>
-                        <th onClick={() => requestSort('KlientII')}>Klient2</th>
                         <th onClick={() => requestSort('Vedaja')}>Vedaja
                         <FontAwesomeIcon icon={getSortIcon('Vedaja')} className="sort-icon" />
                         </th>
                         <th onClick={() => requestSort('Staatus')}>Staatus
                         <FontAwesomeIcon icon={getSortIcon('Staatus')} className="sort-icon" />
                         </th>
+                        <th onClick={() => requestSort('KlientII')}>Klient2</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -116,9 +116,9 @@ const OrderList = ({ onSelectOrder }) => {
                             <tr key={order.id} onClick={() => onSelectOrder(order.id)}>
                                 <td>{order.TellimuseNumber}</td>
                                 <td>{order.Klient}</td>
-                                <td>{order.KlientII}</td>
                                 <td>{order.Vedaja}</td>
                                 <td>{order.Staatus}</td>
+                                <td>{order.KlientII}</td>
                             </tr>
                         ))
                     ) : (

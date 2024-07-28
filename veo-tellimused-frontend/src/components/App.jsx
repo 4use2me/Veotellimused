@@ -35,6 +35,10 @@ function App() {
 
                 const carriersResponse = await axios.get('http://localhost:5000/api/carriers');
                 setCarrierData(carriersResponse.data);
+
+                const clientsResponse = await axios.get('http://localhost:5000/api/kliendid');
+                setCarrierData(clientsResponse.data);
+
             } catch (error) {
                 console.error('Error fetching data:', error);
             }

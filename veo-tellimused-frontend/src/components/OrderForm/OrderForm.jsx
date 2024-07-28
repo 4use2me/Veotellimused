@@ -156,17 +156,20 @@ const OrderForm = ({ initialData, dataData, onOrderDataChange, onOrderAdded }) =
 
     useEffect(() => {
         const fetchClients = async () => {
-            try {
-                const response = await axios.get('http://localhost:5000/api/kliendid');
-                const clientOptions = response.data.map(client => ({
-                    value: client.id,
-                    label: client.Ettevõte,
-                }));
-                setClients(clientOptions);
-            } catch (error) {
-                console.error('Error fetching clients:', error);
-            }
-        };
+        try {
+            const response = await axios.get('http://localhost:5000/api/kliendid');
+            console.log('API response:', response.data); // Log API response
+            const clientOptions = response.data.map(client => ({
+                value: client.id,
+                label: client.Ettevõte,
+                vatNumber: client.KäibemaksukohustuslaseNumber, // Kontrollige õige välja nimi
+            }));
+            console.log('Formatted client options:', clientOptions); // Log formatted options
+            setClients(clientOptions);
+        } catch (error) {
+            console.error('Error fetching clients:', error);
+        }
+    };
 
         fetchClients();
     }, []);
@@ -373,6 +376,63 @@ const OrderForm = ({ initialData, dataData, onOrderDataChange, onOrderAdded }) =
         } catch (error) {
             console.error('Viga staatuse uuendamisel:', error.response ? error.response.data : error.message);
             alert('Staatus muutmise ebaõnnestumine');
+        }
+    };    
+
+    const handleGeneratePDF1 = async () => {
+        console.log('Selected client:', klient); // Log selected client
+    
+        const client = clients.find(client => client.label === klient.label);
+        console.log('Matched client:', client); // Log matched client
+    
+        const vatNumber = client ? client.vatNumber : 'N/A';
+        console.log('VAT number:', vatNumber); // Log VAT number
+    
+        const orderData = {
+            tellimuseNumber, 
+            klient: klient.label,
+            autoNumbrimärk,
+            pealelaadimiseAadress,
+            pealelaadimiseKuupäev,
+            mahalaadimiseAadress,
+            mahalaadimiseKuupäev,
+            müügihind,
+            vatNumber
+        };
+
+        // Lisame valikulised väljad ainult siis, kui need on täidetud
+        if (klientII) {
+            orderData.KlientII = klientII ? klientII.label : '';
+            orderData.PealelaadimiseAadress2 = pealelaadimiseAadress2;
+            orderData.PealelaadimiseKuupäev2 = pealelaadimiseKuupäev2;
+            orderData.MahalaadimiseAadress2 = mahalaadimiseAadress2;
+            orderData.MahalaadimiseKuupäev2 = mahalaadimiseKuupäev2;
+            orderData.Müügihind2 = parseFloat(müügihind2);
+            orderData.VälineTellimusnumber2 = välineTellimusnumber2;
+        }
+
+        if (välineTellimusnumber) {
+            orderData.välineTellimusnumber = välineTellimusnumber;
+        }
+    
+        console.log('Sending orderData:', orderData);
+    
+        try {
+            const response = await axios.post('http://localhost:5000/api/generate-pdf1', {
+                orderData
+            }, {
+                responseType: 'blob'
+            });
+
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `order_${orderData.tellimuseNumber}.pdf`);
+            document.body.appendChild(link);
+            link.click();
+            link.parentNode.removeChild(link);
+        } catch (error) {
+            console.error('Error generating PDF:', error);
         }
     };    
 
@@ -600,7 +660,7 @@ const OrderForm = ({ initialData, dataData, onOrderDataChange, onOrderAdded }) =
                     <input type="text" value={hind} onChange={(e) => setHind(e.target.value)} pattern="\d+(\.\d{1,2})?" required />
                 </div>
                 <div>
-                <button type="button" className="generate-sale-button">Genereeri müügitellimus</button>
+                <button type="button" className="generate-sale-button" onClick={handleGeneratePDF1}>Genereeri müügitellimus</button>
                 </div>
             </form>
         </div>

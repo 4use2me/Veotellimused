@@ -2,6 +2,7 @@ const express = require('express');
 const axios = require('axios');
 const bodyParser = require('body-parser');
 const { generatePDF } = require('./pdfGenerator');
+const { generatePDF1 } = require('./pdfGenerator1');
 const fs = require('fs');
 const path = require('path');
 const cors = require('cors');
@@ -220,6 +221,47 @@ app.post('/api/generate-pdf', async (req, res) => {
         }
 
         const filePath = await generatePDF(orderData, dataData, carriers);
+
+        if (!fs.existsSync(filePath)) {
+            return res.status(500).send('Internal Server Error: File not found');
+        }
+
+        res.download(filePath, `order_${orderData.tellimuseNumber}.pdf`, (err) => {
+            if (err) {
+                console.error('Error downloading file:', err);
+                res.status(500).send('Internal Server Error: Download failed');
+            } else {
+                fs.unlink(filePath, (unlinkErr) => {
+                    if (unlinkErr) {
+                        console.error('Error deleting file:', unlinkErr);
+                    }
+                });
+            }
+        });
+    } catch (error) {
+        console.error('Error generating PDF:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+app.post('/api/generate-pdf1', async (req, res) => {
+    try {
+        // Kontrollime, kas kõik vajalikud andmed on olemas
+        console.log('Received request body:', req.body);
+
+        const { orderData } = req.body;
+
+        console.log('Received orderData:', orderData);
+
+        // Kontrollime, kas kõik vajalikud andmed on olemas
+        if (!orderData || !orderData.tellimuseNumber || !orderData.klient || !orderData.autoNumbrimärk || 
+            !orderData.pealelaadimiseAadress || !orderData.pealelaadimiseKuupäev || !orderData.vatNumber || 
+            !orderData.mahalaadimiseAadress || !orderData.mahalaadimiseKuupäev || !orderData.müügihind) {
+            console.log('Missing required order data');
+            return res.status(400).send('Bad Request: Missing order data');
+        }
+
+        const filePath = await generatePDF1(orderData);
 
         if (!fs.existsSync(filePath)) {
             return res.status(500).send('Internal Server Error: File not found');
@@ -702,7 +744,7 @@ app.get('/api/tellimused', async (req, res) => {
 app.get('/api/kliendid', async (req, res) => {
     try {
         const request = new sql.Request();
-        const result = await request.query('SELECT id, Ettevõte, EPost, Telefon, Äriregistrikood  FROM Kliendid');
+        const result = await request.query('SELECT id, Ettevõte, EPost, Telefon, Äriregistrikood, KäibemaksukohustuslaseNumber FROM Kliendid');
         res.status(200).json(result.recordset);
     } catch (error) {
         console.error('Error fetching clients:', error);
