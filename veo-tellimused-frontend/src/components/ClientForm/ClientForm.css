@@ -25,9 +25,10 @@
     text-align: right; /* Joondab sildid paremale */
 }
 
-.client-form input, .client-form button {
+.client-form input, .client-form button, .input-with-icon {
     flex: 2.17;
     padding: 5px;
+    box-sizing: border-box; /* Ensure padding is included in the width calculation */
 }
 
 .client-form button[type="submit"] {
@@ -42,4 +43,30 @@
 
 .client-form button[type="submit"]:hover {
     background-color: #12726a;
+}
+
+.input-with-icon {
+    position: relative;
+    width: 100%; /* Ensure it occupies the correct width */
+    flex: 2.3;
+    margin-right: -5px;
+}
+
+.email-input {
+    width: 100%;
+    padding-right: 30px; /* Adjust padding to make space for the icon */
+    box-sizing: border-box; /* Ensure padding is included in the width calculation */
+}
+
+.email-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    text-decoration: none;
+    font-size: 1.2em;
+    color: inherit;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
 }

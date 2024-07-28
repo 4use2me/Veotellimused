@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './CarrierForm.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 
 const CarrierForm = ({ initialData, onCarrierDataChange, onCarrierAdded }) => {
     const [carrierId, setCarrierId] = useState(initialData ? initialData.id : null);
@@ -127,7 +129,20 @@ const CarrierForm = ({ initialData, onCarrierDataChange, onCarrierAdded }) => {
                 </div>
                 <div>
                     <label>E-post</label>
-                    <input type="text" value={eMail} onChange={(e) => setEMail(e.target.value)} required />
+                    <div className="input-with-icon">
+                        <input
+                            type="email"
+                            value={eMail}
+                            onChange={(e) => setEMail(e.target.value)}
+                            className="email-input"
+                            required
+                        />
+                        {eMail && (
+                            <a href={`mailto:${eMail}`} className="email-icon" title="Send email">
+                                <FontAwesomeIcon icon={faEnvelope} />
+                            </a>
+                        )}
+                    </div>
                 </div>
                 <div>
                     <label>Telefon</label>

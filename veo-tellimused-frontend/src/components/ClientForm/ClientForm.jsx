@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './ClientForm.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
+
 
 const ClientForm = ({ initialData, onClientDataChange, onClientAdded }) => {
     const [clientId, setClientId] = useState(initialData ? initialData.id : null);
@@ -121,7 +124,20 @@ const ClientForm = ({ initialData, onClientDataChange, onClientAdded }) => {
                 </div>
                 <div>
                     <label>E-post</label>
-                    <input type="text" value={ePost} onChange={(e) => setEPost(e.target.value)} required />
+                    <div className="input-with-icon">
+                        <input
+                            type="email"
+                            value={ePost}
+                            onChange={(e) => setEPost(e.target.value)}
+                            className="email-input"
+                            required
+                        />
+                        {ePost && (
+                            <a href={`mailto:${ePost}`} className="email-icon" title="Send email">
+                                <FontAwesomeIcon icon={faEnvelope} />
+                            </a>
+                        )}
+                    </div>
                 </div>
                 <div>
                     <label>Telefon</label>
