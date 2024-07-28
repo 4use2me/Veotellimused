@@ -400,6 +400,12 @@ const OrderForm = ({ initialData, dataData, onOrderDataChange, onOrderAdded }) =
             vatNumber
         };
 
+        const client2 = clients.find(client => client.label === klientII.label);
+        console.log('Matched client:', client); // Log matched client
+    
+        const vatNumber2 = client ? client2.vatNumber : 'N/A';
+        console.log('VAT number:', vatNumber); // Log VAT number
+
         // Lisame valikulised väljad ainult siis, kui need on täidetud
         if (klientII) {
             orderData.klientII = klientII ? klientII.label : '';
@@ -408,7 +414,10 @@ const OrderForm = ({ initialData, dataData, onOrderDataChange, onOrderAdded }) =
             orderData.mahalaadimiseAadress2 = mahalaadimiseAadress2;
             orderData.mahalaadimiseKuupäev2 = mahalaadimiseKuupäev2;
             orderData.müügihind2 = parseFloat(müügihind2);
-            orderData.välineTellimusnumber2 = välineTellimusnumber2;
+            if (välineTellimusnumber2) {
+                orderData.välineTellimusnumber2 = välineTellimusnumber2;
+            }
+            orderData.vatNumber2 = vatNumber2;
         }
 
         if (välineTellimusnumber) {

@@ -49,14 +49,15 @@ const generatePDF1 = (orderData) => {
         doc.moveDown();
         doc.text(`${orderData.välineTellimusnumber || 'N/A'}`);
         doc.moveDown(2);
-        
+
         doc.font(boldFontPath).text(`ARVE 2`)
         doc.moveDown();
         doc.font(regularFontPath).text(`${orderData.klientII || 'N/A'}`);
         doc.moveDown();
         const pealelaadimiseKuup2 = formatDate(orderData.pealelaadimiseKuupäev2);
         const mahalaadimiseKuup2 = formatDate(orderData.mahalaadimiseKuupäev2);
-        if (vatNumber.startsWith('EE')) {
+        const vatNumber2 = orderData.vatNumber2;
+        if (vatNumber2.startsWith('EE')) {
             doc.text(`Transport suunal ${orderData.pealelaadimiseAadress2 || 'N/A'} - ${orderData.mahalaadimiseAadress2 || 'N/A'}`); 
             doc.text(`Auto nr ${orderData.autoNumbrimärk || 'N/A'}; ${pealelaadimiseKuup2 || 'N/A'} - ${mahalaadimiseKuup2 || 'N/A'}`);
             doc.moveDown();
