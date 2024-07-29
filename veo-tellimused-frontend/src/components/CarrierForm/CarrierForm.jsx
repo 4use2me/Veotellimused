@@ -60,10 +60,12 @@ const CarrierForm = ({ initialData, onCarrierDataChange, onCarrierAdded }) => {
 
         // Kontrollid ainult uue vedaja lisamisel
         if (!carrierId) {
-            if (!vatValidated) {
-                setError('Käibemaksukohustuslase number ei ole valideeritud.');
-                return;
-            }
+            if (!vatNumber.startsWith('EE')) {
+                if (!vatValidated) {
+                    setError('Käibemaksukohustuslase number ei ole valideeritud.');
+                    return;
+                }
+            }    
 
             if (!company || !address) {
                 setError('Ettevõtte nimi ja aadress peavad olema täidetud.');
