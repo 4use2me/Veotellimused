@@ -11,6 +11,7 @@ import Data from './Data/Data';
 import UserList from './UserList/UserList';
 import UserForm from './UserForm/UserForm';
 import axios from 'axios';
+import ExcelUpload from './ClientForm/ExcelUpload'; // Impordi uus komponent
 
 function App() {
     const [activeUserView, setActiveUserView] = useState('');
@@ -238,6 +239,10 @@ function App() {
         setActiveCarrierView('form');
     };
 
+    const handleClientsImported = (importedClients) => {
+        setClientData(prevClients => [...prevClients, ...importedClients]);
+    };
+
     console.log('Rendering App with activeSettingView:', activeSettingView);
 
     return (
@@ -278,8 +283,12 @@ function App() {
                         onClientAdded={handleClientAdded}
                     />
                 )}
-                {activeClientView === 'list' && <ClientList onSelectClient={handleSelectClient} />}
-
+                {activeClientView === 'list' && (
+                    <>
+                        <ClientList onSelectClient={handleSelectClient} />
+                        {/*<ExcelUpload onClientsImported={handleClientsImported} /> {/* Lisa ExcelUpload */}
+                    </>
+                )}
                 {activeCarrierView === 'form' && (
                     <CarrierForm
                     key={carrierFormKey}

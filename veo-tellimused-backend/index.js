@@ -7,12 +7,15 @@ const fs = require('fs');
 const path = require('path');
 const cors = require('cors');
 const sql = require('mssql');
-
+const xlsx = require('xlsx');
+const multer = require('multer');
+const upload = multer();
 const app = express();
-app.use(bodyParser.json());
-app.use(cors());
-
 const API_KEY = '5151a18b04a80f82c01cd1c13a1b7bcc';
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors());
 
 // SQL Serveri konfiguratsioon
 const dbConfig = {
@@ -56,6 +59,82 @@ const generateOrderNumber = async () => {
 };
 
 // API endpoints
+// Klientide importimise endpoint
+app.post('/api/kliendid/import', upload.single('file'), async (req, res) => {
+    try {
+        const workbook = xlsx.read(req.file.buffer, { type: 'buffer' });
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+        const jsonData = xlsx.utils.sheet_to_json(worksheet, { header: 1 });
+
+        const clientsData = jsonData.slice(1).map(row => ({
+            Ettevõte: row[0],
+            Aadress: [
+                row[3], // Tänav
+                row[7],  // Sihtnumber
+                row[4], // Linn/asula
+                row[6], // Maakond
+                row[8] // Riik 
+            ].filter(Boolean).join(', '),
+            EPost: row[5],
+            Telefon: row[2],
+            Äriregistrikood: row[1] ? row[1].toString() : '', // Muuda stringiks
+            KäibemaksukohustuslaseNumber: row[10] ? row[10].toString() : '', // Muuda stringiks
+            Maksetähtaeg: parseInt(row[9], 10) || null
+        }));
+
+        // Connect to SQL Server
+        await sql.connect(dbConfig);
+
+        // Save each client to the database
+        for (const client of clientsData) {
+            try {
+                await saveClientToDatabase(client);
+            } catch (error) {
+                console.error('Failed to save client:', client, error);
+            }
+        }
+
+        res.status(200).json({ message: 'Kliendid edukalt imporditud' });
+    } catch (error) {
+        console.error('Error importing clients:', error);
+        res.status(500).json({ message: 'Error importing clients' });
+    }
+});
+
+// Funktsioon klientide salvestamiseks andmebaasi
+const saveClientToDatabase = async (client) => {
+    try {
+        const request = new sql.Request();
+        request.input('Ettevõte', sql.NVarChar, client.Ettevõte || '');
+        request.input('Aadress', sql.NVarChar, client.Aadress || '');
+        request.input('EPost', sql.NVarChar, client.EPost || '');
+        request.input('Telefon', sql.NVarChar, client.Telefon || '');
+        request.input('Äriregistrikood', sql.NVarChar, client.Äriregistrikood || '');
+        request.input('KäibemaksukohustuslaseNumber', sql.NVarChar, client.KäibemaksukohustuslaseNumber || '');
+        request.input('Maksetähtaeg', sql.Int, client.Maksetähtaeg || null);
+        
+        const result = await request.query(`
+            INSERT INTO Kliendid (Ettevõte, Aadress, EPost, Telefon, Äriregistrikood, KäibemaksukohustuslaseNumber, Maksetähtaeg, createdAt)
+            VALUES (
+                @Ettevõte, 
+                @Aadress, 
+                @EPost, 
+                @Telefon, 
+                @Äriregistrikood, 
+                @KäibemaksukohustuslaseNumber, 
+                @Maksetähtaeg,
+                GETDATE());
+            SELECT SCOPE_IDENTITY() AS id;
+        `);
+
+        return result.recordset[0].id; // Tagasta uue kliendi ID
+    } catch (error) {
+        console.error('Error saving client to database:', error);
+        throw error;
+    }
+};
+
 app.post('/api/auth/login', async (req, res) => {
     const { username, password } = req.body;
 
