@@ -75,7 +75,7 @@ const CarrierForm = ({ initialData, onCarrierDataChange, onCarrierAdded }) => {
             // Kontrolli, kas vedaja juba eksisteerib ainult uue vedaja lisamisel
             try {
                 const response = await axios.get('http://localhost:5000/api/carriers/check', {
-                    params: { registryCode }
+                    params: { vatNumber }
                 });
 
                 if (response.data.exists) {
@@ -154,13 +154,13 @@ const CarrierForm = ({ initialData, onCarrierDataChange, onCarrierAdded }) => {
                     <label>Äriregistrikood</label>
                     <input type="text" value={registryCode} onChange={(e) => setRegistryCode(e.target.value)} required />
                 </div>
-                {duplicateError && <div className="error">{duplicateError}</div>}
                 <div>
                     <label>Käibemaksukohustuslase number</label>
                     <input type="text" value={vatNumber} onChange={(e) => setVatNumber(e.target.value)} />
                     <button type="button" onClick={handleVatValidation}>Valideeri VAT number</button>
                 </div>
                 {error && <div className="error">{error}</div>}
+                {duplicateError && <div className="error">{duplicateError}</div>}
                 <div>
                     <label>Maksetähtaeg</label>
                     <input type="number" value={paymentTerm} onChange={(e) => setPaymentTerm(e.target.value)} required />

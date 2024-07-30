@@ -116,7 +116,7 @@ const ClientList = ({ onSelectClient }) => {
                         ))
                     ) : (
                         <tr>
-                            <td colSpan="3">Sobivaid kliente ei leitud.</td>
+                            <td colSpan="4">Sobivaid kliente ei leitud.</td>
                         </tr>
                     )}
                 </tbody>

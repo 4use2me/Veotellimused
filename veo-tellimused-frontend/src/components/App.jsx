@@ -11,7 +11,8 @@ import Data from './Data/Data';
 import UserList from './UserList/UserList';
 import UserForm from './UserForm/UserForm';
 import axios from 'axios';
-import ExcelUpload from './ClientForm/ExcelUpload'; // Impordi uus komponent
+//import ClientsExcelUpload from './ClientForm/ClientsExcelUpload'; // Impordi uus komponent
+//import CarriersExcelUpload from './CarrierForm/CarriersExcelUpload'; // Impordi uus komponent
 
 function App() {
     const [activeUserView, setActiveUserView] = useState('');
@@ -38,7 +39,7 @@ function App() {
                 setCarrierData(carriersResponse.data);
 
                 const clientsResponse = await axios.get('http://localhost:5000/api/kliendid');
-                setCarrierData(clientsResponse.data);
+                setClientData(clientsResponse.data);
 
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -239,9 +240,13 @@ function App() {
         setActiveCarrierView('form');
     };
 
-    const handleClientsImported = (importedClients) => {
-        setClientData(prevClients => [...prevClients, ...importedClients]);
-    };
+    //const handleClientsImported = (importedClients) => {
+        //setClientData(prevClients => [...prevClients, ...importedClients]);
+    //};
+
+    //const handleCarriersImported = (importedCarriers) => {
+        //setCarrierData(prevCarriers => [...prevCarriers, ...importedCarriers]);
+    //};
 
     console.log('Rendering App with activeSettingView:', activeSettingView);
 
@@ -286,7 +291,7 @@ function App() {
                 {activeClientView === 'list' && (
                     <>
                         <ClientList onSelectClient={handleSelectClient} />
-                        {/*<ExcelUpload onClientsImported={handleClientsImported} /> {/* Lisa ExcelUpload */}
+                        {/*<ClientsExcelUpload onClientsImported={handleClientsImported} /> {/* Lisa ExcelUpload */}
                     </>
                 )}
                 {activeCarrierView === 'form' && (
@@ -298,7 +303,12 @@ function App() {
                         onCarrierAdded={handleCarrierAdded}
                     />
                 )}
-                {activeCarrierView === 'list' && <CarrierList onSelectCarrier={handleSelectCarrier} />}
+                {activeCarrierView === 'list' && (
+                    <>
+                        <CarrierList onSelectCarrier={handleSelectCarrier} />
+                        {/*<CarriersExcelUpload onCarriersImported={handleCarriersImported} />*/}
+                    </>
+                )}
 
                 {activeSettingView === 'form' && (
                     <Data

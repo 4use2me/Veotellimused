@@ -135,6 +135,74 @@ const saveClientToDatabase = async (client) => {
     }
 };
 
+// Vedajate importimise endpoint
+app.post('/api/carriers/import', upload.single('file'), async (req, res) => {
+    try {
+        const workbook = xlsx.read(req.file.buffer, { type: 'buffer' });
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+        const jsonData = xlsx.utils.sheet_to_json(worksheet, { header: 1 });
+
+        const carriersData = jsonData.slice(1).map(row => ({
+            Company: row[0],
+            Address: [
+                row[5], // Tänav
+                row[8],  // Sihtnumber
+                row[6], // Linn/asula
+                row[7], // Maakond
+                row[9] // Riik 
+            ].filter(Boolean).join(', '),
+            EMail: row[3],
+            Phone: row[2] ? row[2].toString() : '',
+            RegistryCode: row[1] ? row[1].toString() : '', // Muuda stringiks
+            VatNumber: row[10] ? row[10].toString() : '', // Muuda stringiks
+            PaymentTerm: parseInt(row[4], 10) || null
+        }));
+
+        // Connect to SQL Server
+        await sql.connect(dbConfig);
+
+        // Save each client to the database
+        for (const carrier of carriersData) {
+            try {
+                await saveCarrierToDatabase(carrier);
+            } catch (error) {
+                console.error('Failed to save carrier:', carrier, error);
+            }
+        }
+
+        res.status(200).json({ message: 'Vedajad edukalt imporditud' });
+    } catch (error) {
+        console.error('Error importing carriers:', error);
+        res.status(500).json({ message: 'Error importing carriers' });
+    }
+});
+
+// Funktsioon vedajate salvestamiseks andmebaasi
+const saveCarrierToDatabase = async (carrier) => {
+    try {
+        const request = new sql.Request();
+        request.input('Company', sql.NVarChar, carrier.Company || '');
+        request.input('Address', sql.NVarChar, carrier.Address || '');
+        request.input('EMail', sql.NVarChar, carrier.EMail || '');
+        request.input('Phone', sql.NVarChar, carrier.Phone || '');
+        request.input('RegistryCode', sql.NVarChar, carrier.RegistryCode || '');
+        request.input('VatNumber', sql.NVarChar, carrier.VatNumber || '');
+        request.input('PaymentTerm', sql.Int, carrier.PaymentTerm || null);
+        
+        const result = await request.query(
+            `INSERT INTO Carriers (Company, Address, EMail, Phone, RegistryCode, VatNumber, PaymentTerm, createdAt) 
+            VALUES (@Company, @Address, @EMail, @Phone, @RegistryCode, @VatNumber, @PaymentTerm, GETDATE());
+            SELECT SCOPE_IDENTITY() AS id;`
+        );
+
+        return result.recordset[0].id; // Tagasta uue vedaja ID
+    } catch (error) {
+        console.error('Error saving carrier to database:', error);
+        throw error;
+    }
+};
+
 app.post('/api/auth/login', async (req, res) => {
     const { username, password } = req.body;
 
@@ -856,7 +924,7 @@ app.get('/api/kliendid/check', async (req, res) => {
 app.get('/api/carriers', async (req, res) => {
     try {
         const request = new sql.Request();
-        const result = await request.query('SELECT id, Company, EMail, Phone, RegistryCode, PaymentTerm  FROM Carriers');
+        const result = await request.query('SELECT id, Company, EMail, Phone, RegistryCode, VatNumber, PaymentTerm  FROM Carriers');
         res.status(200).json(result.recordset);
     } catch (error) {
         console.error('Error fetching carriers:', error);
@@ -885,17 +953,17 @@ app.get('/api/validate-vat', async (req, res) => {
 
 // Backend: kontrollige, kas vedaja on olemas
 app.get('/api/carriers/check', async (req, res) => {
-    const { registryCode } = req.query;
+    const { vatNumber } = req.query;
 
-    if (!registryCode) {
-        return res.status(400).json({ error: 'Registry code is required' });
+    if (!vatNumber) {
+        return res.status(400).json({ error: 'VAT number is required' });
     }
 
     try {
         const request = new sql.Request();
         const result = await request
-            .input('RegistryCode', sql.NVarChar, registryCode)
-            .query('SELECT COUNT(*) AS count FROM Carriers WHERE RegistryCode = @RegistryCode');
+            .input('VatNumber', sql.NVarChar, vatNumber)
+            .query('SELECT COUNT(*) AS count FROM Carriers WHERE VatNumber = @VatNumber');
 
         const exists = result.recordset[0].count > 0;
         res.json({ exists });

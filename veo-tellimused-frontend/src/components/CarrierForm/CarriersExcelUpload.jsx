@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const ExcelUpload = ({ onClientsImported }) => {
+const CarriersExcelUpload = ({ onCarriersImported }) => {
     const [file, setFile] = useState(null);
 
     const handleFileChange = (e) => {
@@ -15,14 +15,14 @@ const ExcelUpload = ({ onClientsImported }) => {
         formData.append('file', file);
 
         try {
-            const response = await axios.post('http://localhost:5000/api/kliendid/import', formData, {
+            const response = await axios.post('http://localhost:5000/api/carriers/import', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
             });
 
             alert(response.data.message);
-            onClientsImported(); // Call this to refresh client list or do other actions
+            onCarriersImported(); // Call this to refresh carrier list or do other actions
         } catch (error) {
             console.error('Error uploading file:', error);
             alert('File upload failed');
@@ -37,4 +37,4 @@ const ExcelUpload = ({ onClientsImported }) => {
     );
 };
 
-export default ExcelUpload;
+export default CarriersExcelUpload;
