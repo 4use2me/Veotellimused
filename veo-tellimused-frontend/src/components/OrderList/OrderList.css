@@ -36,25 +36,37 @@
 .order-list th:nth-child(2),
 .order-list td:nth-child(2) {
     min-width: 150px; /* Minimaalne laius 150px */
-    max-width: 300px; /* Maksimaalne laius 300px */
+    max-width: 200px; /* Maksimaalne laius 300px */
 }
 
 .order-list th:nth-child(3),
 .order-list td:nth-child(3) {
-    min-width: 150px; /* Minimaalne laius 150px */
-    max-width: 300px; /* Maksimaalne laius 300px */
-}
-
-.order-list th:nth-child(4),
-.order-list td:nth-child(4) {
     min-width: 80px; /* Minimaalne laius 150px */
     max-width: 80px; /* Maksimaalne laius 300px */
 }
 
+.order-list th:nth-child(4),
+.order-list td:nth-child(4) {
+    min-width: 150px; /* Minimaalne laius 150px */
+    max-width: 200px; /* Maksimaalne laius 300px */
+}
+
 .order-list th:nth-child(5),
 .order-list td:nth-child(5) {
+    min-width: 80px; /* Minimaalne laius 150px */
+    max-width: 80px; /* Maksimaalne laius 300px */
+}
+
+.order-list th:nth-child(6),
+.order-list td:nth-child(6) {
     min-width: 100px; /* Minimaalne laius 150px */
     max-width: 100px; /* Maksimaalne laius 300px */
+}
+
+.order-list th:nth-child(7),
+.order-list td:nth-child(7) {
+    min-width: 80px; /* Minimaalne laius 150px */
+    max-width: 80px; /* Maksimaalne laius 300px */
 }
 
 .order-list tr:hover {

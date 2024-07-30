@@ -27,6 +27,8 @@ const OrderForm = ({ initialData, dataData, onOrderDataChange, onOrderAdded }) =
     const [müügihind2, setMüügihind2] = useState(initialData ? initialData.Müügihind2 : '');
     const [välineTellimusnumber, setVälineTellimusnumber] = useState(initialData ? initialData.VälineTellimusnumber : '');
     const [välineTellimusnumber2, setVälineTellimusnumber2] = useState(initialData ? initialData.VälineTellimusnumber2 : '');
+    const [lisainfo, setLisainfo] = useState(initialData ? initialData.Lisainfo : '');
+    const [lisainfo2, setLisainfo2] = useState(initialData ? initialData.Lisainfo2 : '');
     const [vedaja, setVedaja] = useState(initialData ? { value: initialData.VedajaID, label: initialData.Vedaja } : null);
     const [autoNumbrimärk, setAutoNumbrimärk] = useState(initialData ? initialData.AutoNumbrimärk : '');
     const [kontakt, setKontakt] = useState(initialData ? initialData.Kontakt : '');
@@ -81,6 +83,8 @@ const OrderForm = ({ initialData, dataData, onOrderDataChange, onOrderAdded }) =
             setMüügihind2(initialData.Müügihind2);
             setVälineTellimusnumber(initialData.VälineTellimusnumber);
             setVälineTellimusnumber2(initialData.VälineTellimusnumber2);
+            setLisainfo(initialData.Lisainfo);
+            setLisainfo2(initialData.Lisainfo2);
             setVedaja({ value: initialData.VedajaID, label: initialData.Vedaja });
             setAutoNumbrimärk(initialData.AutoNumbrimärk);
             setKontakt(initialData.Kontakt);
@@ -113,6 +117,8 @@ const OrderForm = ({ initialData, dataData, onOrderDataChange, onOrderAdded }) =
                     setMüügihind2(order.Müügihind2);
                     setVälineTellimusnumber(order.VälineTellimusnumber);
                     setVälineTellimusnumber2(order.VälineTellimusnumber2);
+                    setLisainfo(order.Lisainfo);
+                    setLisainfo2(order.Lisainfo2);
                     setVedaja({label: order.Vedaja});
                     setAutoNumbrimärk(order.AutoNumbrimärk);
                     setKontakt(order.Kontakt);
@@ -251,6 +257,7 @@ const OrderForm = ({ initialData, dataData, onOrderDataChange, onOrderAdded }) =
             Eritingimus: eritingimus,
             Müügihind: parseFloat(müügihind),
             VälineTellimusnumber: välineTellimusnumber,
+            Lisainfo:lisainfo,
             Vedaja: vedaja ? vedaja.label : '',
             AutoNumbrimärk: autoNumbrimärk,
             Kontakt: kontakt,
@@ -271,6 +278,7 @@ const OrderForm = ({ initialData, dataData, onOrderDataChange, onOrderAdded }) =
             orderData.Eritingimus2 = eritingimus2;
             orderData.Müügihind2 = parseFloat(müügihind2);
             orderData.VälineTellimusnumber2 = välineTellimusnumber2;
+            orderData.Lisainfo2 = lisainfo2;
         }
 
         try {
@@ -381,45 +389,57 @@ const OrderForm = ({ initialData, dataData, onOrderDataChange, onOrderAdded }) =
 
     const handleGeneratePDF1 = async () => {
         console.log('Selected client:', klient); // Log selected client
+        console.log('Selected client II:', klientII); // Log selected client II
     
-        const client = clients.find(client => client.label === klient.label);
+        console.log('Clients array:', clients); // Log clients array
+    
+        // Kontrollime trimmi ja väiketähtedega võrreldavat väärtust
+        const client = clients.find(client => {
+            console.log('Comparing:', client.label.trim().toLowerCase(), 'with', klient.label.trim().toLowerCase());
+            return client.label.trim().toLowerCase() === klient.label.trim().toLowerCase();
+        });
         console.log('Matched client:', client); // Log matched client
     
         const vatNumber = client ? client.vatNumber : 'N/A';
         console.log('VAT number:', vatNumber); // Log VAT number
     
         const orderData = {
-            tellimuseNumber, 
+            tellimuseNumber,
             klient: klient.label,
             autoNumbrimärk,
             pealelaadimiseAadress,
             pealelaadimiseKuupäev,
             mahalaadimiseAadress,
             mahalaadimiseKuupäev,
+            lisainfo,
             müügihind,
             vatNumber
         };
-
-        const client2 = clients.find(client => client.label === klientII.label);
-        console.log('Matched client:', client); // Log matched client
     
-        const vatNumber2 = client ? client2.vatNumber : 'N/A';
-        console.log('VAT number:', vatNumber); // Log VAT number
-
-        // Lisame valikulised väljad ainult siis, kui need on täidetud
+        // Kontrollime teist klienti
+        const client2 = clients.find(client => {
+            console.log('Comparing client2:', client.label.trim().toLowerCase(), 'with', klientII.label.trim().toLowerCase());
+            return client.label.trim().toLowerCase() === klientII.label.trim().toLowerCase();
+        });
+        console.log('Matched client2:', client2); // Log matched client2
+    
+        const vatNumber2 = client2 ? client2.vatNumber : 'N/A';
+        console.log('VAT number2:', vatNumber2); // Log VAT number2
+    
         if (klientII) {
             orderData.klientII = klientII ? klientII.label : '';
             orderData.pealelaadimiseAadress2 = pealelaadimiseAadress2;
             orderData.pealelaadimiseKuupäev2 = pealelaadimiseKuupäev2;
             orderData.mahalaadimiseAadress2 = mahalaadimiseAadress2;
             orderData.mahalaadimiseKuupäev2 = mahalaadimiseKuupäev2;
+            orderData.lisainfo2 = lisainfo2;
             orderData.müügihind2 = parseFloat(müügihind2);
             if (välineTellimusnumber2) {
                 orderData.välineTellimusnumber2 = välineTellimusnumber2;
             }
             orderData.vatNumber2 = vatNumber2;
         }
-
+    
         if (välineTellimusnumber) {
             orderData.välineTellimusnumber = välineTellimusnumber;
         }
@@ -432,7 +452,7 @@ const OrderForm = ({ initialData, dataData, onOrderDataChange, onOrderAdded }) =
             }, {
                 responseType: 'blob'
             });
-
+    
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement('a');
             link.href = url;
@@ -623,6 +643,14 @@ const OrderForm = ({ initialData, dataData, onOrderDataChange, onOrderAdded }) =
                     <input type="text" value={müügihind2} onChange={(e) => setMüügihind2(e.target.value)} pattern="\d+(\.\d{1,2})?" />
                     {errors.Müügihind2 && <div className="error">{errors.Müügihind2}</div>}
                 </div>     
+                <div>
+                    <label>Lisainfo</label>
+                    <input type="text" value={lisainfo} onChange={(e) => setLisainfo(e.target.value)} />
+                </div>
+                <div>
+                    <label>Lisainfo</label>
+                    <input type="text" value={lisainfo2} onChange={(e) => setLisainfo2(e.target.value)} />
+                </div>
                 <div>
                     <label className='bold-label'>Vedaja</label>
                     <Select 

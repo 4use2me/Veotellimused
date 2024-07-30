@@ -37,7 +37,7 @@ const generatePDF1 = (orderData) => {
         const mahalaadimiseKuup = formatDate(orderData.mahalaadimiseKuupäev);
         const vatNumber = orderData.vatNumber;
         if (vatNumber.startsWith('EE')) {
-            doc.text(`Transport suunal ${orderData.pealelaadimiseAadress} - ${orderData.mahalaadimiseAadress}`);
+            doc.text(`Transport suunal ${orderData.pealelaadimiseAadress} - ${orderData.mahalaadimiseAadress};`);
             doc.text(`Auto nr ${orderData.autoNumbrimärk}; ${pealelaadimiseKuup} - ${mahalaadimiseKuup}`);
             doc.moveDown();
         } else {
@@ -48,6 +48,8 @@ const generatePDF1 = (orderData) => {
         doc.text(`Müügihind: ${orderData.müügihind}`);
         doc.moveDown();
         doc.text(`${orderData.välineTellimusnumber || 'N/A'}`);
+        doc.moveDown();
+        doc.text(`${orderData.lisainfo || 'N/A'}`);
         doc.moveDown(2);
 
         doc.font(boldFontPath).text(`ARVE 2`)
@@ -69,6 +71,8 @@ const generatePDF1 = (orderData) => {
         doc.text(`Müügihind: ${orderData.müügihind2 || 'N/A'}`);
         doc.moveDown();
         doc.text(`${orderData.välineTellimusnumber2 || 'N/A'}`);
+        doc.moveDown();
+        doc.text(`${orderData.lisainfo2 || 'N/A'}`);
         
         // Lõpeta PDF dokument
         doc.end();

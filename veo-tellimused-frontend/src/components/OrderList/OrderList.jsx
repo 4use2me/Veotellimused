@@ -32,10 +32,13 @@ const OrderList = ({ onSelectOrder }) => {
     
         // Kontrolli omadusi ja määra vaikimisi väärtused, kui need on null/undefined
         const tellimuseNumber = order.TellimuseNumber ? order.TellimuseNumber.toLowerCase() : '';
-        const klient = order.Klient ? order.Klient.toLowerCase() : '';
-        const klientII = order.KlientII ? order.KlientII.toLowerCase() : '';
         const vedaja = order.Vedaja ? order.Vedaja.toLowerCase() : '';
         const staatus = order.Staatus ? order.Staatus.toLowerCase() : '';
+        const klient = order.Klient ? order.Klient.toLowerCase() : '';
+        const välineTellimusnumber= order.välineTellimusnumber ? order.välineTellimusnumber.toLowerCase() : ''
+        const klientII = order.KlientII ? order.KlientII.toLowerCase() : '';
+        const välineTellimusnumber2= order.välineTellimusnumber2 ? order.välineTellimusnumber2.toLowerCase() : '';
+        
         
         // Kui otsingusõna on tühi, tagasta kõik tellimused
         if (!term) {
@@ -48,6 +51,8 @@ const OrderList = ({ onSelectOrder }) => {
             klient.includes(term) ||
             klientII.includes(term) ||
             vedaja.includes(term) ||
+            välineTellimusnumber.includes(term) ||
+            välineTellimusnumber2.includes(term) ||
             staatus.includes(term)
         );
     });    
@@ -98,16 +103,18 @@ const OrderList = ({ onSelectOrder }) => {
                         <th onClick={() => requestSort('TellimuseNumber')}>Tellimuse number
                         <FontAwesomeIcon icon={getSortIcon('TellimuseNumber')} className="sort-icon" />
                         </th>
-                        <th onClick={() => requestSort('Klient')}>Klient
-                        <FontAwesomeIcon icon={getSortIcon('Klient')} className="sort-icon" />
-                        </th>
                         <th onClick={() => requestSort('Vedaja')}>Vedaja
                         <FontAwesomeIcon icon={getSortIcon('Vedaja')} className="sort-icon" />
                         </th>
                         <th onClick={() => requestSort('Staatus')}>Staatus
                         <FontAwesomeIcon icon={getSortIcon('Staatus')} className="sort-icon" />
                         </th>
+                        <th onClick={() => requestSort('Klient')}>Klient
+                        <FontAwesomeIcon icon={getSortIcon('Klient')} className="sort-icon" />
+                        </th>
+                        <th onClick={() => requestSort('Välinetellimusnumber')}>Väline tellimusnr</th>                      
                         <th onClick={() => requestSort('KlientII')}>Klient2</th>
+                        <th onClick={() => requestSort('VälineTellimusnumber2')}>Väline tellimusnr2</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -115,10 +122,12 @@ const OrderList = ({ onSelectOrder }) => {
                         sortedFilteredOrders.map(order => (
                             <tr key={order.id} onClick={() => onSelectOrder(order.id)}>
                                 <td>{order.TellimuseNumber}</td>
-                                <td>{order.Klient}</td>
                                 <td>{order.Vedaja}</td>
                                 <td>{order.Staatus}</td>
+                                <td>{order.Klient}</td>
+                                <td>{order.välineTellimusnumber}</td>
                                 <td>{order.KlientII}</td>
+                                <td>{order.välineTellimusnumber2}</td>
                             </tr>
                         ))
                     ) : (

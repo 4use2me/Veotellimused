@@ -256,6 +256,8 @@ app.post('/api/tellimused', async (req, res) => {
         Müügihind2,
         VälineTellimusnumber,
         VälineTellimusnumber2,
+        Lisainfo,
+        Lisainfo2,
         Vedaja,
         AutoNumbrimärk,
         Kontakt,
@@ -285,6 +287,8 @@ app.post('/api/tellimused', async (req, res) => {
         Müügihind2,
         VälineTellimusnumber,
         VälineTellimusnumber2,
+        Lisainfo,
+        Lisainfo2,
         Vedaja,
         AutoNumbrimärk,
         Kontakt,
@@ -319,6 +323,8 @@ app.post('/api/tellimused', async (req, res) => {
             .input('Müügihind2', sql.Decimal(10, 2), Müügihind2)
             .input('VälineTellimusnumber', sql.NVarChar, VälineTellimusnumber)
             .input('VälineTellimusnumber2', sql.NVarChar, VälineTellimusnumber2)
+            .input('Lisainfo', sql.NVarChar, Lisainfo)
+            .input('Lisainfo2', sql.NVarChar, Lisainfo2)
             .input('Vedaja', sql.NVarChar, Vedaja)
             .input('AutoNumbrimärk', sql.NVarChar, AutoNumbrimärk)
             .input('Kontakt', sql.NVarChar, Kontakt)
@@ -330,13 +336,14 @@ app.post('/api/tellimused', async (req, res) => {
                     PealelaadimiseKuupäev, PealelaadimiseKuupäev2, MahalaadimiseEttevõte, MahalaadimiseEttevõte2, 
                     MahalaadimiseAadress, MahalaadimiseAadress2, MahalaadimiseKuupäev, MahalaadimiseKuupäev2, 
                     Eritingimus, Eritingimus2, Müügihind, Müügihind2, VälineTellimusnumber, VälineTellimusnumber2, 
-                    Vedaja, AutoNumbrimärk, Kontakt, Hind, Staatus, createdAt) 
+                    Lisainfo, Lisainfo2, Vedaja, AutoNumbrimärk, Kontakt, Hind, Staatus, createdAt) 
                 VALUES (@TellimuseNumber, @Klient, @KlientII, @PealelaadimiseEttevõte, @PealelaadimiseEttevõte2, 
                     @PealelaadimiseAadress, @PealelaadimiseAadress2, @Laadung, @Laadung2, @PealelaadimiseKuupäev, 
                     @PealelaadimiseKuupäev2, @MahalaadimiseEttevõte, @MahalaadimiseEttevõte2, 
                     @MahalaadimiseAadress, @MahalaadimiseAadress2, @MahalaadimiseKuupäev, @MahalaadimiseKuupäev2, 
                     @Eritingimus, @Eritingimus2, @Müügihind, @Müügihind2, @VälineTellimusnumber, 
-                    @VälineTellimusnumber2, @Vedaja, @AutoNumbrimärk, @Kontakt, @Hind, @Staatus, GETDATE());
+                    @VälineTellimusnumber2, @Lisainfo, @Lisainfo2, @Vedaja, @AutoNumbrimärk, @Kontakt, @Hind, 
+                    @Staatus, GETDATE());
                  SELECT SCOPE_IDENTITY() AS id;`
             );
 
@@ -403,7 +410,7 @@ app.post('/api/generate-pdf1', async (req, res) => {
         // Kontrollime, kas kõik vajalikud andmed on olemas
         if (!orderData || !orderData.tellimuseNumber || !orderData.klient || !orderData.autoNumbrimärk || 
             !orderData.pealelaadimiseAadress || !orderData.pealelaadimiseKuupäev || !orderData.vatNumber || 
-            !orderData.mahalaadimiseAadress || !orderData.mahalaadimiseKuupäev || !orderData.müügihind) {
+            !orderData.mahalaadimiseAadress || !orderData.mahalaadimiseKuupäev) {
             console.log('Missing required order data');
             return res.status(400).send('Bad Request: Missing order data');
         }
@@ -564,6 +571,8 @@ app.put('/api/tellimused/:id', async (req, res) => {
         Müügihind2,
         VälineTellimusnumber,
         VälineTellimusnumber2,
+        Lisainfo,
+        Lisainfo2,
         Vedaja,
         AutoNumbrimärk,
         Kontakt,
@@ -602,6 +611,8 @@ app.put('/api/tellimused/:id', async (req, res) => {
             .input('Müügihind2', sql.Decimal(10, 2), Müügihind2)
             .input('VälineTellimusnumber', sql.NVarChar, VälineTellimusnumber)
             .input('VälineTellimusnumber2', sql.NVarChar, VälineTellimusnumber2)
+            .input('Lisainfo', sql.NVarChar, Lisainfo)
+            .input('Lisainfo2', sql.NVarChar, Lisainfo2)
             .input('Vedaja', sql.NVarChar, Vedaja)
             .input('AutoNumbrimärk', sql.NVarChar, AutoNumbrimärk)
             .input('Kontakt', sql.NVarChar, Kontakt)
@@ -631,6 +642,8 @@ app.put('/api/tellimused/:id', async (req, res) => {
                     Müügihind2 = @Müügihind2,
                     VälineTellimusnumber = @VälineTellimusnumber,
                     VälineTellimusnumber2 = @VälineTellimusnumber2,
+                    Lisainfo = @Lisainfo,
+                    Lisainfo2 = @Lisainfo2,
                     Vedaja = @Vedaja,
                     AutoNumbrimärk = @AutoNumbrimärk,
                     Kontakt = @Kontakt,
@@ -880,7 +893,7 @@ app.put('/api/users/:id', async (req, res) => {
 app.get('/api/tellimused', async (req, res) => {
     try {
         const request = new sql.Request();
-        const result = await request.query('SELECT id, TellimuseNumber, Klient, KlientII, Vedaja, Staatus FROM Tellimused');
+        const result = await request.query('SELECT id, TellimuseNumber, Klient, KlientII, Vedaja, Staatus, VälineTellimusnumber, VälineTellimusnumber2 FROM Tellimused');
         res.status(200).json(result.recordset);
     } catch (error) {
         console.error('Error fetching orders:', error);
