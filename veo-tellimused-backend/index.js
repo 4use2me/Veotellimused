@@ -10,6 +10,7 @@ const sql = require('mssql');
 const xlsx = require('xlsx');
 const multer = require('multer');
 const upload = multer();
+
 const app = express();
 const API_KEY = '5151a18b04a80f82c01cd1c13a1b7bcc';
 
@@ -59,6 +60,11 @@ const generateOrderNumber = async () => {
 };
 
 // API endpoints
+//serveri töö kontroll
+app.get('/test', (req, res) => {
+    res.send('API is working');
+});
+
 // Klientide importimise endpoint
 app.post('/api/kliendid/import', upload.single('file'), async (req, res) => {
     try {
@@ -203,6 +209,7 @@ const saveCarrierToDatabase = async (carrier) => {
     }
 };
 
+// Funktsioon autentimiseks
 app.post('/api/auth/login', async (req, res) => {
     const { username, password } = req.body;
 
@@ -213,21 +220,21 @@ app.post('/api/auth/login', async (req, res) => {
     try {
         const request = new sql.Request();
         request.input('Username', sql.NVarChar(50), username);
-        request.input('Password', sql.NVarChar(sql.MAX), password);
+        const result = await request.execute('dbo.GetUserPasswordHash');
 
-        const result = await request.execute('dbo.AuthenticateUser');
-        const userId = result.returnValue;
-
-        console.log(`Result: ${JSON.stringify(result)}`);  // Logimiseks
-        console.log(`UserId: ${userId}`);  // Logimiseks
-
-        if (userId > 0) {
-            res.status(200).json({ userId });
+        const user = result.recordset[0]; // Eeldatakse, et saite kasutaja andmed
+        if (user) {
+            const match = await bcrypt.compare(password, user.Password); // Võrdle hashiga
+            if (match) {
+                res.status(200).json({ userId: user.Id });
+            } else {
+                res.status(401).json({ message: 'Invalid credentials' });
+            }
         } else {
             res.status(401).json({ message: 'Invalid credentials' });
         }
     } catch (error) {
-        console.error('Error during authentication:', error);
+        console.error('Error during authentication:', error.message);
         res.status(500).send('Server error');
     }
 });
@@ -365,7 +372,7 @@ app.post('/api/generate-pdf', async (req, res) => {
         console.log('Received orderData:', orderData);
         console.log('Received dataData:', dataData);
 
-        
+
 
         // Kontrollime, kas kõik vajalikud andmed on olemas
         if (!orderData || !orderData.tellimuseNumber || !orderData.vedaja || !orderData.autoNumbrimärk || 

@@ -64,10 +64,18 @@ const UserList = ({ onSelectUser }) => {
                 <tbody>
                     {filteredUsers.length > 0 ? (
                         filteredUsers.map(user => (
-                            <tr key={user.id} onClick={() => onSelectUser(user.id)}>
-                                <td>{user.Forename}</td>
-                                <td>{user.Surname}</td>
-                                <td>{user.EMail}</td>
+                            <tr key={user.id}>
+                                <td onClick={() => onSelectUser(user.id)} style={{ cursor: 'pointer' }}>
+                                    {user.Forename}
+                                </td >
+                                <td onClick={() => onSelectUser(user.id)} style={{ cursor: 'pointer' }}>
+                                    {user.Surname}
+                                </td>
+                                <td>
+                                    <a href={`mailto:${user.EMail}`} title={user.EMail}>
+                                        {user.EMail}
+                                    </a>
+                                </td>
                                 <td>{user.Phone}</td>
                             </tr>
                         ))
