@@ -27,10 +27,11 @@
 
 .user-form input, .user-form button {
     flex: 2;
+    padding: 5px;;
 }
 
 .user-form button[type="submit"] {
-    background-color: #4CAF50;
+    background-color: #12826a;
     color: white;
     padding: 10px;
     border: none;
@@ -40,5 +41,5 @@
 }
 
 .user-form button[type="submit"]:hover {
-    background-color: #45a049;
+    background-color: #12726a;
 }

@@ -365,6 +365,8 @@ app.post('/api/generate-pdf', async (req, res) => {
         console.log('Received orderData:', orderData);
         console.log('Received dataData:', dataData);
 
+        
+
         // Kontrollime, kas kõik vajalikud andmed on olemas
         if (!orderData || !orderData.tellimuseNumber || !orderData.vedaja || !orderData.autoNumbrimärk || 
             !orderData.pealelaadimiseEttevõte || !orderData.pealelaadimiseAadress || !orderData.laadung || 

@@ -37,6 +37,7 @@ const OrderForm = ({ initialData, dataData, onOrderDataChange, onOrderAdded }) =
     const [staatus] = useState(initialData ? initialData.Staatus : 'Töös'); // Lisa olek
     const [openMenu, setOpenMenu] = useState(null);
     const [isLocked, setIsLocked] = useState(false);
+    const [isCancelled, setIsCancelled] = useState(false);
     const [errors, setErrors] = useState({});
     const [clients, setClients] = useState([]);
     const [carriers, setCarriers] = useState([]);
@@ -152,6 +153,7 @@ const OrderForm = ({ initialData, dataData, onOrderDataChange, onOrderAdded }) =
                     if (Staatus === 'Kinnitatud' || Staatus === 'Tühistatud') {
                         setIsLocked(true);
                     }
+                    if (Staatus === 'Tühistatud') {setIsCancelled(true);}
                 } catch (error) {
                     console.error('Viga staatuse pärimisel:', error.response ? error.response.data : error.message);
                 }
@@ -304,6 +306,16 @@ const OrderForm = ({ initialData, dataData, onOrderDataChange, onOrderAdded }) =
     };
 
     const handleGeneratePDF = async () => {
+        if (!orderId) {
+            alert('Tellimus pole salvestatud!');
+            return;
+            }
+        
+        if (isCancelled) {
+            alert('Tellimust ei saa genereerida, kuna see on tühistatud.');
+            return;
+        }
+            
         if (!tellimuseNumber || !vedaja || !autoNumbrimärk || !pealelaadimiseEttevõte || !pealelaadimiseAadress || 
             !laadung || !pealelaadimiseKuupäev || !mahalaadimiseEttevõte || !mahalaadimiseAadress || 
             !mahalaadimiseKuupäev || !hind) {
@@ -388,6 +400,16 @@ const OrderForm = ({ initialData, dataData, onOrderDataChange, onOrderAdded }) =
     };    
 
     const handleGeneratePDF1 = async () => {
+        if (!orderId) {
+            alert('Tellimus pole salvestatud!');
+            return;
+            }
+        
+        if (isCancelled) {
+            alert('Tellimust ei saa genereerida, kuna see on tühistatud.');
+            return;
+        }
+        
         console.log('Selected client:', klient); // Log selected client
         console.log('Selected client II:', klientII); // Log selected client II
     
