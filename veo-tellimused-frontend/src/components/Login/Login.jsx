@@ -1,7 +1,10 @@
+// Login.jsx
+
 import React, { useState } from 'react';
 import axios from 'axios';
+import './Login.css';
 
-const Login = () => {
+function Login({ setIsLoggedIn }) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -11,36 +14,36 @@ const Login = () => {
         try {
             const response = await axios.post('http://localhost:5000/api/auth/login', { username, password });
             if (response.status === 200) {
-                // Salvestage kasutaja andmed ja token localStorage'i või state'i
-                localStorage.setItem('userId', response.data.userId);
-                // Suunake kasutaja dashboardile
-                window.location.href = '/app';
+                setIsLoggedIn(true); // Veendu, et setIsLoggedIn kutsutakse ainult juhul, kui vastus on edukas
+            } else {
+                setError('Sisselogimine ebaõnnestus');
             }
-        } catch (err) {
-            setError('Invalid credentials');
+        } catch (error) {
+            setError('Sisselogimine ebaõnnestus');
         }
     };
 
     return (
-        <div>
+        <div className="login-container">
             <form onSubmit={handleSubmit}>
-                <input 
-                    type="text" 
-                    placeholder="Username" 
-                    value={username} 
-                    onChange={(e) => setUsername(e.target.value)} 
+                <h2>Logi sisse</h2>
+                {error && <p>{error}</p>}
+                <input
+                    type="text"
+                    placeholder="Kasutajanimi"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
                 />
-                <input 
-                    type="password" 
-                    placeholder="Password" 
-                    value={password} 
-                    onChange={(e) => setPassword(e.target.value)} 
+                <input
+                    type="password"
+                    placeholder="Parool"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                 />
-                <button type="submit">Login</button>
+                <button type="submit">Logi sisse</button>
             </form>
-            {error && <p>{error}</p>}
         </div>
     );
-};
+}
 
 export default Login;

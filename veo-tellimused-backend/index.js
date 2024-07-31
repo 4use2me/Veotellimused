@@ -10,6 +10,7 @@ const sql = require('mssql');
 const xlsx = require('xlsx');
 const multer = require('multer');
 const upload = multer();
+const bcrypt = require('bcrypt');
 
 const app = express();
 const API_KEY = '5151a18b04a80f82c01cd1c13a1b7bcc';
@@ -220,13 +221,15 @@ app.post('/api/auth/login', async (req, res) => {
     try {
         const request = new sql.Request();
         request.input('Username', sql.NVarChar(50), username);
-        const result = await request.execute('dbo.GetUserPasswordHash');
 
-        const user = result.recordset[0]; // Eeldatakse, et saite kasutaja andmed
-        if (user) {
-            const match = await bcrypt.compare(password, user.Password); // Võrdle hashiga
-            if (match) {
-                res.status(200).json({ userId: user.Id });
+        const result = await request.execute('dbo.AuthenticateUser');
+
+        if (result.recordset.length > 0) {
+            const user = result.recordset[0];
+            const isMatch = await bcrypt.compare(password, user.StoredPassword);
+
+            if (isMatch) {
+                res.status(200).json({ userId: user.UserId });
             } else {
                 res.status(401).json({ message: 'Invalid credentials' });
             }
@@ -234,7 +237,7 @@ app.post('/api/auth/login', async (req, res) => {
             res.status(401).json({ message: 'Invalid credentials' });
         }
     } catch (error) {
-        console.error('Error during authentication:', error.message);
+        console.error('Error during authentication:', error);
         res.status(500).send('Server error');
     }
 });
