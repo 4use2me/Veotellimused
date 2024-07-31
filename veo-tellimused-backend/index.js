@@ -210,8 +210,8 @@ const saveCarrierToDatabase = async (carrier) => {
     }
 };
 
-// Funktsioon autentimiseks
-app.post('/api/auth/login', async (req, res) => {
+// Serveri kood parooli võrdlemiseks
+app.post('/api/login', async (req, res) => {
     const { username, password } = req.body;
 
     if (!username || !password) {
@@ -223,6 +223,9 @@ app.post('/api/auth/login', async (req, res) => {
         request.input('Username', sql.NVarChar(50), username);
 
         const result = await request.execute('dbo.AuthenticateUser');
+
+        // Logi tulemused
+        console.log('Database result:', result);
 
         if (result.recordset.length > 0) {
             const user = result.recordset[0];

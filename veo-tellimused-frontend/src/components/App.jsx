@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import OrderForm from './OrderForm/OrderForm';
 import OrderList from './OrderList/OrderList';
 import Sidebar from './Sidebar/Sidebar';
@@ -10,9 +11,8 @@ import CarrierList from './CarrierList/CarrierList';
 import Data from './Data/Data';
 import UserList from './UserList/UserList';
 import UserForm from './UserForm/UserForm';
+import Login from './Login/Login'; // Import Login komponent
 import axios from 'axios';
-//import ClientsExcelUpload from './ClientForm/ClientsExcelUpload'; // Impordi uus komponent
-//import CarriersExcelUpload from './CarrierForm/CarriersExcelUpload'; // Impordi uus komponent
 
 function App() {
     const [activeUserView, setActiveUserView] = useState('');
@@ -28,29 +28,32 @@ function App() {
     const [carrierData, setCarrierData] = useState(null);
     const [dataData, setDataData] = useState(null);
     const [userData, setUserData] = useState(null);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axios.get('http://localhost:5000/api/data');
-                setDataData(response.data);
+        if (isLoggedIn) {
+            const fetchData = async () => {
+                try {
+                    const response = await axios.get('http://localhost:5000/api/data');
+                    setDataData(response.data);
 
-                const carriersResponse = await axios.get('http://localhost:5000/api/carriers');
-                setCarrierData(carriersResponse.data);
+                    const carriersResponse = await axios.get('http://localhost:5000/api/carriers');
+                    setCarrierData(carriersResponse.data);
 
-                const clientsResponse = await axios.get('http://localhost:5000/api/kliendid');
-                setClientData(clientsResponse.data);
+                    const clientsResponse = await axios.get('http://localhost:5000/api/kliendid');
+                    setClientData(clientsResponse.data);
 
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
-        fetchData();
-    }, []);
+                } catch (error) {
+                    console.error('Error fetching data:', error);
+                }
+            };
+            fetchData();
+        }
+    }, [isLoggedIn]);
 
     const handleUser = () => {
         setActiveUserView('form');
-        setActiveOrderView(''); 
+        setActiveOrderView('');
         setActiveClientView('');
         setActiveCarrierView('');
         setActiveSettingView('');
@@ -60,7 +63,7 @@ function App() {
         setOrderData(null);
         setOrderFormKey(prevKey => prevKey + 1);
         setActiveOrderView('form');
-        setActiveClientView(''); // Closes the active order view
+        setActiveClientView('');
         setActiveCarrierView('');
         setActiveSettingView('');
         setActiveUserView('');
@@ -70,7 +73,7 @@ function App() {
         setClientData(null);
         setClientFormKey(prevKey => prevKey + 1);
         setActiveClientView('form');
-        setActiveOrderView(''); 
+        setActiveOrderView('');
         setActiveCarrierView('');
         setActiveSettingView('');
         setActiveUserView('');
@@ -80,7 +83,7 @@ function App() {
         setCarrierData(null);
         setCarrierFormKey(prevKey => prevKey + 1);
         setActiveCarrierView('form');
-        setActiveOrderView(''); 
+        setActiveOrderView('');
         setActiveClientView('');
         setActiveSettingView('');
         setActiveUserView('');
@@ -88,7 +91,7 @@ function App() {
 
     const handleData = () => {
         setActiveSettingView('form');
-        setActiveOrderView(''); 
+        setActiveOrderView('');
         setActiveClientView('');
         setActiveCarrierView('');
         setActiveUserView('');
@@ -124,7 +127,6 @@ function App() {
         setActiveClientView('');
         setActiveCarrierView('');
         setActiveUserView('');
-        console.log('activeSettingView set to list');
     };
 
     const handleSelectOrder = async (orderId) => {
@@ -224,101 +226,64 @@ function App() {
             Staatus: newOrder.Staatus || 'Töös' // Kui Staatus on puudu, määrame vaikimisi 'Töös'
         };
         setOrderData(orderWithDefaultStatus);
-        //setOrderFormKey(prevKey => prevKey + 1);
         setActiveOrderView('form');
     };
 
     const handleClientAdded = (newClient) => {
         setClientData(newClient);
-        //setClientFormKey(prevKey => prevKey + 1);
         setActiveClientView('form');
     };
 
     const handleCarrierAdded = (newCarrier) => {
         setCarrierData(newCarrier);
-        // setCarrierFormKey(prevKey => prevKey + 1);
         setActiveCarrierView('form');
     };
-
-    //const handleClientsImported = (importedClients) => {
-        //setClientData(prevClients => [...prevClients, ...importedClients]);
-    //};
-
-    //const handleCarriersImported = (importedCarriers) => {
-        //setCarrierData(prevCarriers => [...prevCarriers, ...importedCarriers]);
-    //};
 
     console.log('Rendering App with activeSettingView:', activeSettingView);
 
     return (
-        <div className="App">
-            <div className="sidebar">
-                <Sidebar onUser={handleUser} onNewOrder={handleNewOrder} onSelectOrderList={handleSelectOrderList} 
-                    onNewClient={handleNewClient} onSelectClientList={handleSelectClientList}
-                    onNewCarrier={handleNewCarrier} onSelectCarrierList={handleSelectCarrierList}
-                    onData={handleData} onSelectUserList={handleSelectUserList} />
+        <Router>
+            <div className="App">
+                {isLoggedIn ? (
+                    <div>
+                        <Sidebar
+                            onUserClick={handleUser}
+                            onNewOrderClick={handleNewOrder}
+                            onNewClientClick={handleNewClient}
+                            onNewCarrierClick={handleNewCarrier}
+                            onSelectOrderListClick={handleSelectOrderList}
+                            onSelectClientListClick={handleSelectClientList}
+                            onSelectCarrierListClick={handleSelectCarrierList}
+                            onSelectUserListClick={handleSelectUserList}
+                            onDataClick={handleData}
+                        />
+                        <Routes>
+                            <Route
+                                path="/orders"
+                                element={<OrderForm key={orderFormKey} onClose={handleCloseOrderForm} data={orderData} />}
+                            />
+                            <Route
+                                path="/clients"
+                                element={<ClientForm key={clientFormKey} onClose={handleCloseClientForm} data={clientData} />}
+                            />
+                            <Route
+                                path="/carriers"
+                                element={<CarrierForm key={carrierFormKey} onClose={handleCloseCarrierForm} data={carrierData} />}
+                            />
+                            <Route path="/data" element={<Data data={dataData} />} />
+                            <Route path="/users" element={<UserList onSelectUser={handleSelectUser} />} />
+                            <Route
+                                path="/user-form"
+                                element={<UserForm data={userData} onClose={handleCloseClientForm} onChange={handleUserDataChange} />}
+                            />
+                            <Route path="*" element={<Navigate to="/orders" />} />
+                        </Routes>
+                    </div>
+                ) : (
+                    <Login setIsLoggedIn={setIsLoggedIn} />
+                )}
             </div>
-            <div className="content">
-            {activeUserView === 'form' && (
-                    <UserForm
-                        initialData={userData && userData.length > 0 ? userData[0] : null}
-                        onUserDataChange={handleUserDataChange}
-                    />
-                )}
-
-                {activeOrderView === 'form' && (
-                    <OrderForm
-                        key={orderFormKey}
-                        onClose={handleCloseOrderForm}
-                        initialData={orderData}
-                        dataData={dataData}
-                        carriers={carrierData}
-                        onOrderDataChange={handleOrderDataChange}
-                        onOrderAdded={handleOrderAdded}
-                   />
-                )}
-                {activeOrderView === 'list' && <OrderList onSelectOrder={handleSelectOrder} />}
-
-                {activeClientView === 'form' && (
-                    <ClientForm
-                    key={clientFormKey}
-                        onClose={handleCloseClientForm}
-                        initialData={clientData}
-                        onClientDataChange={handleClientDataChange}
-                        onClientAdded={handleClientAdded}
-                    />
-                )}
-                {activeClientView === 'list' && (
-                    <>
-                        <ClientList onSelectClient={handleSelectClient} />
-                        {/*<ClientsExcelUpload onClientsImported={handleClientsImported} /> {/* Lisa ExcelUpload */}
-                    </>
-                )}
-                {activeCarrierView === 'form' && (
-                    <CarrierForm
-                    key={carrierFormKey}
-                        onClose={handleCloseCarrierForm}
-                        initialData={carrierData}
-                        onCarrierDataChange={handleCarrierDataChange}
-                        onCarrierAdded={handleCarrierAdded}
-                    />
-                )}
-                {activeCarrierView === 'list' && (
-                    <>
-                        <CarrierList onSelectCarrier={handleSelectCarrier} />
-                        {/*<CarriersExcelUpload onCarriersImported={handleCarriersImported} />*/}
-                    </>
-                )}
-
-                {activeSettingView === 'form' && (
-                    <Data
-                        initialData={dataData && dataData.length > 0 ? dataData[0] : null}
-                        onDataDataChange={handleDataDataChange}
-                    />
-                )}
-                {activeSettingView === 'list' && <UserList onSelectUser={handleSelectUser} />}
-            </div>
-        </div>
+        </Router>
     );
 }
 
