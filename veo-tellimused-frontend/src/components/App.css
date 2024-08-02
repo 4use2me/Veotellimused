@@ -1,11 +1,15 @@
-.App {
+.app {
   display: flex;
-  height: 100vh; /* Kogu lehe kõrguses */
-  overflow: hidden; /* Väldib horisontaalset kerimist */
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  display: flex;
+  flex: 1;
 }
 
 .content {
-  flex-grow: 1;
+  flex: 1;
   padding: 20px;
-  overflow-y: auto; /* Väldib vertikaalset kerimist */
 }

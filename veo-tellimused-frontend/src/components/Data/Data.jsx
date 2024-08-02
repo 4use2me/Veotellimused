@@ -17,6 +17,7 @@ const Data = ({ initialData, onDataDataChange }) => {
     const [iban, setIban] = useState(initialData ? initialData.Iban : '');
 
     useEffect(() => {
+        console.log('Initial data received:', initialData);
         if (initialData) {
             setDataId(initialData.id);
             setName(initialData.Name);

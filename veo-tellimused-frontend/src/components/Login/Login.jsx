@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import './Login.css';
 
-function Login({ setIsLoggedIn }) {
+const Login = ({ onLoginSuccess }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -21,9 +22,12 @@ function Login({ setIsLoggedIn }) {
 
             if (response.status === 200 && response.data.userId) {
                 console.log('Login successful, userId:', response.data.userId);
-                setIsLoggedIn(true);
+                onLoginSuccess(true);
+                console.log('Login successful, onLoginSuccess called');
             } else {
                 console.log('Login failed, message:', response.data.message);
+                onLoginSuccess(false);
+                console.log('Login failed, isLoggedIn set to false')
                 setError(response.data.message || 'Login failed');
             }
         } catch (error) {
@@ -33,10 +37,10 @@ function Login({ setIsLoggedIn }) {
     };
 
     return (
-        <div>
+        <div className='login-container'>
             <form onSubmit={handleLogin}>
                 <label>
-                    Username:
+                    Kasutajanimi:
                     <input
                         type="text"
                         value={username}
@@ -46,7 +50,7 @@ function Login({ setIsLoggedIn }) {
                 </label>
                 <br />
                 <label>
-                    Password:
+                    Parool:
                     <input
                         type="password"
                         value={password}
@@ -55,7 +59,7 @@ function Login({ setIsLoggedIn }) {
                     />
                 </label>
                 <br />
-                <button type="submit">Login</button>
+                <button type="submit">Logi sisse</button>
                 {error && <p>{error}</p>}
             </form>
         </div>

@@ -1,6 +1,5 @@
 .sidebar {
     width: 200px;
-    height: 100vh;
     background-color: #282c34;
     padding: 20px;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
@@ -8,8 +7,11 @@
     overflow-y: auto;
     position: relative;
     z-index: 1;
+    /* Tagab, et külgriba võtab kogu vanema konteineri kõrguse */
+    min-height: 100%;
 }
 
+/* Jätame olemasolevad külgriba stiilid samaks */
 .sidebar h2 {
     text-align: left;
 }
