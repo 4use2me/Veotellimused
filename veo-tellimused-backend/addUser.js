@@ -41,6 +41,6 @@ async function addUser(forename, surname, email, phone, username, password) {
 }
 
 // Näide kasutusest
-addUser('Aigi', 'Männik', 'aigi@ekspediitor.ee', '1234567', 'Yks2kolm', 'Ykskaks3');
+addUser('Reena', 'Kuusil', 'reena@ekspediitor.ee', '7654321', 'Kaks2kolm', 'Kakskaks3');
 
-//käsklus: node assUse.js
+//käsklus: node addUser.js

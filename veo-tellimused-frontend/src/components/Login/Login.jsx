@@ -22,12 +22,12 @@ const Login = ({ onLoginSuccess }) => {
 
             if (response.status === 200 && response.data.userId) {
                 console.log('Login successful, userId:', response.data.userId);
-                onLoginSuccess(true);
-                console.log('Login successful, onLoginSuccess called');
+                onLoginSuccess(response.data); // Tagasta kogu kasutaja andmed
+                console.log('Login successful, onLoginSuccess called with user:');
             } else {
                 console.log('Login failed, message:', response.data.message);
-                onLoginSuccess(false);
-                console.log('Login failed, isLoggedIn set to false')
+                onLoginSuccess(false); // Näitab, et login ebaõnnestus
+                console.log('Login failed, onLoginSuccess called with null');
                 setError(response.data.message || 'Login failed');
             }
         } catch (error) {

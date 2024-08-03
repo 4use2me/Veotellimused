@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Sidebar.css';
 
-const Sidebar = ({ onUser, onLogOut, onNewOrder, onSelectOrderList, onNewClient, onSelectClientList, onNewCarrier, onSelectCarrierList, onData, onSelectUserList }) => {
+const Sidebar = ({ userName, onUser, onLogOut, onNewOrder, onSelectOrderList, onNewClient, onSelectClientList, onNewCarrier, onSelectCarrierList, onData, onSelectUserList }) => {
     const [openMenu, setOpenMenu] = useState(null);
 
     const toggleMenu = (menu) => {
@@ -14,7 +14,7 @@ const Sidebar = ({ onUser, onLogOut, onNewOrder, onSelectOrderList, onNewClient,
                 className={`toggle-menu-button ${openMenu === 'user' ? 'open' : ''}`}
                 onClick={() => toggleMenu('user')}
             >
-                Tere kasutaja {openMenu === 'user'}
+                <span>Tere, {userName}!</span>
             </button>
             {openMenu === 'user' && (
                 <ul className="menu-items">

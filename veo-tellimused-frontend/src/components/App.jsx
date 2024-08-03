@@ -28,6 +28,7 @@ function App() {
     const [dataData, setDataData] = useState(null);
     const [userData, setUserData] = useState(null);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [userName, setUserName] = useState(''); // Uus state kasutajanime hoidmiseks
 
     useEffect(() => {
         const fetchData = async () => {
@@ -48,9 +49,16 @@ function App() {
         fetchData();
     }, []);
 
-    const handleLoginSuccess = () => {
-        setIsLoggedIn(true);
-        console.log('User logged in, isLoggedIn set to true');
+    const handleLoginSuccess = (user) => {
+        if (user && user.forename) { // Veendu, et user ja user.forename on olemas
+            setIsLoggedIn(true);
+            setUserName(user.forename); // Kasutame Forename veergu
+            console.log('User logged in, isLoggedIn set to true', user.forename);
+        } else {
+            setIsLoggedIn(false);
+            setUserName(''); // Kustuta kasutajanimi, kui sisse logimine ebaõnnestub
+            console.log('Login failed or user data missing');
+        }
     };
 
     const handleUser = () => {
@@ -66,6 +74,7 @@ function App() {
     const handleLogOut = () => {
         console.log('Logging out');
         setIsLoggedIn(false);
+        setUserName(''); // Tühjendame kasutajanime, kui kasutaja logib välja
         setActiveUserView('');
         setActiveOrderView('');
         setActiveClientView('');
@@ -285,6 +294,7 @@ function App() {
             {isLoggedIn ? (
                 <div className="main-content">
                     <Sidebar
+                        userName={userName} // Edastame kasutajanime Sidebar komponendile
                         onUser={handleUser}
                         onLogOut={handleLogOut}
                         onNewOrder={handleNewOrder}

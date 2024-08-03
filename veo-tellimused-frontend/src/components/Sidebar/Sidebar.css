@@ -1,5 +1,5 @@
 .sidebar {
-    width: 200px;
+    width: 180px;
     background-color: #282c34;
     padding: 20px;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
@@ -28,6 +28,11 @@
     position: relative;
 }
 
+.sidebar .toggle-menu-button span {
+    display: inline-block;
+    margin-right: 10px;
+}
+
 .sidebar .menu-items {
     list-style-type: none;
     padding: 0;
@@ -47,6 +52,10 @@
     top: 50%;
     right: 30px;
     transform: translateY(-50%);
+}
+
+.sidebar .toggle-menu-button.open::after {
+    content: '▲';
 }
 
 .sidebar .toggle-menu-button.open {

@@ -232,7 +232,7 @@ app.post('/api/login', async (req, res) => {
             const isMatch = await bcrypt.compare(password, user.StoredPassword);
 
             if (isMatch) {
-                res.status(200).json({ userId: user.UserId });
+                res.status(200).json({ userId: user.UserId, forename: user.Forename });
             } else {
                 res.status(401).json({ message: 'Invalid credentials' });
             }
