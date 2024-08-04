@@ -11,13 +11,30 @@ const xlsx = require('xlsx');
 const multer = require('multer');
 const upload = multer();
 const bcrypt = require('bcrypt');
+const session = require('express-session');
+const saltRounds = 10;
 
 const app = express();
 const API_KEY = '5151a18b04a80f82c01cd1c13a1b7bcc';
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true // Enable the sending of cookies from the frontend
+}));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+// Sessiooni seade
+app.use(session({
+    secret: 'your_secret_key',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        httpOnly: true,
+        secure: false // Set to true if you are using HTTPS
+    }
+}));
 
 // SQL Serveri konfiguratsioon
 const dbConfig = {
@@ -210,7 +227,7 @@ const saveCarrierToDatabase = async (carrier) => {
     }
 };
 
-// Serveri kood parooli võrdlemiseks
+// Login endpoint
 app.post('/api/login', async (req, res) => {
     const { username, password } = req.body;
 
@@ -224,14 +241,16 @@ app.post('/api/login', async (req, res) => {
 
         const result = await request.execute('dbo.AuthenticateUser');
 
-        // Logi tulemused
-        console.log('Database result:', result);
-
         if (result.recordset.length > 0) {
             const user = result.recordset[0];
             const isMatch = await bcrypt.compare(password, user.StoredPassword);
 
             if (isMatch) {
+                req.session.userId = user.UserId;
+                req.session.forename = user.Forename;
+
+                console.log('Session after login:', req.session);
+
                 res.status(200).json({ userId: user.UserId, forename: user.Forename });
             } else {
                 res.status(401).json({ message: 'Invalid credentials' });
@@ -241,6 +260,34 @@ app.post('/api/login', async (req, res) => {
         }
     } catch (error) {
         console.error('Error during authentication:', error);
+        res.status(500).send('Server error');
+    }
+});
+
+// Middleware to check if user is authenticated
+function isAuthenticated(req, res, next) {
+    if (req.session && req.session.userId) {
+        return next();
+    } else {
+        return res.status(401).json({ message: 'Unauthorized' });
+    }
+}
+
+// Route to get current user data
+app.get('/api/users/me', isAuthenticated, async (req, res) => {
+    try {
+        const request = new sql.Request();
+        request.input('Id', sql.Int, req.session.userId);
+
+        const result = await request.query('SELECT Id, Forename, Surname, EMail, Phone, Username FROM Users WHERE Id = @Id');
+        
+        if (result.recordset.length > 0) {
+            res.status(200).json(result.recordset[0]);
+        } else {
+            res.status(404).json({ message: 'User not found' });
+        }
+    } catch (error) {
+        console.error('Error fetching user data:', error);
         res.status(500).send('Server error');
     }
 });
@@ -861,42 +908,51 @@ app.put('/api/data/:id', async (req, res) => {
 
 app.put('/api/users/:id', async (req, res) => {
     const { id } = req.params;
-    const {
-        Forename,
-        Surname,
-        EMail,
-        Phone,
-        Username,
-        Password
-    } = req.body;
+    const { Forename, Surname, EMail, Phone, Password, Username } = req.body;
 
-    // We check if ID is a number
     const numericId = parseInt(id, 10);
     if (isNaN(numericId)) {
-        res.status(400).send('Invalid ID');
-        return;
+        return res.status(400).send('Invalid ID');
     }
 
     try {
         const request = new sql.Request();
+
+        // Kui parool on olemas, siis räsime selle
+        let hashedPassword = null;
+        if (Password) {
+            hashedPassword = await bcrypt.hash(Password, saltRounds);
+        }
+
+        // Loome SQL-i lause dünaamiliselt
+        let updateFields = `
+            Forename = @Forename, 
+            Surname = @Surname, 
+            EMail = @EMail, 
+            Phone = @Phone,
+            Username = @Username
+        `;
+
+        if (hashedPassword) {
+            updateFields += `, Password = @Password`;
+        }
+
+        // Kasutaja andmete uuendamine
+        const query = `
+            UPDATE Users 
+            SET ${updateFields}
+            WHERE Id = @Id
+        `;
+
         await request
-            .input('Forename', sql.NVarChar, Forename)
-            .input('Surname', sql.NVarChar, Surname)
-            .input('EMail', sql.NVarChar, EMail)
-            .input('Phone', sql.NVarChar, Phone)
-            .input('Username', sql.NVarChar, Username)
-            .input('Password', sql.NVarChar, Password)
-            .input('Id', sql.Int, numericId) 
-            .query(
-                `UPDATE Users SET 
-                    Forename = @Forename,
-                    Surname = @Surname,
-                    EMail = @EMail,
-                    Phone = @Phone,
-                    Username = @Username,
-                    Password = @Password
-                WHERE Id = @Id`
-            );
+            .input('Id', sql.Int, numericId)
+            .input('Forename', sql.NVarChar(50), Forename)
+            .input('Surname', sql.NVarChar(50), Surname)
+            .input('EMail', sql.NVarChar(50), EMail)
+            .input('Phone', sql.NVarChar(50), Phone)
+            .input('Username', sql.NVarChar(50), Username)
+            .input('Password', sql.NVarChar(255), hashedPassword) // Uuenda parool ainult, kui see on olemas
+            .query(query);
 
         res.status(200).send('User updated successfully');
     } catch (error) {
@@ -1099,23 +1155,22 @@ app.get('/api/carriers/:id', async (req, res) => {
 });
 
 app.get('/api/users/:id', async (req, res) => {
-    const { id } = req.params;
-    const numericId = parseInt(id, 10);
-    if (isNaN(numericId)) {
-        res.status(400).send('Invalid ID');
-        return;
+    if (!req.session.userId) {
+        return res.status(401).json({ message: 'Unauthorized' });
     }
+
+    const userId = req.session.userId; // Kasuta sessioonis salvestatud kasutaja ID-d
 
     try {
         const request = new sql.Request();
-        const result = await request
-            .input('Id', sql.Int, numericId)
-            .query('SELECT * FROM Users WHERE Id = @Id');
+        request.input('Id', sql.Int, userId);
 
-        if (result.recordset.length === 0) {
-            res.status(404).send('User not found');
-        } else {
+        const result = await request.query('SELECT Id, Forename, Surname, Email FROM Users WHERE Id = @Id');
+
+        if (result.recordset.length > 0) {
             res.status(200).json(result.recordset[0]);
+        } else {
+            res.status(404).json({ message: 'User not found' });
         }
     } catch (error) {
         console.error('Error fetching user:', error);

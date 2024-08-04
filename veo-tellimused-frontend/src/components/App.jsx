@@ -13,6 +13,9 @@ import UserForm from './UserForm/UserForm';
 import Login from './Login/Login';
 import axios from 'axios';
 
+// Set default options for axios
+axios.defaults.withCredentials = true;
+
 function App() {
     const [activeUserView, setActiveUserView] = useState('');
     const [activeOrderView, setActiveOrderView] = useState('');
