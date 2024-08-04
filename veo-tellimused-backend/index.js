@@ -944,15 +944,19 @@ app.put('/api/users/:id', async (req, res) => {
             WHERE Id = @Id
         `;
 
-        await request
+        const result = await request
             .input('Id', sql.Int, numericId)
             .input('Forename', sql.NVarChar(50), Forename)
             .input('Surname', sql.NVarChar(50), Surname)
             .input('EMail', sql.NVarChar(50), EMail)
             .input('Phone', sql.NVarChar(50), Phone)
-            .input('Username', sql.NVarChar(50), Username)
-            .input('Password', sql.NVarChar(255), hashedPassword) // Uuenda parool ainult, kui see on olemas
-            .query(query);
+            .input('Username', sql.NVarChar(50), Username);
+
+        if (hashedPassword) {
+            request.input('Password', sql.NVarChar(255), hashedPassword);
+        }
+
+        await result.query(query);
 
         res.status(200).send('User updated successfully');
     } catch (error) {
